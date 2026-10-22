@@ -120,7 +120,8 @@ class SMSCodeInputScreen extends StatelessWidget {
                     action: action,
                     flowKey: flowKey,
                     onCodeVerified: () {
-                      if (actions != null) return;
+                      // Custom actions (e.g. MFA enroll) handle navigation.
+                      if (actions != null && actions!.isNotEmpty) return;
 
                       Navigator.of(context).popUntil((route) {
                         return route.isFirst;

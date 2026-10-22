@@ -83,7 +83,10 @@ class _SMSCodeInputViewState extends State<SMSCodeInputView> {
       action: widget.action,
       flowKey: widget.flowKey,
       listener: (oldState, newState, controller) {
-        if (newState is SignedIn || newState is CredentialLinked) {
+        // CredentialReceived is used for MFA enrollment (AuthAction.none).
+        if (newState is SignedIn ||
+            newState is CredentialLinked ||
+            newState is CredentialReceived) {
           widget.onCodeVerified?.call();
         }
 

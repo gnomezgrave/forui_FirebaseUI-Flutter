@@ -38,6 +38,7 @@ Future<void> startPhoneVerification({
           action: action,
           multiFactorSession: multiFactorSession,
           mfaHint: hint,
+          actions: actions,
         ),
       ),
     ),
