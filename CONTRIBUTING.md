@@ -45,7 +45,7 @@ information on using pull requests.
 ### 2. Forking & cloning the repository
 
 - Ensure all the dependencies described in the previous section are installed.
-- Fork `https://github.com/firebase/FirebaseUI-Flutter` into your own GitHub account. If
+- Fork `https://github.com/gnomezgrave/forui_FirebaseUI-Flutter` into your own GitHub account. If
   you already have a fork, and are now installing a development environment on
   a new machine, make sure you've updated your fork so that you don't use stale
   configuration options from long ago. If you don't know what "fork" means – learn more
@@ -54,7 +54,7 @@ information on using pull requests.
   follow [GitHub's directions](https://help.github.com/articles/generating-ssh-keys/)
   to generate an SSH key.
 - `git clone git@github.com:<your_name_here>/FirebaseUI-Flutter.git`
-- `git remote add upstream git@github.com:firebase/FirebaseUI-Flutter.git` (So that you
+- `git remote add upstream git@github.com:gnomezgrave/forui_FirebaseUI-Flutter.git` (So that you
   fetch from the master repository, not your clone, when running `git fetch`
   et al.)
 
@@ -115,7 +115,7 @@ Assuming all is successful, commit and push your code:
 
 Before submitting your pull request, you need to sign the [Contributor License Agreement](https://cla.developers.google.com/clas).
 
-- Go to `https://github.com/firebase/FirebaseUI-Flutter` and click the
+- Go to `https://github.com/gnomezgrave/forui_FirebaseUI-Flutter` and click the
   "Compare & pull request" button
 
 Please make sure all your check-ins have detailed commit messages explaining the patch.
@@ -158,7 +158,7 @@ Once you've gotten an LGTM from a project maintainer and once your PR has receiv
 the green light from all our automated testing, wait for one the package maintainers
 to merge the pull request.
 
-If you create a new file, do not forget to add the [license header](https://github.com/firebase/FirebaseUI-Flutter/blob/main/header_template.txt). You can add it manually, or use
+If you create a new file, do not forget to add the [license header](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/header_template.txt). You can add it manually, or use
 [`addlicense`](https://github.com/google/addlicense) to add the license to all
 necessary files.
 

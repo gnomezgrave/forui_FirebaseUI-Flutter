@@ -11,6 +11,6 @@ Base package for Firebase UI OAuth providers (Forui-backed buttons):
 
 See the [OAuth docs](../../docs/firebase-ui-auth/providers/oauth.md). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
 
-For issues, please create a new [issue on the repository](https://github.com/firebase/FirebaseUI-Flutter/issues).
+For issues, please create a new [issue on the repository](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues).
 
-To contribute a change to this plugin, please review our [contribution guide](../../CONTRIBUTING.md) and open a [pull request](https://github.com/firebase/FirebaseUI-Flutter/pulls).
+To contribute a change to this plugin, please review our [contribution guide](../../CONTRIBUTING.md) and open a [pull request](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/pulls).

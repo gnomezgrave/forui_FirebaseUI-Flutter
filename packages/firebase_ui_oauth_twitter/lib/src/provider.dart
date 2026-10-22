@@ -100,7 +100,7 @@ class TwitterProvider extends OAuthProvider {
       '"$defaultRedirectUri", and that you have added the '
       'Encoded App ID URL scheme (iOS) or your SHA-1 fingerprint '
       '(Android). See '
-      'https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#twitter-login',
+      'https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#twitter-login',
     );
   }
 

@@ -13,7 +13,7 @@ dependencies:
 
 ## Usage
 
-If your app supports only a single language, and you want to override labels – you will need to provide a custom class that implements one of the [exposed localizations](https://github.com/firebase/FirebaseUI-Flutter/blob/main/packages/firebase_ui_localizations/lib/src/lang).
+If your app supports only a single language, and you want to override labels – you will need to provide a custom class that implements one of the [exposed localizations](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/packages/firebase_ui_localizations/lib/src/lang).
 
 For example, we could override the Spanish localization class and customize the email and password labels:
 

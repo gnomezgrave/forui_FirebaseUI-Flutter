@@ -6,8 +6,8 @@ To get started with Firebase UI OAuth Twitter, please [see the documentation](..
 
 ## Issues and feedback
 
-Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/firebase/FirebaseUI-Flutter/issues).
+Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues).
 
 ## Contributing
 
-To contribute a change to this plugin, please review our [contributing guide](https://github.com/firebase/FirebaseUI-Flutter/blob/main/CONTRIBUTING.md).
+To contribute a change to this plugin, please review our [contributing guide](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/CONTRIBUTING.md).

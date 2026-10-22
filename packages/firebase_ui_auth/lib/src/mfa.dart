@@ -124,6 +124,8 @@ Future<fba.UserCredential> startPhoneMFAVerification({
 
   final cred = await completer.future;
 
-  navigator.pop();
+  // Do not pop here. Popping reveals the sign-in screen underneath
+  // before authStateChanges finishes routing to home. The app should
+  // clear the stack with pushNamedAndRemoveUntil after sign-in.
   return cred;
 }

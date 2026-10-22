@@ -12,7 +12,7 @@ flutter pub add cloud_firestore firebase_ui_firestore forui
 
 ## Issues and feedback
 
-Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/firebase/FirebaseUI-Flutter/issues).
+Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues).
 
 ## Contributing
 

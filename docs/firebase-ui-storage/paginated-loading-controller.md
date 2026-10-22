@@ -6,8 +6,8 @@ Firebase UI Storage provides [`StorageListView`] and [`StorageGridView`] widgets
 
 In cases where you want to build a completely custom scroll view, but still have pagination logic handled – you can use `PaginatedLoadingController`.
 
-[`StorageListView`]: https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/list-view.md
-[`StorageGridView`]: https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/grid-view.md
+[`StorageListView`]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/list-view.md
+[`StorageGridView`]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/grid-view.md
 
 ```dart
 class MyWidget extends StatefulWidget {

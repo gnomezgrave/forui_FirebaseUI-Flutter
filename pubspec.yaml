@@ -30,7 +30,7 @@ dev_dependencies:
   yaml_edit: ^2.2.4
 
 melos:
-  repository: https://github.com/firebase/FirebaseUI-Flutter
+  repository: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter
 
   command:
     version:

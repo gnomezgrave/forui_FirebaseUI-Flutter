@@ -25,6 +25,6 @@ Please file Firebase UI Storage specific issues, bugs, or feature requests in ou
 
 If you wish to contribute a change to any of the existing plugins in this repo, please review our [contribution guide] and open a [pull request].
 
-[issue tracker]: https://github.com/firebase/FirebaseUI-Flutter/issues/new/choose
-[contribution guide]: https://github.com/firebase/FirebaseUI-Flutter/blob/main/CONTRIBUTING.md
-[pull request]: https://github.com/firebase/FirebaseUI-Flutter/pulls
+[issue tracker]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/new/choose
+[contribution guide]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/CONTRIBUTING.md
+[pull request]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/pulls

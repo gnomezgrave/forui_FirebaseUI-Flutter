@@ -1,7 +1,7 @@
 name: firebase_ui_oauth
 description: Firebase UI widgets for authentication & OAuth
 version: 0.1.0
-homepage: https://github.com/firebase/FirebaseUI-Flutter/tree/master/packages/firebase_ui_oauth
+homepage: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/tree/main/packages/firebase_ui_oauth
 
 resolution: workspace
 

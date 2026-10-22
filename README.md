@@ -43,8 +43,8 @@ See the [docs](./docs/README.md) for auth providers, storage, Firestore/Database
 
 ## Issues
 
-Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/firebase/FirebaseUI-Flutter/issues/new/choose).
+Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/new/choose).
 
 ## Contributing
 
-If you wish to contribute a change to any of the existing plugins in this repo, please review our [contribution guide](./CONTRIBUTING.md) and open a [pull request](https://github.com/firebase/FirebaseUI-Flutter/pulls).
+If you wish to contribute a change to any of the existing plugins in this repo, please review our [contribution guide](./CONTRIBUTING.md) and open a [pull request](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/pulls).
