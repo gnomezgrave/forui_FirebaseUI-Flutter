@@ -1,18 +1,32 @@
 ## Firebase UI Shared
 
-A library of shared components used across Firebase UI packages
+Shared Forui-based building blocks used across Firebase UI packages.
 
 ## Getting started
-
-Add dependency
 
 ```sh
 flutter pub add firebase_ui_shared
 ```
 
+Apps must wrap Firebase UI widgets in an [FTheme](https://forui.dev/docs) ancestor:
+
+```dart
+import 'package:forui/forui.dart';
+
+MaterialApp(
+  builder: (context, child) => FTheme(
+    data: FTheme.neutral.light.touch,
+    child: child!,
+  ),
+  // ...
+);
+```
+
+Requires Flutter **3.47+** and Forui **0.27.x**.
+
 ## Usage
 
-See [API docs](https://pub.dev/documentation/firebase_ui_shared/latest/)
+See [API docs](https://pub.dev/documentation/firebase_ui_shared/latest/).
 
 ## License
 

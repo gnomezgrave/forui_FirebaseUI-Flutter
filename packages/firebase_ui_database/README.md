@@ -1,8 +1,14 @@
 # Firebase UI for Realtime Database
 
+Firebase UI widgets for Realtime Database, ported to [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**. `FirebaseDatabaseDataTable` remains Material-based.
+
 ## Getting Started
 
-To get started with Firebase UI for Realtime Database, please [see the documentation](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-database.md).
+See the [documentation](../../docs/firebase-ui-database.md).
+
+```sh
+flutter pub add firebase_database firebase_ui_database forui
+```
 
 ## Issues and feedback
 
@@ -10,4 +16,4 @@ Please file Firebase UI specific issues, bugs, or feature requests in our [issue
 
 ## Contributing
 
-To contribute a change to this plugin, please review our [contributing guide](https://github.com/firebase/FirebaseUI-Flutter/blob/main/CONTRIBUTING.md).
+To contribute a change to this plugin, please review our [contributing guide](../../CONTRIBUTING.md).

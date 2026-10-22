@@ -3,10 +3,16 @@
 Firebase UI provides a pre-built `EmailVerificationScreen`:
 
 ```dart
+import 'package:forui/forui.dart';
+
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null
         ? '/login'
         : '/profile',
@@ -38,7 +44,7 @@ class App extends StatelessWidget {
           ],
         ),
       }
-    )
+    );
   }
 }
 ```
@@ -52,6 +58,9 @@ Note: `EmailVerifiedAction` does not poll the verification state in realtime. Is
 If you want to build a custom email verification screen, you could use `EmailVerificationController`:
 
 ```dart
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+
 class MyEmailVerificationScreen extends StatefulWidget {
   const MyEmailVerificationScreen({super.key});
 
@@ -81,7 +90,7 @@ class _MyEmailVerificationScreenState extends State<MyEmailVerificationScreen> {
         return TextButton(
           onPressed: () {
             ctrl.sendVerificationEmail(
-              Theme.of(context).platform,
+              defaultTargetPlatform,
               ActionCodeSettings(...),
             );
           },
@@ -91,7 +100,7 @@ class _MyEmailVerificationScreenState extends State<MyEmailVerificationScreen> {
         return Text("Ok, let's verify your email next time");
       case EmailVerificationState.pending:
       case EmailVerificationState.sending:
-        return CircularProgressIndicator();
+        return const LoadingIndicator(size: 32, borderWidth: 2);
       case EmailVerificationState.sent:
         return Text('Check your email');
       case EmailVerificationState.verified:

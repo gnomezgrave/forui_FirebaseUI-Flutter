@@ -7,8 +7,10 @@ Firebase UI Storage is a set of Flutter widgets and utilities designed to help y
 Install dependencies
 
 ```sh
-flutter pub add firebase_core firebase_storage firebase_ui_storage
+flutter pub add firebase_core firebase_storage firebase_ui_storage forui
 ```
+
+Firebase UI Storage widgets require an [`FTheme`](https://forui.dev/docs) ancestor (typically via `MaterialApp.builder`).
 
 Install the FlutterFire CLI by running the following command from any directory:
 
@@ -122,12 +124,12 @@ class MyWidget extends StatelessWidget {
 
 ### Firebase UI Storage widgets
 
-- [`UploadButton`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/upload-button.md)
-- [`TaskProgressIndicator`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/task-progress-indicator.md)
-- [`StorageImage`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/storage-image.md)
-- [`StorageListView`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/list-view.md)
-- [`StorageGridView`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/grid-view.md)
-- [`PaginatedLoadingController`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/paginated-loading-controller.md)
+- [`UploadButton`](./upload-button.md)
+- [`TaskProgressIndicator`](./task-progress-indicator.md)
+- [`StorageImage`](./storage-image.md)
+- [`StorageListView`](./list-view.md)
+- [`StorageGridView`](./grid-view.md)
+- [`PaginatedLoadingController`](./paginated-loading-controller.md)
 
 ---
 

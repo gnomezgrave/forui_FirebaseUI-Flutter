@@ -22,7 +22,7 @@ StorageImage(
 
 ### Solid color placeholder
 
-By default, `solidColor` placeholder uses `surfaceTint.withOpacity(0.12)` color from the app color scheme.
+By default, `solidColor` placeholder uses a muted color from the Forui theme (`context.theme.colors.mutedForeground`).
 
 The color could be customized:
 
@@ -38,7 +38,7 @@ StorageImage(
 
 ### Loading indicator
 
-Loading indicator placeholder will show a `CircularProgressIndicator` under `MaterialApp`, and `CupertinoActivityIndicator` under `CupertinoApp`.
+Loading indicator placeholder shows a Forui-backed [`LoadingIndicator`](https://pub.dev/documentation/firebase_ui_shared/latest/firebase_ui_shared/LoadingIndicator-class.html).
 
 You can customize `size`, `color` and `strokeWidth` of the loading indicator:
 
@@ -53,8 +53,6 @@ StorageImage(
   ),
 );
 ```
-
-> `color` and `strokeWidth` are only applicable to `CircularProgressIndicator`.
 
 ### Shimmer placeholder
 

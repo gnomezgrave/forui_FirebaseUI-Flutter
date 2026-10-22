@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get started with Firebase UI OAuth Facebook, please [see the documentation](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#flutter-facebook-auth).
+To get started with Firebase UI OAuth Facebook, please [see the documentation](../../docs/firebase-ui-auth/providers/oauth.md#flutter-facebook-auth). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
 
 ## Issues and feedback
 

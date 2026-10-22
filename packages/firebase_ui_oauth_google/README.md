@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get started with Firebase UI OAuth Google, please [see the documentation](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#google-sign-in).
+To get started with Firebase UI OAuth Google, please [see the documentation](../../docs/firebase-ui-auth/providers/oauth.md#google-sign-in). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
 
 ## Issues and feedback
 

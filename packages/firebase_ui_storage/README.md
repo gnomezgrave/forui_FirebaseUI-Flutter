@@ -2,20 +2,20 @@
 
 [![pub package](https://img.shields.io/pub/v/firebase_ui_storage.svg)](https://pub.dev/packages/firebase_ui_storage)
 
-Firebase UI Storage is a set of Flutter widgets and utilities designed to help you build and integrate your user interface with Firebase Storage.
+Firebase UI Storage is a set of Flutter widgets and utilities for Firebase Storage, built with [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**.
 
 ## Documentation
 
-- [Getting started](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/getting-started.md)
+- [Getting started](../../docs/firebase-ui-storage/getting-started.md)
 - Widgets
 
-  - [`UploadButton`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/upload-button.md)
-  - [`TaskProgressIndicator`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/task-progress-indicator.md)
-  - [`StorageImage`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/storage-image.md)
-  - [`StorageListView`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/list-view.md)
-  - [`StorageGridView`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/grid-view.md)
+  - [`UploadButton`](../../docs/firebase-ui-storage/upload-button.md)
+  - [`TaskProgressIndicator`](../../docs/firebase-ui-storage/task-progress-indicator.md)
+  - [`StorageImage`](../../docs/firebase-ui-storage/storage-image.md)
+  - [`StorageListView`](../../docs/firebase-ui-storage/list-view.md)
+  - [`StorageGridView`](../../docs/firebase-ui-storage/grid-view.md)
 
-- [`PaginatedLoadingController`](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-storage/paginated-loading-controller.md)
+- [`PaginatedLoadingController`](../../docs/firebase-ui-storage/paginated-loading-controller.md)
 
 ## Issues
 

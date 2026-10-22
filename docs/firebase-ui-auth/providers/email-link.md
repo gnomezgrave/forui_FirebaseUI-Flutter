@@ -160,7 +160,7 @@ class MyCustomWidget extends StatelessWidget {
             },
           );
         } else if (state is AwaitingDynamicLink) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is EmailRequired) {
           // The link was opened on another device.
           return TextField(
@@ -216,7 +216,7 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
   @override
   void onBeforeLinkSent(String email) {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
@@ -248,21 +248,21 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
   @override
   void onBeforeCredentialLinked(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeProvidersForEmailFetch() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 

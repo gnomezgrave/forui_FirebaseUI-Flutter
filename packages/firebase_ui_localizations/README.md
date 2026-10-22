@@ -1,8 +1,10 @@
 # Firebase UI Localizations
 
+Localization labels for Firebase UI packages (`^0.1.0`).
+
 ## Getting Started
 
-To get started with Firebase UI Localizations, please [see the documentation](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-localizations.md).
+See the [documentation](../../docs/firebase-ui-localizations.md).
 
 ## Issues and feedback
 

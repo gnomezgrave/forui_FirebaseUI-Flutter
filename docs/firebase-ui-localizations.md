@@ -8,7 +8,7 @@ Firebase UI for Flutter supports localization, so every single label can be cust
 dependencies:
   flutter_localizations:
     sdk: flutter
-  firebase_ui_localizations: ^1.2.0
+  firebase_ui_localizations: ^0.1.0
 ```
 
 ## Usage
@@ -33,13 +33,19 @@ class LabelOverrides extends EsLocalizations {
 }
 ```
 
-Once created, pass the instance of `LabelOverrides` to the `localizationsDelegates` list in your `MaterialApp`/`CupertinoApp`:
+Once created, pass the instance of `LabelOverrides` to the `localizationsDelegates` list in your `MaterialApp` (and keep wrapping Firebase UI in `FTheme`):
 
 ```dart
+import 'package:forui/forui.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       localizationsDelegates: [
         // Creates an instance of FirebaseUILocalizationDelegate with overridden labels
         FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
@@ -58,6 +64,4 @@ class MyApp extends StatelessWidget {
 ```
 
 If you need to support multiple languages – follow the [official Flutter localization guide](https://docs.flutter.dev/development/accessibility-and-localization/internationalization#an-alternative-class-for-the-apps-localized-resources)
-and make sure that your custom delegate extends `LocalizationsDelegate<FirebaseUILocalizations>`.
-
-> Note: check out [API reference](https://pub.dev/documentation/firebase_ui_localizations/latest/FlutterFireUILocalizationLabels-class.html) to learn what labels are used by specific widgets
+and create a `LocalizationsDelegate` that resolves to a `FirebaseUILocalizations` subclass for each locale.

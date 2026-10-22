@@ -39,7 +39,7 @@ StorageGridView(
 
 ### Custom inital page loading state
 
-When the first page of objects is loading, `StorageGridView` will show a `CircularProgressIndicator` under `MaterialApp`, and `CupertinoActivityIndicator` under `CupertinoApp`.
+When the first page of objects is loading, `StorageGridView` shows a centered Forui-backed `LoadingIndicator`.
 
 You can pass `loadingBuilder` to customize the loading state:
 
@@ -80,7 +80,7 @@ StorageGridView(
 ### Custom scroll views with pagination logic
 
 If you need something more customizable, but still want pagination logic handled for you, you can use
-[`PaginatedLoadingController`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/paginated-loading-controller.md)
+[`PaginatedLoadingController`](./paginated-loading-controller.md)
 
 ---
 

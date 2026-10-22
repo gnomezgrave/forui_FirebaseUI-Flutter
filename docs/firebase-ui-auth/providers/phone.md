@@ -179,7 +179,7 @@ class MyCustomWidget extends StatelessWidget {
             );
           });
         } else if (state is SigningIn) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is AuthFailed) {
           return ErrorText(exception: state.exception);
         } else {
@@ -254,21 +254,21 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
   @override
   void onBeforeCredentialLinked(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeProvidersForEmailFetch() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 

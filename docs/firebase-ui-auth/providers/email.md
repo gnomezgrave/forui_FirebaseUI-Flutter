@@ -123,7 +123,7 @@ class MyCustomWidget extends StatelessWidget {
         if (state is AwaitingEmailAndPassword) {
           return MyCustomEmailForm();
         } else if (state is SigningIn) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is AuthFailed) {
           return ErrorText(exception: state.exception);
         } else {
@@ -165,21 +165,21 @@ class _CustomEmailSignInState extends State<CustomEmailSignIn>
   @override
   void onBeforeCredentialLinked(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeProvidersForEmailFetch() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 

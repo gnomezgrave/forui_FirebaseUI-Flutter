@@ -15,12 +15,18 @@ override the default actions (e.g. signing in or signing out) the UI performs to
 First, we define the root route that checks for authentication state and renders a `SignInScreen` or `ProfileScreen`:
 
 ```dart
+import 'package:forui/forui.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const providers = [EmailAuthProvider()];
 
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) => SignInScreen(providers: providers),
@@ -65,12 +71,18 @@ reset their password by pressing the "Forgot Password" button, which internally 
 navigate to a named route, provide the `actions` list with a `ForgotPasswordAction`:
 
 ```dart
+import 'package:forui/forui.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const providers = [EmailAuthProvider()];
 
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) {

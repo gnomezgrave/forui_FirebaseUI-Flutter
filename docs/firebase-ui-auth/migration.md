@@ -1,122 +1,78 @@
-# FlutterFireUI ➡️ FirebaseUI migration guide
+# Migrating to the Forui Firebase UI packages
 
-To migrate from `flutterfire_ui` package to `firebase_ui_*` family, you need to do the following:
+This guide covers moving from the original Material/Cupertino **Firebase UI for Flutter** packages to this **Forui** port (version `0.1.0`).
 
-## Updating dependencies
+## What changed
 
-For Firebase Auth widgets:
+- UI is built with [Forui](https://forui.dev) instead of dual Material/Cupertino widgets.
+- Apps **must** provide an `FTheme` ancestor (usually via `MaterialApp.builder`).
+- Requires Dart `^3.13.0` and Flutter **3.47+**.
+- `PlatformWidget` and dual `materialIcon` / `cupertinoIcon` APIs are removed.
+- `ProfileScreen.appBar` / `cupertinoNavigationBar` are replaced by a single `header`.
+- Firestore/Database **DataTables** remain Material-based; list/grid query loading uses Forui indicators.
 
-```diff
-dependencies:
--  flutterfire_ui: ^0.4.0
-+  firebase_ui_auth: ^1.0.0
-```
+Package APIs (`SignInScreen`, providers, actions, etc.) stay largely the same; the main integration change is theming.
 
-If you're using OAuth providers:
-
-```diff
-dependencies:
-# ...
-+  firebase_ui_oauth: ^1.0.0
-+  firebase_ui_oauth_google: ^1.0.0
-+  firebase_ui_oauth_apple: ^1.0.0
-```
-
-Please make sure to depend only on those providers that are actually being used in your app. Having the provider included, but not configured might lead to unexpected behaviour.
-
-All supported OAuth providers:
-
-- [firebase_ui_oauth_apple](https://pub.dev/packages/firebase_ui_oauth_apple)
-- [firebase_ui_oauth_facebook](https://pub.dev/packages/firebase_ui_oauth_facebook)
-- [firebase_ui_oauth_google](https://pub.dev/packages/firebase_ui_oauth_google)
-- [firebase_ui_oauth_twitter](https://pub.dev/packages/firebase_ui_oauth_twitter)
-
-Make sure to update your imports as well:
-
-```diff
-- import 'package:flutterfire_ui/auth.dart';
-+ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-```
-
-If you're using OAuth providers, you need to import those from corresponding packages:
-
-```diff
-// All OAuth providers used to be under flutterfire_ui
-- import 'package:flutterfire_ui/auth.dart';
-+ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-```
-
-## Code adjustments
-
-Below is the list of necessary changes that you have to make to migrate to `firebase_ui_*` packages.
-
-### Configuration
-
-- `FlutterFireUIAuth` was renamed to `FirebaseUIAuth`
-- instead of passing an instance of `<provider name>ProviderConfiguration` you need to pass an instance of the `<provider name>Provider`
-
-```diff
-- FlutterFireUIAuth.configureProviders([
--    const EmailProviderConfiguration(),
-- ]);
-
-+ FirebaseUIAuth.configureProviders([
-+    const EmailAuthProvider(),
-+ ]);
-```
-
-## Sign out
-
-```diff
-- await FlutterFireUIAuth.signOut();
-+ await FirebaseUIAuth.signOut();
-```
-
-## Profile screen
-
-If you're using `ProfileScreen` – make sure to add the following to your `pubspec.yaml`:
+## Dependencies
 
 ```yaml
-fonts:
-  - family: SocialIcons
-    fonts:
-      - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf
-```
-
-## Migrating to `firebase_ui_firestore`
-
-To migrate from `flutterfire_ui` to `firebase_ui_firestore` you need to update your dependencies:
-
-```diff
 dependencies:
--  flutterfire_ui: ^0.4.0
-+  firebase_ui_firestore: ^1.0.0
+  forui: ^0.27.0
+  firebase_ui_auth: ^0.1.0
+  # as needed:
+  firebase_ui_oauth: ^0.1.0
+  firebase_ui_oauth_google: ^0.1.0
+  firebase_ui_oauth_apple: ^0.1.0
+  firebase_ui_oauth_facebook: ^0.1.0
+  firebase_ui_oauth_twitter: ^0.1.0
+  firebase_ui_firestore: ^0.1.0
+  firebase_ui_database: ^0.1.0
+  firebase_ui_storage: ^0.1.0
+  firebase_ui_localizations: ^0.1.0
 ```
 
-and imports:
+Imports stay the same (`package:firebase_ui_auth/firebase_ui_auth.dart`, etc.).
+
+## Wrap your app in `FTheme`
 
 ```diff
-- import 'package:flutterfire_ui/firestore.dart';
-+ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+ import 'package:flutter/material.dart';
++import 'package:forui/forui.dart';
+ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+
+ MaterialApp(
++  builder: (context, child) => FTheme(
++    data: FTheme.neutral.light.touch,
++    child: child!,
++  ),
+   home: SignInScreen(
+     providers: [EmailAuthProvider()],
+   ),
+ );
 ```
 
-## Migrating to `firebase_ui_database`
+See [Theming](./theming.md) for more options.
 
-To migrate from `flutterfire_ui` to `firebase_ui_database` you need to update your dependencies:
+## Profile screen header
 
 ```diff
-dependencies:
--  flutterfire_ui: ^0.4.0
-+  firebase_ui_database: ^1.0.0
+ ProfileScreen(
+-  appBar: AppBar(title: Text('Profile')),
++  header: FHeader(title: Text('Profile')),
+ );
 ```
 
-and imports:
+## Loading indicators
+
+Replace Material/Cupertino progress widgets in custom builders with Forui equivalents:
 
 ```diff
-- import 'package:flutterfire_ui/database.dart';
-+ import 'package:firebase_ui_database/firebase_ui_database.dart';
+- return const CircularProgressIndicator();
++ return const LoadingIndicator(size: 32, borderWidth: 2);
+ // or
++ return const FCircularProgress();
 ```
 
----
+## Historical note
 
-> Check out [full documentation](./README.md) for more details.
+The archived upstream changelogs (pre-Forui) live in each package as `CHANGELOG.md.org`. Version `0.1.0` is the first public Forui release of this package set.

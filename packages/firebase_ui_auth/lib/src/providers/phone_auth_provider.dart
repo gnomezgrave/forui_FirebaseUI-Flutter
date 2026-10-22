@@ -79,9 +79,9 @@ class PhoneAuthProvider
       verificationCompleted: authListener.onVerificationCompleted,
       verificationFailed: authListener.onError,
       codeSent: authListener.onCodeSent,
-      codeAutoRetrievalTimeout: (_) {
-        authListener.onError(AutoresolutionFailedException());
-      },
+      // Autoresolution timeout is expected on iOS (and some Android devices).
+      // It does not mean the SMS failed — do not treat it as an auth error.
+      codeAutoRetrievalTimeout: (_) {},
     );
   }
 
