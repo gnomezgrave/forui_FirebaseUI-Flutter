@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
 
 resolution: workspace
 
@@ -29,9 +29,10 @@ resolution: workspace
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  forui: ^0.27.0
   flutter:
     sdk: flutter
-  firebase_ui_firestore: ^2.1.0
+  firebase_ui_firestore: ^2.2.0
   cloud_firestore: ^7.0.0
   cupertino_icons: ^1.0.6
   firebase_core: ^5.0.0

@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test_utils.dart';
@@ -18,6 +19,11 @@ void main() {
 
   group('$ReauthenticateDialog', () {
     testWidgets('has capitalized Cancel label', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       await tester.pumpWidget(
         TestMaterialApp(
           child: ReauthenticateDialog(

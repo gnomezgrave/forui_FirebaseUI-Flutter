@@ -4,9 +4,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 import '../flows/phone_auth_flow.dart';
 
@@ -44,39 +44,19 @@ String? localizedErrorText(
 /// {@endtemplate}
 class ErrorText extends StatelessWidget {
   /// A way to customize localized error messages for [FirebaseAuthException].
-  ///
-  /// Example usage:
-  /// ```dart
-  /// ErrorText.localizeError = (BuildContext context, FirebaseAuthException e) {
-  ///   final defaultLabels = FirebaseUILocalizations.labelsOf(context);
-  ///
-  ///   return switch (e.code) {
-  ///     'user-not-found' => 'Please create an account first.',
-  ///     'credential-already-in-use' => 'This email is already in use.',
-  ///     _ => localizedErrorText(e.code, defaultLabels) ?? 'Oh no! Something went wrong.',
-  ///   }
-  /// }
   static String Function(
     BuildContext context,
     fba.FirebaseAuthException exception,
   )?
   localizeError;
 
-  /// A way to customize error message for [PlatformException]
-  ///
-  /// Example usage:
-  /// ```dart
-  /// ErrorText.localizePlatformError = (BuildContext context, PlatformException e) {
-  ///   if (e.code == "network_error") return "Please check your internet connection.";
-  ///   return "Oh no! Something went wrong.";
-  /// }
+  /// A way to customize error message for [PlatformException].
   static String Function(BuildContext context, PlatformException exception)?
   localizePlatformError;
 
   /// A way to customize the widget that is used across the library to show
-  /// error hints. By default a localized text is used with a color set to
-  /// [ColorScheme.error] under [MaterialApp] and
-  /// [CupertinoColors.destructiveRed] under [CupertinoApp].
+  /// error hints. By default a localized text is used with
+  /// [FColors.destructive].
   static Widget Function(BuildContext context, String message)? builder;
 
   /// An exception that contains error details.
@@ -91,15 +71,7 @@ class ErrorText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late Color color;
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
-
-    if (isCupertino) {
-      color = CupertinoColors.destructiveRed;
-    } else {
-      color = Theme.of(context).colorScheme.error;
-    }
-
+    final color = context.theme.colors.destructive;
     final l = FirebaseUILocalizations.labelsOf(context);
     String text = l.unknownError;
 
@@ -123,6 +95,10 @@ class ErrorText extends StatelessWidget {
 
     if (exception is PlatformException && localizePlatformError != null) {
       text = localizePlatformError!(context, exception as PlatformException);
+    }
+
+    if (builder != null) {
+      return builder!(context, text);
     }
 
     return Text(

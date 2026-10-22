@@ -3,11 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui/forui.dart';
 
 /// {@template ui.oauth.oauth_provider_button_base.error_builder}
 /// A builder that is invoked to build a widget that indicates an error.
@@ -18,8 +19,10 @@ typedef ErrorBuilder = Widget Function(Exception e);
 /// A callback that is being called when there are different oauth providers
 /// associated with the same email.
 /// {@endtemplate}
-typedef DifferentProvidersFoundCallback =
-    void Function(List<String> providers, fba.AuthCredential? credential);
+typedef DifferentProvidersFoundCallback = void Function(
+  List<String> providers,
+  fba.AuthCredential? credential,
+);
 
 /// {@template ui.oauth.oauth_provider_button_base.signed_in_callback}
 /// A callback that is being called when the user signs in.
@@ -143,7 +146,6 @@ class _OAuthProviderButtonBaseState extends State<OAuthProviderButtonBase>
   @override
   late final OAuthProvider provider = widget.provider;
 
-  double get _height => widget.size + widget._padding * 2;
   late bool isLoading = widget.isLoading;
 
   @override
@@ -155,130 +157,148 @@ class _OAuthProviderButtonBaseState extends State<OAuthProviderButtonBase>
   }
 
   void _signIn() {
-    final platform = Theme.of(context).platform;
-
     if (widget.overrideDefaultTapAction) {
       widget.onTap!.call();
     } else {
-      provider.signIn(platform, widget.action ?? AuthAction.signIn);
+      provider.signIn(
+        defaultTargetPlatform,
+        widget.action ?? AuthAction.signIn,
+      );
     }
   }
 
-  Widget _buildCupertino(
-    BuildContext context,
-    OAuthProviderButtonStyle style,
-    double margin,
-    double borderRadius,
-    double iconBorderRadius,
-  ) {
-    final br = BorderRadius.circular(borderRadius);
+  /// Prefix glyph size relative to the label font size. Glyph-only SVGs fill
+  /// this box; keep close to 1 so logos match capital-letter height.
+  static const _prefixIconToTextScale = 1;
 
-    return LayoutFlowAwarePadding(
-      padding: EdgeInsets.all(margin),
-      child: CupertinoTheme(
-        data: CupertinoThemeData(
-          primaryColor: widget.label.isEmpty
-              ? style.iconBackgroundColor
-              : style.backgroundColor,
+  /// Inset around the glyph inside an icon-only button.
+  static const _iconOnlyPadding = 8.0;
+
+  /// Icon-only buttons are larger than the labelled-button height so the logo
+  /// can stay big while still having clear padding.
+  static const _iconOnlyExtentScale = 1.35;
+
+  double _prefixIconSizeFor(double fontSize) =>
+      fontSize * _prefixIconToTextScale;
+
+  Widget _providerIcon(OAuthProviderButtonStyle style, double iconSize) {
+    // Fixed square + contain keeps the glyph optically centered with the label
+    // (provider SVGs are glyph-only with tight viewBoxes).
+    return SizedBox.square(
+      dimension: iconSize,
+      child: Center(
+        child: SvgPicture.string(
+          style.iconSrc,
+          width: iconSize,
+          height: iconSize,
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
         ),
-        child: Material(
-          elevation: 1,
-          borderRadius: br,
-          child: CupertinoButton.filled(
-            padding: const EdgeInsets.all(0),
-            borderRadius: br,
-            onPressed: _signIn,
-            child: ClipRRect(
-              borderRadius: br,
-              child: _ButtonContent(
-                assetsPackage: style.assetsPackage,
-                iconSrc: style.iconSrc,
-                iconPadding: style.iconPadding,
-                isLoading: isLoading,
-                label: widget.label,
-                height: _height,
-                fontSize: widget.size,
-                textColor: style.color,
-                loadingIndicator: widget.loadingIndicator,
-                borderRadius: br,
-                borderColor: style.borderColor,
-                iconBackgroundColor: style.iconBackgroundColor,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMaterial(
-    BuildContext context,
-    OAuthProviderButtonStyle style,
-    double margin,
-    double borderRadius,
-    double iconBorderRadius,
-  ) {
-    final br = BorderRadius.circular(borderRadius);
-
-    return _ButtonContainer(
-      borderRadius: br,
-      color: widget.label.isEmpty
-          ? style.iconBackgroundColor
-          : style.backgroundColor,
-      height: _height,
-      width: widget.label.isEmpty ? _height : null,
-      margin: margin,
-      child: Stack(
-        children: [
-          _ButtonContent(
-            assetsPackage: style.assetsPackage,
-            iconSrc: style.iconSrc,
-            iconPadding: style.iconPadding,
-            isLoading: isLoading,
-            label: widget.label,
-            height: _height,
-            fontSize: widget.size,
-            textColor: style.color,
-            loadingIndicator: widget.loadingIndicator,
-            borderRadius: br,
-            borderColor: style.borderColor,
-            iconBackgroundColor: style.iconBackgroundColor,
-          ),
-          _MaterialForeground(onTap: _signIn),
-        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
-    final brightness =
-        CupertinoTheme.of(context).brightness ?? Theme.of(context).brightness;
-
+    final brightness = context.theme.colors.brightness;
     final style = provider.style.withBrightness(brightness);
-    final margin = (widget.size + widget._padding * 2) / 10;
-    final borderRadius = widget.size / 3;
-    const borderWidth = 1.0;
-    final iconBorderRadius = borderRadius - borderWidth;
+    // Labelled-button height (pre-Forui formula). Icon-only uses a larger square.
+    final labelledExtent = widget.size + widget._padding * 2;
+    final iconOnlyExtent = labelledExtent * _iconOnlyExtentScale;
+    final margin = labelledExtent / 10;
+    final fontSize = widget.size;
+    final prefixIconSize = _prefixIconSizeFor(fontSize);
+    final iconOnlyGlyphSize = iconOnlyExtent - _iconOnlyPadding * 1.5;
+    final isIconOnly = widget.label.isEmpty;
 
-    if (isCupertino) {
-      return _buildCupertino(
-        context,
-        style,
-        margin,
-        borderRadius,
-        iconBorderRadius,
+    final buttonStyle = FButtonStyleDelta.delta(
+      decoration: .delta([
+        .all(
+          .shapeDelta(
+            color: isIconOnly
+                ? style.iconBackgroundColor
+                : style.backgroundColor,
+          ),
+        ),
+      ]),
+      contentStyle: .delta(
+        constraints: const BoxConstraints(),
+        // height: 1 so the text box matches [fontSize] and centers with the icon.
+        textStyle: .delta([
+          .all(.delta(color: style.color, fontSize: fontSize, height: 1)),
+        ]),
+        iconStyle: .delta([
+          .all(.delta(color: style.color, size: prefixIconSize)),
+        ]),
+      ),
+      iconContentStyle: .delta(
+        constraints: BoxConstraints.tightFor(
+          width: iconOnlyExtent,
+          height: iconOnlyExtent,
+        ),
+        padding: .value(const EdgeInsets.all(_iconOnlyPadding)),
+        iconStyle: .delta([
+          .all(.delta(color: style.color, size: iconOnlyGlyphSize)),
+        ]),
+      ),
+    );
+
+    final Widget content;
+    if (isLoading) {
+      content = SizedBox.square(
+        dimension: isIconOnly ? iconOnlyGlyphSize : prefixIconSize,
+        child: widget.loadingIndicator,
+      );
+    } else if (isIconOnly) {
+      content = Padding(
+        padding: const EdgeInsets.all(_iconOnlyPadding),
+        child: _providerIcon(style, iconOnlyGlyphSize),
       );
     } else {
-      return _buildMaterial(
-        context,
-        style,
-        margin,
-        borderRadius,
-        iconBorderRadius,
+      content = Text(
+        widget.label,
+        overflow: .ellipsis,
+        textAlign: .center,
+        maxLines: 1,
       );
     }
+
+    final button = isIconOnly
+        ? FButton.icon(
+            variant: .outline,
+            style: buttonStyle,
+            onPress: isLoading ? null : _signIn,
+            child: content,
+          )
+        : FButton(
+            variant: .outline,
+            style: buttonStyle,
+            onPress: isLoading ? null : _signIn,
+            mainAxisSize: .max,
+            mainAxisAlignment: .center,
+            crossAxisAlignment: .center,
+            prefixBuilder: isLoading
+                ? null
+                : (
+                    context,
+                    buttonStyle,
+                    textStyle,
+                    iconStyle,
+                    progressStyle,
+                    child,
+                  ) {
+                    final resolved = _prefixIconSizeFor(
+                      textStyle.fontSize ?? fontSize,
+                    );
+                    return _providerIcon(style, resolved);
+                  },
+            child: content,
+          );
+
+    return LayoutFlowAwarePadding(
+      padding: EdgeInsets.all(margin),
+      child: button,
+    );
   }
 
   @override
@@ -354,180 +374,5 @@ class _OAuthProviderButtonBaseState extends State<OAuthProviderButtonBase>
     }
 
     super.didUpdateWidget(oldWidget);
-  }
-}
-
-class _ButtonContent extends StatelessWidget {
-  final double height;
-  final String iconSrc;
-  final double iconPadding;
-  final String assetsPackage;
-  final String label;
-  final bool isLoading;
-  final Color textColor;
-  final double fontSize;
-  final Widget loadingIndicator;
-  final BorderRadius borderRadius;
-  final Color borderColor;
-  final Color iconBackgroundColor;
-
-  const _ButtonContent({
-    required this.height,
-    required this.iconSrc,
-    required this.iconPadding,
-    required this.assetsPackage,
-    required this.label,
-    required this.isLoading,
-    required this.fontSize,
-    required this.textColor,
-    required this.loadingIndicator,
-    required this.borderRadius,
-    required this.borderColor,
-    required this.iconBackgroundColor,
-  });
-
-  static const kEndPadding = 16.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Padding(
-      padding: EdgeInsets.all(iconPadding),
-      child: SvgPicture.string(iconSrc, width: height, height: height),
-    );
-
-    if (label.isEmpty) {
-      if (!isLoading) return icon;
-
-      return SizedBox.square(dimension: fontSize, child: loadingIndicator);
-    }
-
-    final text = TextSpan(
-      text: label,
-      style: TextStyle(height: 1.1, color: textColor, fontSize: fontSize),
-    );
-
-    return Row(
-      children: [
-        //
-        icon,
-        //
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              //
-              final availableWidth = constraints.maxWidth;
-
-              // "height" is also the button's width
-              final totalIconWidth = height + (iconPadding * 2);
-              final totalButtonWidth =
-                  availableWidth + totalIconWidth + kEndPadding;
-
-              if (isLoading) {
-                // "fontSize" is also the indicator's width
-                final freeSpace = totalButtonWidth - fontSize;
-                final startPadding = (freeSpace / 2 - totalIconWidth).clamp(
-                  0.0,
-                  availableWidth,
-                );
-
-                return Padding(
-                  padding: EdgeInsetsDirectional.only(start: startPadding),
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: SizedBox.square(
-                      dimension: fontSize,
-                      child: loadingIndicator,
-                    ),
-                  ),
-                );
-              }
-
-              final isCupertino =
-                  CupertinoUserInterfaceLevel.maybeOf(context) != null;
-              final topPadding = isCupertino ? (height - fontSize) / 2 : 0.0;
-
-              final textWidth = (TextPainter(
-                text: text,
-                textDirection: Directionality.of(context),
-                maxLines: 1,
-              )..layout(maxWidth: availableWidth)).size.width;
-              final freeSpace = totalButtonWidth - textWidth;
-              final startPadding = (freeSpace / 2 - totalIconWidth).clamp(
-                0.0,
-                availableWidth,
-              );
-
-              return Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: topPadding,
-                  start: startPadding,
-                ),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text.rich(text, style: text.style),
-                ),
-              );
-            },
-          ),
-        ),
-        //
-        const SizedBox(width: kEndPadding),
-      ],
-    );
-  }
-}
-
-class _MaterialForeground extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _MaterialForeground({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(onTap: onTap),
-      ),
-    );
-  }
-}
-
-class _ButtonContainer extends StatelessWidget {
-  final double margin;
-  final double height;
-  final double? width;
-  final Color color;
-  final BorderRadius borderRadius;
-  final Widget child;
-
-  const _ButtonContainer({
-    required this.margin,
-    required this.height,
-    required this.color,
-    required this.borderRadius,
-    required this.child,
-    this.width,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutFlowAwarePadding(
-      padding: EdgeInsets.all(margin),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: Material(
-          color: color,
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: borderRadius),
-          child: ClipRRect(
-            borderRadius: borderRadius,
-            child: Center(child: child),
-          ),
-        ),
-      ),
-    );
   }
 }

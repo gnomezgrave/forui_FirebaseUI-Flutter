@@ -2,21 +2,18 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+
+import 'test_app.dart';
 
 void main() {
   group('LoadingButton', () {
     testWidgets('shows label', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: LoadingButton(label: 'label', onTap: () {}),
-          ),
+        foruiTestApp(
+          child: LoadingButton(label: 'label', onTap: () {}),
         ),
       );
 
@@ -26,84 +23,26 @@ void main() {
     testWidgets('shows loading indicator when isLoading = true', (
       tester,
     ) async {
-      var isLoading = false;
-      var completer = Completer<void>();
-
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: StatefulBuilder(
-              builder: (context, setState) => LoadingButton(
-                label: 'button',
-                onTap: () async {
-                  setState(() {
-                    isLoading = !isLoading;
-                  });
-
-                  await completer.future;
-
-                  setState(() {
-                    isLoading = !isLoading;
-                  });
-                },
-                isLoading: isLoading,
-              ),
-            ),
-          ),
+        foruiTestApp(
+          child: LoadingButton(label: 'button', isLoading: true, onTap: () {}),
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-      await tester.tap(find.text('button'));
-      await tester.pump();
-
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-      completer.complete();
-      await tester.pump();
-
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(FCircularProgress), findsOneWidget);
+      expect(find.text('button'), findsOneWidget);
     });
 
-    testWidgets('works under CupertinoApp', (tester) async {
-      var isLoading = false;
-      var completer = Completer<void>();
-
+    testWidgets('hides loading indicator when isLoading = false', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        CupertinoApp(
-          home: Scaffold(
-            body: StatefulBuilder(
-              builder: (context, setState) => LoadingButton(
-                label: 'button',
-                onTap: () async {
-                  setState(() {
-                    isLoading = !isLoading;
-                  });
-
-                  await completer.future;
-
-                  setState(() {
-                    isLoading = !isLoading;
-                  });
-                },
-                isLoading: isLoading,
-              ),
-            ),
-          ),
+        foruiTestApp(
+          child: LoadingButton(label: 'button', onTap: () {}),
         ),
       );
 
-      expect(find.byType(CupertinoActivityIndicator), findsNothing);
-
-      await tester.tap(find.text('button'));
-      await tester.pump();
-
-      expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
-
-      completer.complete();
-      await tester.pump();
-
-      expect(find.byType(CupertinoActivityIndicator), findsNothing);
+      expect(find.byType(FCircularProgress), findsNothing);
     });
   });
 }

@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
@@ -105,8 +105,8 @@ class PhoneInputScreen extends StatelessWidget {
 
     return FirebaseUIActions(
       actions: actions ?? [SMSCodeRequestedAction(_next)],
-      child: UniversalScaffold(
-        body: ResponsivePage(
+      child: FScaffold(
+        child: ResponsivePage(
           desktopLayoutDirection: desktopLayoutDirection,
           sideBuilder: sideBuilder,
           headerBuilder: headerBuilder,

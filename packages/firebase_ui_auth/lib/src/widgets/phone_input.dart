@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 import '../validators.dart';
 
 import '../widgets/internal/universal_text_form_field.dart';
@@ -33,51 +33,6 @@ class _CountryCodeItem {
 }
 
 typedef SubmitCallback = void Function(String value);
-
-class _CountryPicker extends StatefulWidget {
-  const _CountryPicker();
-
-  @override
-  _CountryPickerState createState() => _CountryPickerState();
-}
-
-class _CountryPickerState extends State<_CountryPicker> {
-  String? _countryCode;
-  String get countryCode => _countryCode!;
-  String get phoneCode => countriesByCountryCode[countryCode]!.phoneCode;
-
-  @override
-  Widget build(BuildContext context) {
-    _countryCode ??= Localizations.localeOf(context).countryCode;
-    final item = countriesByCountryCode[_countryCode]!;
-
-    return PopupMenuButton<_CountryCodeItem>(
-      onSelected: (selected) => setState(() {
-        _countryCode = selected.countryCode;
-      }),
-      itemBuilder: (context) {
-        return countries.map((e) {
-          return PopupMenuItem(
-            value: e,
-            child: Text('${e.name} (+${e.phoneCode})'),
-          );
-        }).toList();
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16).copyWith(left: 0),
-        child: Row(
-          children: [
-            const Icon(Icons.arrow_drop_down),
-            Text(
-              '${item.countryCode} (+${item.phoneCode})',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 /// {@template ui.auth.widgets.phone_input}
 /// An input that allows to enter a phone number and select a country code.
@@ -188,103 +143,51 @@ class PhoneInputState extends State<PhoneInput> {
     });
   }
 
-  void _showCountryPicker(BuildContext context) {
-    final l = FirebaseUILocalizations.labelsOf(context);
-
-    showCupertinoModalPopup(
-      context: context,
-      builder: (context) {
-        return Container(
-          color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-          height: 300,
-          child: Column(
-            children: [
-              Expanded(
-                child: CupertinoPicker.builder(
-                  useMagnifier: true,
-                  itemExtent: 40,
-                  childCount: countries.length,
-                  onSelectedItemChanged: (i) {
-                    setState(() {
-                      _setCountry(
-                        countryCode: countries.elementAt(i).countryCode,
-                      );
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    final item = countries.elementAt(index);
-                    return Center(
-                      child: Text(
-                        '${item.name} (+${item.phoneCode})',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              CupertinoButton(
-                child: Text(l.doneButtonLabel),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  @override
+  void dispose() {
+    countryController.dispose();
+    numberController.dispose();
+    numberFocusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
+    final countryItems = {
+      for (final country in countries) country.name: country.countryCode,
+    };
 
     return Form(
       key: formKey,
       child: Column(
         children: [
-          if (isCupertino)
-            GestureDetector(
-              onTap: () {
-                _showCountryPicker(context);
+          FSelect<String>.search(
+            items: countryItems,
+            hint: countryController.text.isNotEmpty && !isValidCountryCode
+                ? l.invalidCountryCode
+                : l.chooseACountry,
+            control: .lifted(
+              value: countryCodeItem?.countryCode,
+              onChange: (code) {
+                if (code != null) {
+                  setState(() {
+                    _setCountry(countryCode: code);
+                  });
+                }
               },
-              child: Row(
-                children: [
-                  const Icon(Icons.arrow_drop_down),
-                  Text(
-                    countryController.text.isNotEmpty && !isValidCountryCode
-                        ? l.invalidCountryCode
-                        : countryCodeItem?.name ?? l.chooseACountry,
-                  ),
-                ],
-              ),
-            )
-          else
-            PopupMenuButton<_CountryCodeItem>(
-              child: Container(
-                padding: const EdgeInsets.all(16).copyWith(left: 0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.arrow_drop_down),
-                    Text(
-                      countryController.text.isNotEmpty && !isValidCountryCode
-                          ? l.invalidCountryCode
-                          : countryCodeItem?.name ?? l.chooseACountry,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-              itemBuilder: (context) {
-                return countries.map((e) {
-                  return PopupMenuItem(
-                    value: e,
-                    child: Text('${e.name} (+${e.phoneCode})'),
-                  );
-                }).toList();
-              },
-              onSelected: (selected) =>
-                  _setCountry(countryCode: selected.countryCode),
             ),
+            filter: (query) {
+              final q = query.toLowerCase();
+              return [
+                for (final country in countries)
+                  if (country.name.toLowerCase().contains(q) ||
+                      country.phoneCode.contains(q) ||
+                      country.countryCode.toLowerCase().contains(q))
+                    country.countryCode,
+              ];
+            },
+          ),
           const SizedBox(height: 16),
           Directionality(
             textDirection: TextDirection.ltr,
@@ -299,7 +202,13 @@ class PhoneInputState extends State<PhoneInput> {
                         AutofillHints.telephoneNumberCountryCode,
                       ],
                       controller: countryController,
-                      prefix: const Text('+'),
+                      prefix: const Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: 12,
+                          end: 4,
+                        ),
+                        child: Text('+'),
+                      ),
                       placeholder: l.countryCode,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       keyboardType: TextInputType.phone,

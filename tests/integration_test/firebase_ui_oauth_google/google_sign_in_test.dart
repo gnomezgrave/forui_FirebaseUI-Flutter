@@ -54,12 +54,11 @@ void main() async {
     ) async {
       await render(tester, OAuthProviderButton(provider: provider));
 
-      when(provider.provider.authenticate(scopeHint: _scopes)).thenAnswer((
-        realInvocation,
-      ) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        return MockGoogleSignInAccount();
-      });
+      when(provider.provider.authenticate(scopeHint: _scopes))
+          .thenAnswer((realInvocation) async {
+            await Future.delayed(const Duration(milliseconds: 50));
+            return MockGoogleSignInAccount();
+          });
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
@@ -142,14 +141,11 @@ class MockGoogleSignIn extends Mock implements GoogleSignIn {
     List<String> scopeHint = const <String>[],
   }) {
     return super.noSuchMethod(
-          Invocation.method(#authenticate, [], {#scopeHint: scopeHint}),
-          returnValue: Future<GoogleSignInAccount>.value(
-            MockGoogleSignInAccount(),
-          ),
-          returnValueForMissingStub: Future<GoogleSignInAccount>.value(
-            MockGoogleSignInAccount(),
-          ),
-        )
-        as Future<GoogleSignInAccount>;
+      Invocation.method(#authenticate, [], {#scopeHint: scopeHint}),
+      returnValue: Future<GoogleSignInAccount>.value(MockGoogleSignInAccount()),
+      returnValueForMissingStub: Future<GoogleSignInAccount>.value(
+        MockGoogleSignInAccount(),
+      ),
+    ) as Future<GoogleSignInAccount>;
   }
 }

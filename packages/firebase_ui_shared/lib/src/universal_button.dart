@@ -2,9 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 /// {@template ui.shared.widgets.button_variant}
 /// An enumeration of the possible button variants.
@@ -20,10 +19,13 @@ enum ButtonVariant {
   outlined,
 }
 
-/// Button widget that uses [CupertinoButton] under [CupertinoApp] and
-/// [TextButton], [ElevatedButton] or [OutlinedButton] under [MaterialApp]
-/// depending on provided [variant].
-class UniversalButton extends PlatformWidget {
+/// Button widget backed by Forui [FButton].
+///
+/// Maps [ButtonVariant] to Forui variants:
+/// * [ButtonVariant.text] → [FButtonVariant.ghost]
+/// * [ButtonVariant.filled] → [FButtonVariant.primary]
+/// * [ButtonVariant.outlined] → [FButtonVariant.outline]
+class UniversalButton extends StatelessWidget {
   /// A callback that is called when the button is pressed.
   final VoidCallback? onPressed;
 
@@ -34,11 +36,8 @@ class UniversalButton extends PlatformWidget {
   /// The child to display in the button.
   final Widget? child;
 
-  /// The icon to display in the button under [MaterialApp].
-  final IconData? materialIcon;
-
-  /// The icon to display in the button under [CupertinoApp].
-  final IconData? cupertinoIcon;
+  /// The icon to display in the button.
+  final IconData? icon;
 
   /// Defines the order of the icon and the label.
   /// Icon will be placed on the left if [TextDirection.ltr] and on the right
@@ -49,11 +48,8 @@ class UniversalButton extends PlatformWidget {
   /// If not provided, [ButtonVariant.filled] will be used.
   final ButtonVariant variant;
 
-  /// The color of the button background under [MaterialApp].
-  final Color? materialColor;
-
-  /// The color of the button background under [CupertinoApp].
-  final Color? cupertinoColor;
+  /// The color of the button background.
+  final Color? color;
 
   /// The color of the button content.
   final Color? contentColor;
@@ -63,123 +59,80 @@ class UniversalButton extends PlatformWidget {
     this.text,
     this.child,
     this.onPressed,
-    this.materialIcon,
-    this.cupertinoIcon,
+    this.icon,
     this.direction = TextDirection.ltr,
     this.variant = ButtonVariant.filled,
-    this.materialColor,
-    this.cupertinoColor,
+    this.color,
     this.contentColor,
   }) : assert(text != null || child != null);
 
-  @override
-  Widget buildCupertino(BuildContext context) {
-    late Widget button;
+  FButtonVariant get _foruiVariant => switch (variant) {
+    ButtonVariant.text => .ghost,
+    ButtonVariant.filled => .primary,
+    ButtonVariant.outlined => .outline,
+  };
 
-    final child = Row(
-      textDirection: direction,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (cupertinoIcon != null) ...[
-          if (direction == TextDirection.rtl) const SizedBox(width: 8),
-          Icon(cupertinoIcon, size: 20, color: contentColor),
-          if (direction == TextDirection.ltr) const SizedBox(width: 8),
-        ],
-        this.child ?? Text(text!),
-      ],
+  FButtonStyleDelta get _style {
+    final bg = color;
+    final fg = contentColor;
+
+    return .delta(
+      decoration: bg == null ? null : .delta([.all(.shapeDelta(color: bg))]),
+      contentStyle: .delta(
+        // Avoid Forui's default min width overflowing tight layouts (e.g. dialogs).
+        constraints: const BoxConstraints(),
+        textStyle: fg == null ? null : .delta([.all(.delta(color: fg))]),
+        iconStyle: fg == null ? null : .delta([.all(.delta(color: fg))]),
+      ),
     );
-
-    if (variant == ButtonVariant.text || variant == ButtonVariant.outlined) {
-      button = CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        child: child,
-      );
-    } else {
-      button = CupertinoButton.filled(
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        child: child,
-      );
-    }
-
-    if (cupertinoColor != null) {
-      return CupertinoTheme(
-        data: CupertinoTheme.of(context).copyWith(primaryColor: cupertinoColor),
-        child: button,
-      );
-    } else {
-      return button;
-    }
   }
 
   @override
-  Widget buildMaterial(BuildContext context) {
-    final child = this.child ?? Text(text!);
+  Widget build(BuildContext context) {
+    final label = child ?? Text(text!);
+    final iconWidget = icon == null
+        ? null
+        : Icon(icon, size: 20, color: contentColor);
 
-    ButtonStyle? style;
+    final prefix = direction == TextDirection.rtl ? null : iconWidget;
+    final suffix = direction == TextDirection.rtl ? iconWidget : null;
 
-    if (materialColor != null) {
-      WidgetStateColor? foregroundColor;
-      WidgetStateColor? backgroundColor;
+    final buttonChild = switch (label) {
+      final Text textWidget =>
+        textWidget.data == null
+            ? textWidget
+            : Text(
+                textWidget.data!,
+                overflow: .ellipsis,
+                textAlign: .center,
+                maxLines: 1,
+              ),
+      _ => label,
+    };
 
-      if (variant == ButtonVariant.text) {
-        foregroundColor = WidgetStateColor.resolveWith((_) => materialColor!);
-      } else {
-        foregroundColor = WidgetStateColor.resolveWith((_) => contentColor!);
-        backgroundColor = WidgetStateColor.resolveWith((_) => materialColor!);
-      }
-
-      style = ButtonStyle(
-        foregroundColor: foregroundColor,
-        backgroundColor: backgroundColor,
-        overlayColor: WidgetStateColor.resolveWith(
-          (states) => materialColor!.withAlpha(20),
-        ),
-      );
-    }
-
-    if (materialIcon != null) {
-      switch (variant) {
-        case ButtonVariant.text:
-          return TextButton.icon(
-            icon: Icon(materialIcon, color: contentColor),
-            onPressed: onPressed,
-            label: child,
-            style: style,
-          );
-        case ButtonVariant.filled:
-          return ElevatedButton.icon(
-            onPressed: onPressed,
-            icon: Icon(materialIcon, color: contentColor),
-            label: child,
-            style: style,
-          );
-        case ButtonVariant.outlined:
-          return OutlinedButton.icon(
-            onPressed: onPressed,
-            icon: Icon(materialIcon, color: contentColor),
-            label: child,
-            style: style,
-          );
-      }
-    } else {
-      switch (variant) {
-        case ButtonVariant.text:
-          return TextButton(onPressed: onPressed, style: style, child: child);
-        case ButtonVariant.filled:
-          return ElevatedButton(
-            onPressed: onPressed,
-            style: style,
-            child: child,
-          );
-        case ButtonVariant.outlined:
-          return OutlinedButton(
-            onPressed: onPressed,
-            style: style,
-            child: child,
-          );
-      }
-    }
+    return FButton(
+      variant: _foruiVariant,
+      style: _style,
+      onPress: onPressed,
+      prefix: prefix,
+      suffix: suffix,
+      mainAxisSize: .max,
+      mainAxisAlignment: .center,
+      // Keep label flexible so stretched buttons don't overflow in tight layouts,
+      // but center the label within the available width.
+      builder: (context, style, textStyle, iconStyle, progressStyle, child) {
+        return Expanded(
+          child: Align(
+            alignment: .center,
+            child: DefaultTextStyle.merge(
+              style: textStyle,
+              textAlign: .center,
+              child: child ?? const SizedBox.shrink(),
+            ),
+          ),
+        );
+      },
+      child: buttonChild,
+    );
   }
 }

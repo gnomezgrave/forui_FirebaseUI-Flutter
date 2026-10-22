@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'internal/login_screen.dart';
 import 'internal/multi_provider_screen.dart';
@@ -64,7 +64,10 @@ class RegisterScreen extends MultiProviderScreen {
   /// An email that [EmailForm] should be pre-filled with.
   final String? email;
 
-  /// See [Scaffold.resizeToAvoidBottomInset]
+  /// {@macro ui.auth.views.login_view.title_style}
+  final TextStyle? titleStyle;
+
+  /// See [FScaffold.resizeToAvoidBottomInset]
   final bool? resizeToAvoidBottomInset;
 
   /// Whether the "Login/Register" link should be displayed. The link changes
@@ -104,6 +107,7 @@ class RegisterScreen extends MultiProviderScreen {
     this.oauthButtonVariant = OAuthButtonVariant.icon_and_text,
     this.desktopLayoutDirection,
     this.email,
+    this.titleStyle,
     this.resizeToAvoidBottomInset = false,
     this.showAuthActionSwitch,
     this.subtitleBuilder,
@@ -130,6 +134,7 @@ class RegisterScreen extends MultiProviderScreen {
         desktopLayoutDirection: desktopLayoutDirection,
         oauthButtonVariant: oauthButtonVariant,
         email: email,
+        titleStyle: titleStyle,
         showAuthActionSwitch: showAuthActionSwitch,
         subtitleBuilder: subtitleBuilder,
         footerBuilder: footerBuilder,

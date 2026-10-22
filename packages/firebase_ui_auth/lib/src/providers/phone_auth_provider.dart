@@ -62,7 +62,7 @@ class PhoneAuthProvider
     /// {@template ui.auth.providers.phone_auth_provider.mfa_hint}
     /// Multi-factor session info to use for verification
     /// {@endtemplate}
-    final fba.PhoneMultiFactorInfo? hint,
+    fba.PhoneMultiFactorInfo? hint,
   }) {
     final phone = phoneNumber ?? hint!.phoneNumber;
     authListener.onSMSCodeRequested(phone);

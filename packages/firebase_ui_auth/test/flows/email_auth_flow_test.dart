@@ -4,6 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:mockito/mockito.dart';
@@ -159,8 +160,8 @@ void main() {
     testWidgets('emits correct states during sign in', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: AuthFlowBuilder<EmailAuthController>(
+          home: FScaffold(
+            child: AuthFlowBuilder<EmailAuthController>(
               auth: auth,
               listener: (prevState, state, ctrl) {
                 if (prevState is AwaitingEmailAndPassword) {
@@ -194,8 +195,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: AuthFlowBuilder<EmailAuthController>(
+          home: FScaffold(
+            child: AuthFlowBuilder<EmailAuthController>(
               auth: auth,
               listener: (prevState, state, ctrl) {
                 if (prevState is AwaitingEmailAndPassword) {

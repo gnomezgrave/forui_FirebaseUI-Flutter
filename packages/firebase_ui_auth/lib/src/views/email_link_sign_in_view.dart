@@ -39,6 +39,7 @@ class EmailLinkSignInView extends StatefulWidget {
 
 class _EmailLinkSignInViewState extends State<EmailLinkSignInView> {
   final emailCtrl = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   late final canPop = Navigator.canPop(context);
 
   // Stays true after a failed attempt, so the user can correct the email.
@@ -47,7 +48,6 @@ class _EmailLinkSignInViewState extends State<EmailLinkSignInView> {
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-    final formKey = GlobalKey<FormState>();
     // SignedIn, UserCreated and CredentialLinked stay hidden until the app
     // navigates away, so the form does not flash after a successful sign in.
     const statesToHideForm = [

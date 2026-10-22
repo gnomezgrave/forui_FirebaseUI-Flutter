@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -24,8 +25,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection,
               errorBuilder: (context, error, stack) {
                 return Text('error: $error');
@@ -56,8 +57,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
               loadingBuilder: (context) => const Text('loading...'),
               itemBuilder: (context, snapshot, index) =>
@@ -79,8 +80,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
               itemBuilder: (context, snapshot, index) =>
                   throw UnimplementedError(),
@@ -99,8 +100,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection,
               cacheExtent: 0,
               itemBuilder: (context, snapshot, index) =>

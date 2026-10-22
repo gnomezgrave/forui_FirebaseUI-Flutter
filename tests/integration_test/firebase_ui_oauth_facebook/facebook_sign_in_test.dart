@@ -24,66 +24,62 @@ void main() async {
 
   const labels = DefaultLocalizations();
 
-  group(
-    'Sign in with Facebook button',
-    () {
-      testWidgets('has a correct button label', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
-        expect(find.text(labels.signInWithFacebookButtonText), findsOneWidget);
+  group('Sign in with Facebook button', () {
+    testWidgets('has a correct button label', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider));
+      expect(find.text(labels.signInWithFacebookButtonText), findsOneWidget);
+    });
+
+    testWidgets('calls sign in when tapped', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider));
+
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+
+      await tester.pumpAndSettle();
+
+      // Verify login was invoked by checking that the mock's login method
+      // completed successfully (actual parameter verification happens in unit tests)
+      expect(true, isTrue);
+    });
+
+    testWidgets('shows loading indicator when sign in is in progress', (
+      tester,
+    ) async {
+      // Create a new provider with a mock that delays
+      final delayedProvider = FacebookProvider(clientId: 'clientId');
+      final delayedMock = MockFacebookAuth();
+      delayedProvider.provider = delayedMock;
+      setMockFacebookProvider(delayedProvider);
+
+      // Override noSuchMethod to add delay
+      when(delayedMock.login()).thenAnswer((realInvocation) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        return MockLoginResult();
       });
 
-      testWidgets('calls sign in when tapped', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
+      await render(tester, OAuthProviderButton(provider: delayedProvider));
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pump();
 
-        await tester.pumpAndSettle();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
 
-        // Verify login was invoked by checking that the mock's login method
-        // completed successfully (actual parameter verification happens in unit tests)
-        expect(true, isTrue);
-      });
+    testWidgets('signs the user in', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider));
 
-      testWidgets('shows loading indicator when sign in is in progress', (
-        tester,
-      ) async {
-        // Create a new provider with a mock that delays
-        final delayedProvider = FacebookProvider(clientId: 'clientId');
-        final delayedMock = MockFacebookAuth();
-        delayedProvider.provider = delayedMock;
-        setMockFacebookProvider(delayedProvider);
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
 
-        // Override noSuchMethod to add delay
-        when(delayedMock.login()).thenAnswer((realInvocation) async {
-          await Future.delayed(const Duration(milliseconds: 50));
-          return MockLoginResult();
-        });
+      final user = auth.currentUser!;
 
-        await render(tester, OAuthProviderButton(provider: delayedProvider));
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pump();
-
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      });
-
-      testWidgets('signs the user in', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-
-        final user = auth.currentUser!;
-
-        expect(user.displayName, 'Test User');
-        expect(user.email, 'test@test.com');
-      });
-    },
-    skip: !provider.supportsPlatform(defaultTargetPlatform),
-  );
+      expect(user.displayName, 'Test User');
+      expect(user.email, 'test@test.com');
+    });
+  }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 }
 
 // Mock JWT with the following payload:

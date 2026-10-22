@@ -4,10 +4,12 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:mockito/mockito.dart';
+
 import '../utils.dart';
 
 const _kTestPath = 'flutter-tests';
@@ -26,8 +28,8 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: FirebaseDatabaseListView(
+            home: FScaffold(
+              child: FirebaseDatabaseListView(
                 query: ref,
                 errorBuilder: (context, error, stack) {
                   return Text('error: $error');
@@ -67,8 +69,8 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: FirebaseDatabaseListView(
+            home: FScaffold(
+              child: FirebaseDatabaseListView(
                 query: ref,
                 loadingBuilder: (context) => const Text('loading...'),
                 itemBuilder: (context, snapshot) => throw UnimplementedError(),
@@ -94,8 +96,8 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: FirebaseDatabaseListView(
+            home: FScaffold(
+              child: FirebaseDatabaseListView(
                 query: ref,
                 itemBuilder: (context, snapshot) => throw UnimplementedError(),
               ),
@@ -120,8 +122,8 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: FirebaseDatabaseListView(
+            home: FScaffold(
+              child: FirebaseDatabaseListView(
                 query: ref,
                 cacheExtent: 0,
                 itemBuilder: (context, snapshot) => throw UnimplementedError(),

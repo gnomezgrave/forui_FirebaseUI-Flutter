@@ -2,33 +2,23 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
-/// An icon widget that chooses between [cupertinoIcon] and [materialIcon]
-/// depending on the type of App widget used ([CupertinoApp] or [MaterialApp]).
-class UniversalIcon extends PlatformWidget {
-  final IconData cupertinoIcon;
-  final IconData materialIcon;
+/// An icon widget.
+class UniversalIcon extends StatelessWidget {
+  final IconData icon;
   final Color? color;
   final double? size;
 
   const UniversalIcon({
     super.key,
-    required this.cupertinoIcon,
-    required this.materialIcon,
+    required this.icon,
     this.color,
     this.size,
   });
 
   @override
-  Widget buildCupertino(BuildContext context) {
-    return Icon(cupertinoIcon, color: color, size: size);
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return Icon(materialIcon, color: color, size: size);
+  Widget build(BuildContext context) {
+    return Icon(icon, color: color, size: size);
   }
 }

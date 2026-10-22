@@ -2,42 +2,30 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
-class UniversalIconButton extends PlatformWidget {
-  final IconData cupertinoIcon;
-  final IconData materialIcon;
+/// Icon button backed by Forui [FButton.icon].
+class UniversalIconButton extends StatelessWidget {
+  final IconData icon;
   final VoidCallback? onPressed;
   final double? size;
   final Color? color;
 
   const UniversalIconButton({
     super.key,
+    required this.icon,
     this.onPressed,
-    required this.cupertinoIcon,
-    required this.materialIcon,
     this.size,
     this.color,
   });
 
   @override
-  Widget buildCupertino(BuildContext context) {
-    return CupertinoButton(
-      onPressed: onPressed,
-      padding: EdgeInsets.zero,
-      child: Icon(cupertinoIcon, size: size),
-    );
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return IconButton(
-      color: color,
-      iconSize: size,
-      onPressed: onPressed,
-      icon: Icon(materialIcon),
+  Widget build(BuildContext context) {
+    return FButton.icon(
+      variant: .ghost,
+      onPress: onPressed,
+      child: Icon(icon, size: size, color: color),
     );
   }
 }

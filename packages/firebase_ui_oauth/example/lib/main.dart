@@ -2,15 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
 import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
-
-import 'src/settings.dart';
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,43 +21,17 @@ class OAuthProviderButtonExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Settings(
-      builder: (context, library, brightness, buttonVariant) {
-        if (library == DesignLibrary.material) {
-          return MaterialApp(
-            theme: ThemeData(brightness: brightness),
-            home: Scaffold(
-              body: Content(
-                designLibrary: library,
-                buttonVariant: buttonVariant,
-              ),
-            ),
-          );
-        } else {
-          return CupertinoApp(
-            theme: CupertinoThemeData(brightness: brightness),
-            home: CupertinoPageScaffold(
-              child: Content(
-                designLibrary: library,
-                buttonVariant: buttonVariant,
-              ),
-            ),
-          );
-        }
-      },
+    return MaterialApp(
+      theme: ThemeData(brightness: Brightness.light, useMaterial3: true),
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
+      home: const FScaffold(child: Content()),
     );
   }
 }
 
 class Content extends StatefulWidget {
-  final DesignLibrary designLibrary;
-  final ButtonVariant buttonVariant;
-
-  const Content({
-    super.key,
-    required this.designLibrary,
-    required this.buttonVariant,
-  });
+  const Content({super.key});
 
   @override
   State<Content> createState() => _ContentState();
@@ -77,16 +49,12 @@ class _ContentState extends State<Content> {
   }
 
   Widget _button(OAuthProvider provider, String label) {
-    final loadingIndicator = widget.designLibrary == DesignLibrary.material
-        ? const CircularProgressIndicator()
-        : const CupertinoActivityIndicator();
-
     return OAuthProviderButtonBase(
       provider: provider,
       label: label,
       onTap: _onTap(provider.providerId),
       isLoading: loadingProvider == provider.providerId,
-      loadingIndicator: loadingIndicator,
+      loadingIndicator: const FCircularProgress(),
       overrideDefaultTapAction: true,
     );
   }
@@ -108,7 +76,10 @@ class _ContentState extends State<Content> {
               GoogleProvider(clientId: '', redirectUri: '', scopes: []),
               'Sign in with Google',
             ),
-            _button(TwitterProvider(), 'Sign in with Twitter'),
+            _button(
+              TwitterProvider(apiKey: '', apiSecretKey: '', redirectUri: ''),
+              'Sign in with Twitter',
+            ),
           ],
         ),
       ),

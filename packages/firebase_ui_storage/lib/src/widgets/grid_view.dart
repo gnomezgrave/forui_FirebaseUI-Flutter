@@ -38,7 +38,7 @@ Widget _defaultLoadingBuilder(BuildContext context) {
 ///                  return Text(utf8.decode(snapshot.data!));
 ///                }
 ///
-///                return const CircularProgressIndicator();
+///                return const FCircularProgress();
 ///              },
 ///            ),
 ///          ),

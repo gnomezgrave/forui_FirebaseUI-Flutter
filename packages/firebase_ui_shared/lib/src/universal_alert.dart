@@ -2,11 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
-class UniversalAlert extends PlatformWidget {
+/// Alert dialog content backed by Forui [FDialog].
+///
+/// Typically returned from a dialog route builder (e.g. [showFDialog] or
+/// [Navigator] dialog APIs).
+class UniversalAlert extends StatelessWidget {
   final void Function() onConfirm;
   final void Function() onCancel;
 
@@ -26,68 +29,42 @@ class UniversalAlert extends PlatformWidget {
     required this.message,
   });
 
-  Widget adaptiveAction({
-    required BuildContext context,
-    required VoidCallback onPressed,
-    required Widget child,
-    bool isDestructiveAction = false,
-  }) {
-    final ThemeData theme = Theme.of(context);
-    switch (theme.platform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        return TextButton(onPressed: onPressed, child: child);
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        return CupertinoDialogAction(
-          onPressed: onPressed,
-          isDestructiveAction: isDestructiveAction,
-          child: child,
+  @override
+  Widget build(BuildContext context) {
+    return FDialog(
+      builder: (context, style) {
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
+            children: [
+              Text(title, style: style.titleTextStyle),
+              const SizedBox(height: 8),
+              Text(message, style: style.bodyTextStyle),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: .end,
+                spacing: 8,
+                children: [
+                  FButton(
+                    variant: .ghost,
+                    mainAxisSize: .min,
+                    onPress: onCancel,
+                    child: Text(cancelButtonText),
+                  ),
+                  FButton(
+                    variant: .destructive,
+                    mainAxisSize: .min,
+                    onPress: onConfirm,
+                    child: Text(confirmButtonText),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
-    }
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        adaptiveAction(
-          context: context,
-          onPressed: onConfirm,
-          child: Text(confirmButtonText),
-          isDestructiveAction: true,
-        ),
-        adaptiveAction(
-          context: context,
-          onPressed: onCancel,
-          child: Text(cancelButtonText),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget buildCupertino(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        adaptiveAction(
-          context: context,
-          onPressed: onConfirm,
-          child: Text(confirmButtonText),
-          isDestructiveAction: true,
-        ),
-        adaptiveAction(
-          context: context,
-          onPressed: onCancel,
-          child: Text(cancelButtonText),
-        ),
-      ],
+      },
     );
   }
 }

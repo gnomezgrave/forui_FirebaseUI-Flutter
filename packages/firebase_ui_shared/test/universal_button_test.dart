@@ -3,25 +3,17 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_ui_shared/src/universal_button.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+
+import 'test_app.dart';
 
 void main() {
   group('UniversalButton', () {
     testWidgets('renders text as content', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: UniversalButton(text: 'text')),
-        ),
-      );
-
-      expect(find.text('text'), findsOneWidget);
-
-      await tester.pumpWidget(
-        const CupertinoApp(
-          home: Scaffold(body: UniversalButton(text: 'text')),
-        ),
+        foruiTestApp(child: const UniversalButton(text: 'text')),
       );
 
       expect(find.text('text'), findsOneWidget);
@@ -29,21 +21,8 @@ void main() {
 
     testWidgets('prefers child over text', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'text', child: Text('child')),
-          ),
-        ),
-      );
-
-      expect(find.text('text'), findsNothing);
-      expect(find.text('child'), findsOneWidget);
-
-      await tester.pumpWidget(
-        const CupertinoApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'text', child: Text('child')),
-          ),
+        foruiTestApp(
+          child: const UniversalButton(text: 'text', child: Text('child')),
         ),
       );
 
@@ -51,96 +30,51 @@ void main() {
       expect(find.text('child'), findsOneWidget);
     });
 
-    testWidgets(
-      'renders TextButton under MaterialApp when variant is ButtonVariant.text',
-      (tester) async {
-        await tester.pumpWidget(
-          const MaterialApp(
-            home: Scaffold(
-              body: UniversalButton(text: 'text', variant: ButtonVariant.text),
-            ),
-          ),
-        );
-
-        expect(find.byType(TextButton), findsOneWidget);
-      },
-    );
-
-    testWidgets('renders OutlinedButton under MaterialApp when variant '
-        'is ButtonVariant.text', (tester) async {
+    testWidgets('renders FButton for text variant', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: UniversalButton(
-              text: 'text',
-              variant: ButtonVariant.outlined,
-            ),
+        foruiTestApp(
+          child: const UniversalButton(
+            text: 'text',
+            variant: ButtonVariant.text,
           ),
         ),
       );
 
-      expect(find.byType(OutlinedButton), findsOneWidget);
+      expect(find.byType(FButton), findsOneWidget);
     });
 
-    testWidgets('renders ElevatedButton under MaterialApp when variant '
-        'is ButtonVariant.text', (tester) async {
+    testWidgets('renders FButton for outlined variant', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'text', variant: ButtonVariant.filled),
+        foruiTestApp(
+          child: const UniversalButton(
+            text: 'text',
+            variant: ButtonVariant.outlined,
           ),
         ),
       );
 
-      expect(find.byType(ElevatedButton), findsOneWidget);
+      expect(find.byType(FButton), findsOneWidget);
     });
 
-    testWidgets('renders CupertinoButton under CupertinoApp', (tester) async {
+    testWidgets('renders FButton for filled variant', (tester) async {
       await tester.pumpWidget(
-        const CupertinoApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'text', variant: ButtonVariant.text),
+        foruiTestApp(
+          child: const UniversalButton(
+            text: 'text',
+            variant: ButtonVariant.filled,
           ),
         ),
       );
 
-      expect(find.byType(CupertinoButton), findsOneWidget);
-
-      await tester.pumpWidget(
-        const CupertinoApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'text', variant: ButtonVariant.filled),
-          ),
-        ),
-      );
-
-      expect(find.byType(CupertinoButton), findsOneWidget);
-
-      await tester.pumpWidget(
-        const CupertinoApp(
-          home: Scaffold(
-            body: UniversalButton(
-              text: 'text',
-              variant: ButtonVariant.outlined,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byType(CupertinoButton), findsOneWidget);
+      expect(find.byType(FButton), findsOneWidget);
     });
 
     testWidgets('calls onPressed when button is tapped', (tester) async {
       var pressed = 0;
-      void onPressed() {
-        pressed++;
-      }
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'press me', onPressed: onPressed),
-          ),
+        foruiTestApp(
+          child: UniversalButton(text: 'press me', onPressed: () => pressed++),
         ),
       );
 
@@ -148,19 +82,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(pressed, 1);
-
-      await tester.pumpWidget(
-        CupertinoApp(
-          home: Scaffold(
-            body: UniversalButton(text: 'press me', onPressed: onPressed),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byType(UniversalButton));
-      await tester.pumpAndSettle();
-
-      expect(pressed, 2);
     });
   });
 }

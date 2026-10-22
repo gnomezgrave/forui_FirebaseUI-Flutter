@@ -3,16 +3,15 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_ui_auth/src/widgets/phone_input.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_utils.dart';
 
 void main() {
   group('PhoneInput', () {
     testWidgets('shows default country and country code', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: PhoneInput(initialCountryCode: 'US')),
-        ),
+        const TestMaterialApp(child: PhoneInput(initialCountryCode: 'US')),
       );
 
       expect(find.text('United States'), findsOneWidget);
@@ -22,9 +21,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: PhoneInput(initialCountryCode: null)),
-        ),
+        const TestMaterialApp(child: PhoneInput(initialCountryCode: null)),
       );
 
       expect(find.text('Choose a country'), findsOneWidget);

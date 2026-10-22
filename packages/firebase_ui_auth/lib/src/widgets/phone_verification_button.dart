@@ -4,15 +4,11 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// {@template ui.auth.widgets.phone_verification_button}
 /// A button that triggers phone verification flow.
-///
-/// Triggers a [VerifyPhoneAction] action if provided, otherwise
-/// uses [startPhoneVerification].
 /// {@endtemplate}
 class PhoneVerificationButton extends StatelessWidget {
   /// {@macro ui.auth.auth_controller.auth}

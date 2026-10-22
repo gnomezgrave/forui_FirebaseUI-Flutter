@@ -45,19 +45,17 @@ void main() {
         ),
       );
 
-      when(
-        auth.sendPasswordResetEmail(email: 'valid@email.com'),
-      ).thenAnswer((_) => Future.value());
+      when(auth.sendPasswordResetEmail(email: 'valid@email.com'))
+          .thenAnswer((_) => Future.value());
 
-      when(
-        auth.sendPasswordResetEmail(email: 'delay@email.com'),
-      ).thenAnswer((_) => Future.delayed(const Duration(milliseconds: 200)));
+      when(auth.sendPasswordResetEmail(email: 'delay@email.com'))
+          .thenAnswer((_) => Future.delayed(const Duration(milliseconds: 200)));
     });
 
     testWidgets('shows error if sendPasswordResetEmail failed', (tester) async {
       await tester.pumpWidget(widget);
 
-      final input = find.byType(TextField);
+      final input = find.byType(EditableText);
       await tester.enterText(input, 'invalid@email');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -71,7 +69,7 @@ void main() {
       (tester) async {
         await tester.pumpWidget(widget);
 
-        final input = find.byType(TextField);
+        final input = find.byType(EditableText);
         await tester.enterText(input, 'valid@email.com');
 
         await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -84,7 +82,7 @@ void main() {
     testWidgets("doesn't sendPasswordResetEmail on loading", (tester) async {
       await tester.pumpWidget(widget);
 
-      final input = find.byType(TextField);
+      final input = find.byType(EditableText);
       await tester.enterText(input, 'delay@email.com');
 
       final button = find.byType(LoadingButton);

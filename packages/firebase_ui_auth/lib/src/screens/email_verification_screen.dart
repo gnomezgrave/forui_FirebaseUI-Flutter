@@ -4,10 +4,12 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart' hide Title;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart' hide Title;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui/forui.dart';
 
 import '../widgets/internal/title.dart';
 
@@ -86,8 +88,8 @@ class EmailVerificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirebaseUIActions(
       actions: actions,
-      child: UniversalScaffold(
-        body: ResponsivePage(
+      child: FScaffold(
+        child: ResponsivePage(
           breakpoint: breakpoint,
           desktopLayoutDirection: desktopLayoutDirection,
           headerBuilder: headerBuilder,
@@ -140,9 +142,8 @@ class __EmailVerificationScreenContentState
 
   @override
   void initState() {
-    _ambiguate(
-      SchedulerBinding.instance,
-    )!.addPostFrameCallback(_sendEmailVerification);
+    _ambiguate(SchedulerBinding.instance)!
+        .addPostFrameCallback(_sendEmailVerification);
     super.initState();
   }
 
@@ -156,10 +157,7 @@ class __EmailVerificationScreenContentState
           action?.callback();
         }
       })
-      ..sendVerificationEmail(
-        Theme.of(context).platform,
-        widget.actionCodeSettings,
-      );
+      ..sendVerificationEmail(defaultTargetPlatform, widget.actionCodeSettings);
   }
 
   EmailVerificationState get state => controller.state;
@@ -194,14 +192,14 @@ class __EmailVerificationScreenContentState
           Text(
             l.verificationFailedText,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+            style: TextStyle(color: context.theme.colors.destructive),
           ),
           const SizedBox(height: 16),
           UniversalButton(
             text: l.resendVerificationEmailButtonLabel,
             onPressed: () {
               controller.sendVerificationEmail(
-                Theme.of(context).platform,
+                defaultTargetPlatform,
                 widget.actionCodeSettings,
               );
             },
@@ -216,9 +214,8 @@ class __EmailVerificationScreenContentState
           variant: ButtonVariant.text,
           text: l.goBackButtonLabel,
           onPressed: () {
-            FirebaseUIAction.ofType<AuthCancelledAction>(
-              context,
-            )?.callback(context);
+            FirebaseUIAction.ofType<AuthCancelledAction>(context)
+                ?.callback(context);
           },
         ),
       ],

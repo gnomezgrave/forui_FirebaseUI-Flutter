@@ -28,9 +28,7 @@ Widget _defaultLoadingBuilder(BuildContext context) {
 ///     );
 ///   },
 ///   loadingBuilder: (context) {
-///     return const Center(
-///       child: CircularProgressIndicator(),
-///     );
+///     return const Center(child: FCircularProgress());
 ///   },
 ///   errorBuilder: (context, error, controller) {
 ///     return Center(
@@ -38,8 +36,8 @@ Widget _defaultLoadingBuilder(BuildContext context) {
 ///         mainAxisSize: MainAxisSize.min,
 ///         children: [
 ///           Text('Error: $error'),
-///           TextButton(
-///             onPressed: () => controller.load(),
+///           FButton(
+///             onPress: controller.load,
 ///             child: const Text('Retry'),
 ///           ),
 ///         ],

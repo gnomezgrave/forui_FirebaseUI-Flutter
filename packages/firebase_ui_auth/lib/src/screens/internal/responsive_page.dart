@@ -10,12 +10,11 @@ import '../../widgets/internal/keyboard_appearence_listener.dart';
 /// A builder that builds the contents of the header.
 /// Used only on mobile platforms.
 /// {@endtemplate}
-typedef HeaderBuilder =
-    Widget Function(
-      BuildContext context,
-      BoxConstraints constraints,
-      double shrinkOffset,
-    );
+typedef HeaderBuilder = Widget Function(
+  BuildContext context,
+  BoxConstraints constraints,
+  double shrinkOffset,
+);
 
 const defaultHeaderImageHeight = 150.0;
 
@@ -56,8 +55,10 @@ class HeaderImageSliverDelegate extends SliverPersistentHeaderDelegate {
 ///
 /// Used only on desktop platforms.
 /// {@endtemplate}
-typedef SideBuilder =
-    Widget Function(BuildContext context, BoxConstraints constraints);
+typedef SideBuilder = Widget Function(
+  BuildContext context,
+  BoxConstraints constraints,
+);
 
 class ResponsivePage extends StatefulWidget {
   /// Main content of the page

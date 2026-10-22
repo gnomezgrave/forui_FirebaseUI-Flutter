@@ -3,26 +3,18 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+
+import 'test_app.dart';
 
 void main() {
-  const home = Scaffold(body: LoadingIndicator(size: 30, borderWidth: 2));
-
   group('LoadingIndicator', () {
-    testWidgets('uses CircularProgressIndicator under MaterialApp', (
-      tester,
-    ) async {
-      await tester.pumpWidget(const MaterialApp(home: home));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
-
-    testWidgets('uses CupertinoActivityIndicator under MaterialApp', (
-      tester,
-    ) async {
-      await tester.pumpWidget(const CupertinoApp(home: home));
-      expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
+    testWidgets('uses FCircularProgress', (tester) async {
+      await tester.pumpWidget(
+        foruiTestApp(child: const LoadingIndicator(size: 30, borderWidth: 2)),
+      );
+      expect(find.byType(FCircularProgress), findsOneWidget);
     });
   });
 }

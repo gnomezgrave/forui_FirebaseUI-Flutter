@@ -3,9 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart' hide Title;
+import 'package:flutter/widgets.dart' hide Title;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui/forui.dart';
 
 import 'internal/title.dart';
 
@@ -51,46 +52,36 @@ class EmailSignUpDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
 
-    return _DialogWrapper(
-      child: Dialog(
-        child: AuthStateListener<EmailAuthController>(
-          listener: onAuthStateChanged(context),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 16),
-                Title(text: l.provideEmail),
-                const SizedBox(height: 32),
-                EmailForm(
-                  auth: auth,
-                  action: action,
-                  provider: provider,
-                  showPasswordVisibilityToggle: showPasswordVisibilityToggle,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DialogWrapper extends StatelessWidget {
-  final Widget child;
-
-  const _DialogWrapper({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 500),
-          child: child,
+          child: FDialog(
+            builder: (context, style) {
+              return AuthStateListener<EmailAuthController>(
+                listener: onAuthStateChanged(context),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: .stretch,
+                    mainAxisSize: .min,
+                    children: [
+                      const SizedBox(height: 16),
+                      Title(text: l.provideEmail),
+                      const SizedBox(height: 32),
+                      EmailForm(
+                        auth: auth,
+                        action: action,
+                        provider: provider,
+                        showPasswordVisibilityToggle:
+                            showPasswordVisibilityToggle,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

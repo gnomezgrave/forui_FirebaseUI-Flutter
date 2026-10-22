@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_storage/firebase_ui_storage.dart';
 import 'package:firebase_ui_storage_example/firebase_options.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,10 @@ class FirebaseUIStorageExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FirebaseUI Storage Example',
-      theme: ThemeData(primarySwatch: Colors.pink, useMaterial3: true),
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: FToaster(child: child!),
+      ),
       home: const Home(),
     );
   }
@@ -75,13 +79,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return FScaffold(
+      header: FHeader(
         title: const Text('FirebaseUI Storage Example'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
+        suffixes: [
+          FHeaderAction(
+            icon: Icon(FLucideIcons.refreshCw),
+            onPress: () {
               setState(() {
                 key = GlobalKey();
               });
@@ -89,15 +93,21 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
-          BottomNavigationBarItem(icon: Icon(Icons.grid_on), label: 'Grid'),
+      footer: FBottomNavigationBar(
+        index: _selectedIndex,
+        onChange: (index) => setState(() => _selectedIndex = index),
+        children: [
+          FBottomNavigationBarItem(
+            icon: Icon(FLucideIcons.list),
+            label: const Text('List'),
+          ),
+          FBottomNavigationBarItem(
+            icon: Icon(FLucideIcons.layoutGrid),
+            label: const Text('Grid'),
+          ),
         ],
       ),
-      body: Column(
+      child: Column(
         children: [
           Expanded(
             child: switch (_selectedIndex) {
@@ -112,13 +122,12 @@ class _HomeState extends State<Home> {
               builder: (context) {
                 return UploadButton(
                   onError: (error, _) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(error.toString())));
+                    showFToast(context: context, title: Text(error.toString()));
                   },
                   onUploadComplete: (ref) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Upload complete')),
+                    showFToast(
+                      context: context,
+                      title: const Text('Upload complete'),
                     );
 
                     setState(() {

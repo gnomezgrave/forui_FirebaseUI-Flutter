@@ -31,51 +31,47 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets(
-      'getControllerForState returns correct controller type',
-      (tester) async {
-        late AuthController controller;
+    testWidgets('getControllerForState returns correct controller type', (
+      tester,
+    ) async {
+      late AuthController controller;
 
-        await render(
-          tester,
-          FirebaseUIActions(
-            actions: [
-              AuthStateChangeAction<SignedIn>((context, state) {
-                controller = getControllerForState(state);
-              }),
-            ],
-            child: const EmailForm(action: AuthAction.signIn),
-          ),
-        );
+      await render(
+        tester,
+        FirebaseUIActions(
+          actions: [
+            AuthStateChangeAction<SignedIn>((context, state) {
+              controller = getControllerForState(state);
+            }),
+          ],
+          child: const EmailForm(action: AuthAction.signIn),
+        ),
+      );
 
-        await authenticate(tester);
+      await authenticate(tester);
 
-        expect(controller, isA<EmailAuthController>());
-      },
-      skip: isCI && defaultTargetPlatform == TargetPlatform.macOS,
-    );
+      expect(controller, isA<EmailAuthController>());
+    }, skip: isCI && defaultTargetPlatform == TargetPlatform.macOS);
 
-    testWidgets(
-      'throws a StateError if used outside of the FirebaseUIAction',
-      (tester) async {
-        late AuthState state;
+    testWidgets('throws a StateError if used outside of the FirebaseUIAction', (
+      tester,
+    ) async {
+      late AuthState state;
 
-        await render(
-          tester,
-          AuthStateListener(
-            listener: (oldState, newState, _) {
-              state = newState;
-              return null;
-            },
-            child: const EmailForm(action: AuthAction.signIn),
-          ),
-        );
+      await render(
+        tester,
+        AuthStateListener(
+          listener: (oldState, newState, _) {
+            state = newState;
+            return null;
+          },
+          child: const EmailForm(action: AuthAction.signIn),
+        ),
+      );
 
-        await authenticate(tester);
+      await authenticate(tester);
 
-        expect(() => getControllerForState(state), throwsStateError);
-      },
-      skip: isCI && defaultTargetPlatform == TargetPlatform.macOS,
-    );
+      expect(() => getControllerForState(state), throwsStateError);
+    }, skip: isCI && defaultTargetPlatform == TargetPlatform.macOS);
   });
 }

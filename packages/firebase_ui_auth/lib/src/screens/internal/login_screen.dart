@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
@@ -32,12 +32,15 @@ class LoginScreen extends StatelessWidget {
   final TextDirection? desktopLayoutDirection;
   final String? email;
 
+  /// {@macro ui.auth.views.login_view.title_style}
+  final TextStyle? titleStyle;
+
   /// Whether the "Login/Register" link should be displayed. The link changes
   /// the type of the [AuthAction] from [AuthAction.signIn]
   /// and [AuthAction.signUp] and vice versa.
   final bool? showAuthActionSwitch;
 
-  /// See [Scaffold.resizeToAvoidBottomInset]
+  /// See [FScaffold.resizeToAvoidBottomInset]
   final bool? resizeToAvoidBottomInset;
 
   /// A returned widget would be placed up the authentication related widgets.
@@ -68,6 +71,7 @@ class LoginScreen extends StatelessWidget {
     this.sideBuilder,
     this.desktopLayoutDirection = TextDirection.ltr,
     this.email,
+    this.titleStyle,
     this.showAuthActionSwitch,
     this.resizeToAvoidBottomInset = false,
     this.subtitleBuilder,
@@ -92,6 +96,7 @@ class LoginScreen extends StatelessWidget {
           providers: providers,
           oauthButtonVariant: oauthButtonVariant,
           email: email,
+          titleStyle: titleStyle,
           showAuthActionSwitch: showAuthActionSwitch,
           subtitleBuilder: subtitleBuilder,
           footerBuilder: footerBuilder,
@@ -112,9 +117,9 @@ class LoginScreen extends StatelessWidget {
 
     return FirebaseUITheme(
       styles: styles ?? const {},
-      child: UniversalScaffold(
-        body: body,
-        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      child: FScaffold(
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+        child: body,
       ),
     );
   }

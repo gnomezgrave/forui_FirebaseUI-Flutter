@@ -7,9 +7,9 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 import '../config.dart';
 import '../file_picker.dart';
@@ -109,8 +109,7 @@ class _UploadButtonState extends State<UploadButton> {
 
     return LoadingButton(
       label: l.uploadButtonText,
-      cupertinoIcon: CupertinoIcons.cloud_upload,
-      materialIcon: Icons.upload_outlined,
+      icon: FLucideIcons.upload,
       isLoading: isLoading,
       variant: widget.variant,
       onTap: () => _upload(config),

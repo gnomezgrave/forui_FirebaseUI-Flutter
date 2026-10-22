@@ -5,10 +5,10 @@
 import 'dart:async';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart' show BlurHash;
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui/forui.dart';
 
 /// Describes what kind of placholder should be used while the image is
 /// loading.
@@ -52,8 +52,8 @@ abstract class LoadingStateVariant {
     String? value,
   }) = _BlurHashLoadingStateVariant;
 
-  /// A default [CircularProgressIndicator] or [CupertinoActivityIndicator]
-  /// will be used as a placeholder.
+  /// A [LoadingIndicator] (Forui circular progress) will be used as a
+  /// placeholder.
   factory LoadingStateVariant.loadingIndicator({
     double size,
     double strokeWidth,
@@ -438,7 +438,7 @@ class _SolidColorLoadingStateVariantPlaceholder extends StatelessWidget {
       return color!;
     }
 
-    final themeColor = Theme.of(context).colorScheme.surfaceTint;
+    final themeColor = context.theme.colors.mutedForeground;
     return themeColor.withValues(
       red: themeColor.r,
       green: themeColor.g,
@@ -585,7 +585,7 @@ class __ShimmerLoadingStateVariantPlaceholderState
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Theme.of(context).colorScheme.surfaceTint;
+    final themeColor = context.theme.colors.mutedForeground;
     final a = themeColor.withValues(
       red: themeColor.r,
       green: themeColor.g,
@@ -600,7 +600,7 @@ class __ShimmerLoadingStateVariantPlaceholderState
       alpha: (0.24 * 255),
     );
 
-    final (lighter, darker) = switch (Theme.of(context).brightness) {
+    final (lighter, darker) = switch (context.theme.colors.brightness) {
       Brightness.light => (a, b),
       Brightness.dark => (b, a),
     };

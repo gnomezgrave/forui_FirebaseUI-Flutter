@@ -5,6 +5,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Creates a platform-appropriate [PageRoute] for Firebase UI navigation.
 Route<T> createPageRoute<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -13,7 +14,7 @@ Route<T> createPageRoute<T>({
 
   if (isCupertino) {
     return CupertinoPageRoute<T>(builder: builder);
-  } else {
-    return MaterialPageRoute<T>(builder: builder);
   }
+
+  return MaterialPageRoute<T>(builder: builder);
 }

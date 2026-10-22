@@ -2,8 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 HeaderBuilder headerImage(String assetName) {
   return (context, constraints, _) {
@@ -20,7 +21,7 @@ HeaderBuilder headerIcon(IconData icon) {
       padding: const EdgeInsets.all(20).copyWith(top: 40),
       child: Icon(
         icon,
-        color: Colors.blue,
+        color: context.theme.colors.primary,
         size: constraints.maxWidth / 4 * (1 - shrinkOffset),
       ),
     );
@@ -42,7 +43,11 @@ SideBuilder sideIcon(IconData icon) {
   return (context, constraints) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Icon(icon, color: Colors.blue, size: constraints.maxWidth / 3),
+      child: Icon(
+        icon,
+        color: context.theme.colors.primary,
+        size: constraints.maxWidth / 3,
+      ),
     );
   };
 }

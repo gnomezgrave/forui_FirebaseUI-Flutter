@@ -13,6 +13,7 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:http/http.dart' as http;
 import 'package:integration_test/integration_test.dart';
 import 'package:tests/firebase_options.dart';
@@ -79,9 +80,11 @@ void setUpTests() {
 Future<void> render(WidgetTester tester, Widget widget) async {
   await tester.pumpWidget(
     MaterialApp(
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
       home: SafeArea(
-        child: Scaffold(
-          body: Padding(padding: const EdgeInsets.all(8), child: widget),
+        child: FScaffold(
+          child: Padding(padding: const EdgeInsets.all(8), child: widget),
         ),
       ),
     ),

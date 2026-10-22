@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:forui/forui.dart';
 
 import 'config.dart';
 import 'decorations.dart';
@@ -90,13 +91,6 @@ class FirebaseAuthUIExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = ButtonStyle(
-      padding: WidgetStateProperty.all(const EdgeInsets.all(12)),
-      shape: WidgetStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
-
     final mfaAction = AuthStateChangeAction<MFARequired>((
       context,
       state,
@@ -109,22 +103,13 @@ class FirebaseAuthUIExample extends StatelessWidget {
     });
 
     return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.light,
-        visualDensity: VisualDensity.standard,
-        useMaterial3: true,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
-        textButtonTheme: TextButtonThemeData(style: buttonStyle),
-        outlinedButtonTheme: OutlinedButtonThemeData(style: buttonStyle),
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
       ),
       initialRoute: initialRoute,
       routes: {
         '/': (context) {
-          final platform = Theme.of(context).platform;
-
           return SignInScreen(
             actions: [
               ForgotPasswordAction((context, email) {
@@ -189,14 +174,16 @@ class FirebaseAuthUIExample extends StatelessWidget {
 
               return Column(
                 children: [
-                  if (platform == TargetPlatform.iOS)
+                  if (defaultTargetPlatform == TargetPlatform.iOS)
                     const AppTrackingTransparencyCard(),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Text(
                         'By $actionText, you agree to our terms and conditions.',
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: context.theme.colors.mutedForeground,
+                        ),
                       ),
                     ),
                   ),
@@ -207,8 +194,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
         },
         '/verify-email': (context) {
           return EmailVerificationScreen(
-            headerBuilder: headerIcon(Icons.verified),
-            sideBuilder: sideIcon(Icons.verified),
+            headerBuilder: headerIcon(FLucideIcons.badgeCheck),
+            sideBuilder: sideIcon(FLucideIcons.badgeCheck),
             actionCodeSettings: actionCodeSettings,
             actions: [
               EmailVerifiedAction(() {
@@ -235,8 +222,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
                 );
               }),
             ],
-            headerBuilder: headerIcon(Icons.phone),
-            sideBuilder: sideIcon(Icons.phone),
+            headerBuilder: headerIcon(FLucideIcons.phone),
+            sideBuilder: sideIcon(FLucideIcons.phone),
           );
         },
         '/sms': (context) {
@@ -252,8 +239,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
             ],
             flowKey: arguments?['flowKey'],
             action: arguments?['action'],
-            headerBuilder: headerIcon(Icons.sms_outlined),
-            sideBuilder: sideIcon(Icons.sms_outlined),
+            headerBuilder: headerIcon(FLucideIcons.messageSquare),
+            sideBuilder: sideIcon(FLucideIcons.messageSquare),
           );
         },
         '/forgot-password': (context) {
@@ -264,8 +251,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
           return ForgotPasswordScreen(
             email: arguments?['email'],
             headerMaxExtent: 200,
-            headerBuilder: headerIcon(Icons.lock),
-            sideBuilder: sideIcon(Icons.lock),
+            headerBuilder: headerIcon(FLucideIcons.lock),
+            sideBuilder: sideIcon(FLucideIcons.lock),
           );
         },
         '/email-link-sign-in': (context) {
@@ -281,13 +268,11 @@ class FirebaseAuthUIExample extends StatelessWidget {
             ],
             provider: emailLinkProviderConfig,
             headerMaxExtent: 200,
-            headerBuilder: headerIcon(Icons.link),
-            sideBuilder: sideIcon(Icons.link),
+            headerBuilder: headerIcon(FLucideIcons.link),
+            sideBuilder: sideIcon(FLucideIcons.link),
           );
         },
         '/profile': (context) {
-          final platform = Theme.of(context).platform;
-
           return ProfileScreen(
             actions: [
               SignedOutAction((context) {
@@ -298,8 +283,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
             actionCodeSettings: actionCodeSettings,
             showMFATile:
                 kIsWeb ||
-                platform == TargetPlatform.iOS ||
-                platform == TargetPlatform.android,
+                defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.android,
             showUnlinkConfirmationDialog: true,
             showDeleteConfirmationDialog: true,
           );

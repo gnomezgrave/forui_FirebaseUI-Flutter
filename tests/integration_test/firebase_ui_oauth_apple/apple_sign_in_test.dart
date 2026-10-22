@@ -22,82 +22,69 @@ void main() async {
 
   const labels = DefaultLocalizations();
 
-  group(
-    'Sign in with Apple button',
-    () {
-      setUp(() {
-        auth = MockAuth();
-        fbProvider = MockProvider();
-        provider.firebaseAuthProvider = fbProvider;
-        setMockAppleProvider(provider);
-      });
+  group('Sign in with Apple button', () {
+    setUp(() {
+      auth = MockAuth();
+      fbProvider = MockProvider();
+      provider.firebaseAuthProvider = fbProvider;
+      setMockAppleProvider(provider);
+    });
 
-      testWidgets('has a correct button label', (tester) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
-        expect(find.text(labels.signInWithAppleButtonText), findsOneWidget);
-      });
+    testWidgets('has a correct button label', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
+      expect(find.text(labels.signInWithAppleButtonText), findsOneWidget);
+    });
 
-      testWidgets('calls sign in when tapped', (tester) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
+    testWidgets('calls sign in when tapped', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
 
-        await tester.pumpAndSettle();
-        verify(auth.signInWithProvider(fbProvider)).called(1);
+      await tester.pumpAndSettle();
+      verify(auth.signInWithProvider(fbProvider)).called(1);
 
-        expect(true, isTrue);
-      });
+      expect(true, isTrue);
+    });
 
-      testWidgets('shows loading indicator when sign in is in progress', (
+    testWidgets('shows loading indicator when sign in is in progress', (
+      tester,
+    ) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
+
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('signs the user in', (tester) async {
+      final listener = MockListener();
+
+      await render(
         tester,
-      ) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            listener(state);
+            return null;
+          },
+          child: OAuthProviderButton(provider: provider, auth: auth),
+        ),
+      );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pump();
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      });
+      final result = verify(listener.call(captureAny));
+      expect(result.captured[1], isA<SignedIn>());
 
-      testWidgets('signs the user in', (tester) async {
-        final listener = MockListener();
-
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              listener(state);
-              return null;
-            },
-            child: OAuthProviderButton(provider: provider, auth: auth),
-          ),
-        );
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-
-        final result = verify(listener.call(captureAny));
-        expect(result.captured[1], isA<SignedIn>());
-
-        final user = (result.captured[1] as SignedIn).user!;
-        expect(user.displayName, 'Test User');
-        expect(user.email, 'test@test.com');
-      });
-    },
-    skip: !provider.supportsPlatform(defaultTargetPlatform),
-  );
+      final user = (result.captured[1] as SignedIn).user!;
+      expect(user.displayName, 'Test User');
+      expect(user.email, 'test@test.com');
+    });
+  }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 
   group('AppleProvider', () {
     test('has default scopes', () {
@@ -140,9 +127,8 @@ class MockAuth extends Mock implements fba.FirebaseAuth {
   Future<fba.UserCredential> signInWithProvider(Object provider) async {
     return super.noSuchMethod(
       Invocation.method(#signInWithAuthProvider, [provider]),
-      returnValue: Future.delayed(
-        const Duration(milliseconds: 500),
-      ).then((_) => MockCredential()),
+      returnValue: Future.delayed(const Duration(milliseconds: 500))
+          .then((_) => MockCredential()),
       returnValueForMissingStub: Future.delayed(
         const Duration(milliseconds: 500),
       ).then((_) => MockCredential()),

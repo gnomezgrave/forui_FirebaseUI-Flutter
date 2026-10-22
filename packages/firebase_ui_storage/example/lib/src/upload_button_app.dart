@@ -16,9 +16,9 @@ class UploadButtonApp extends StatelessWidget implements App {
   @override
   Widget build(BuildContext context) {
     return UploadButton(
-      onError: (e, s) => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString()))),
+      onError: (e, s) =>
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString()))),
       onUploadComplete: (ref) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Upload complete: ${ref.fullPath}')),
       ),

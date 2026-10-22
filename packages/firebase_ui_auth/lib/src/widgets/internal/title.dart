@@ -2,24 +2,28 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
-class Title extends PlatformWidget {
+class Title extends StatelessWidget {
   final String text;
-  const Title({super.key, required this.text});
+
+  /// Overrides the default title [TextStyle].
+  ///
+  /// When null, uses Forui [FTypography.display] `xl2` with semibold weight.
+  final TextStyle? style;
+
+  const Title({super.key, required this.text, this.style});
 
   @override
-  Widget buildCupertino(BuildContext context) {
-    return Text(
-      text,
-      style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle,
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final defaultStyle = theme.typography.display.xl2.copyWith(
+      fontWeight: .w600,
+      color: theme.colors.foreground,
+      height: 1,
     );
-  }
 
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return Text(text, style: Theme.of(context).textTheme.headlineSmall);
+    return Text(text, style: defaultStyle.merge(style));
   }
 }

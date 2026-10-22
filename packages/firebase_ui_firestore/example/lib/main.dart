@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:firebase_ui_firestore_example/firebase_options.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 late CollectionReference<User> collection;
 
@@ -30,9 +31,11 @@ class FirebaseUIFirestoreExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Contacts')),
-        body: FirestoreListView<User>(
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
+      home: FScaffold(
+        header: const FHeader(title: Text('Contacts')),
+        child: FirestoreListView<User>(
           query: collection,
           padding: const EdgeInsets.all(8.0),
           itemBuilder: (context, snapshot, index) {
@@ -40,7 +43,7 @@ class FirebaseUIFirestoreExample extends StatelessWidget {
             return Column(
               children: [
                 UserTile(user: user),
-                const Divider(),
+                const FDivider(),
               ],
             );
           },
@@ -58,7 +61,7 @@ class UserTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(child: Text(user.firstName[0])),
+        FAvatar.raw(child: Text(user.firstName[0])),
         const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,9 +70,9 @@ class UserTile extends StatelessWidget {
           children: [
             Text(
               '${user.firstName} ${user.lastName}',
-              style: Theme.of(context).textTheme.titleMedium,
+              style: context.theme.typography.body.md,
             ),
-            Text(user.number, style: Theme.of(context).textTheme.bodySmall),
+            Text(user.number, style: context.theme.typography.body.sm),
           ],
         ),
       ],

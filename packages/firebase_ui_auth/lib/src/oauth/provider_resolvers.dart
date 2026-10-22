@@ -6,8 +6,8 @@
 
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 const GOOGLE_PROVIDER_ID = 'google.com';
 const APPLE_PROVIDER_ID = 'apple.com';
@@ -24,7 +24,6 @@ const PASSWORD_PROVIDER_ID = 'password';
 /// ```
 Widget providerIcon(BuildContext context, AuthProvider provider) {
   final providerId = provider.providerId;
-  final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
 
   final IconData? data;
   switch (providerId) {
@@ -41,18 +40,10 @@ Widget providerIcon(BuildContext context, AuthProvider provider) {
       data = SocialIcons.facebook;
       break;
     case PHONE_PROVIDER_ID:
-      if (isCupertino) {
-        data = CupertinoIcons.phone;
-      } else {
-        data = Icons.phone;
-      }
+      data = FLucideIcons.phone;
       break;
     case PASSWORD_PROVIDER_ID:
-      if (isCupertino) {
-        data = CupertinoIcons.mail;
-      } else {
-        data = Icons.email_outlined;
-      }
+      data = FLucideIcons.mail;
       break;
     default:
       data = null;
@@ -63,8 +54,7 @@ Widget providerIcon(BuildContext context, AuthProvider provider) {
   }
 
   if (provider is OAuthProvider) {
-    final brightness =
-        CupertinoTheme.of(context).brightness ?? Theme.of(context).brightness;
+    final brightness = context.theme.colors.brightness;
     return provider.style.iconWidget.getValue(brightness);
   }
 

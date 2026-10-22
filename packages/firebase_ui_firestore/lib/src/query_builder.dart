@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// A function that builds a widget from a [FirestoreQueryBuilderSnapshot]
@@ -37,7 +37,7 @@ typedef FirestoreQueryBuilderSnapshotBuilder<T> =
 ///   query: moviesCollection.orderBy('title'),
 ///   builder: (context, snapshot, _) {
 ///     if (snapshot.isFetching) {
-///       return const CircularProgressIndicator();
+///       return const LoadingIndicator(size: 32, borderWidth: 2);
 ///     }
 ///     if (snapshot.hasError) {
 ///       return Text('error ${snapshot.error}');
@@ -488,7 +488,7 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
          builder: (context, snapshot, _) {
            if (snapshot.isFetching) {
              return loadingBuilder?.call(context) ??
-                 const Center(child: CircularProgressIndicator.adaptive());
+                 const Center(child: LoadingIndicator(size: 32, borderWidth: 2));
            }
 
            if (snapshot.hasError && errorBuilder != null) {
@@ -600,7 +600,7 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
          builder: (context, snapshot, _) {
            if (snapshot.isFetching) {
              return loadingBuilder?.call(context) ??
-                 const Center(child: CircularProgressIndicator.adaptive());
+                 const Center(child: LoadingIndicator(size: 32, borderWidth: 2));
            }
 
            if (snapshot.hasError && errorBuilder != null) {
