@@ -13,19 +13,15 @@ import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 import '../utils.dart';
 
-Finder phoneNumberField() => find
-    .descendant(
-      of: find.byType(PhoneInput),
-      matching: find.byType(EditableText),
-    )
-    .at(1);
+/// [PhoneInput] EditableTexts are: FSelect label, dial code, national number.
+Finder _phoneInputEditableTexts() => find.descendant(
+  of: find.byType(PhoneInput),
+  matching: find.byType(EditableText),
+);
 
-Finder countryCodeField() => find
-    .descendant(
-      of: find.byType(PhoneInput),
-      matching: find.byType(EditableText),
-    )
-    .at(0);
+Finder phoneNumberField() => _phoneInputEditableTexts().last;
+
+Finder countryCodeField() => _phoneInputEditableTexts().at(1);
 
 Future<void> sendSMS(WidgetTester tester, String phoneNumber) async {
   await tester.pump();
