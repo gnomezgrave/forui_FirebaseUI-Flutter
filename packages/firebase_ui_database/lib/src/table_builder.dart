@@ -547,11 +547,10 @@ class _Source extends DataTableSource {
   _Source({
     required this.getHeaders,
     required this.getOnError,
-    required bool selectionEnabled,
+    required this._selectionEnabled,
     required int rowsPerPage,
     required this.onEditItem,
-  }) : _selectionEnabled = selectionEnabled,
-       _rowsPerpage = rowsPerPage;
+  }) : _rowsPerpage = rowsPerPage;
 
   final void Function(DataSnapshot snapshot, Object? value, String propertyName)
   onEditItem;

@@ -5,7 +5,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';

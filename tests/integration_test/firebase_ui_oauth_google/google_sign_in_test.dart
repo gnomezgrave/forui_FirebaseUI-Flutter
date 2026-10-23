@@ -8,7 +8,6 @@ import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:forui_firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
 

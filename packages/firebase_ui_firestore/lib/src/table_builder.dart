@@ -803,14 +803,13 @@ class _Source extends DataTableSource {
   _Source({
     required this.getHeaders,
     required this.getOnError,
-    required bool selectionEnabled,
+    required this._selectionEnabled,
     required int rowsPerPage,
     required this.enableDefaultEditor,
     required this.onTapCell,
     this.builder,
     this.onSelectedRows,
-  }) : _selectionEnabled = selectionEnabled,
-       _rowsPerpage = rowsPerPage;
+  }) : _rowsPerpage = rowsPerPage;
 
   final CellBuilder? builder;
 

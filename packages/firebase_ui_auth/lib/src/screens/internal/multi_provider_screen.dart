@@ -15,10 +15,9 @@ abstract class MultiProviderScreen extends Widget {
 
   const MultiProviderScreen({
     super.key,
-    fba.FirebaseAuth? auth,
-    List<AuthProvider>? providers,
-  }) : _auth = auth,
-       _providers = providers;
+    this._auth,
+    this._providers,
+  });
 
   List<AuthProvider> get providers {
     if (_providers != null) {
