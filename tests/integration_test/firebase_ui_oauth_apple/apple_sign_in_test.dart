@@ -16,7 +16,7 @@ import '../utils.dart';
 
 void main() async {
   final provider = AppleProvider();
-  late fba.FirebaseAuth auth;
+  late MockAuth auth;
   late MockProvider fbProvider;
 
   const labels = DefaultLocalizations();
@@ -110,11 +110,33 @@ class MockUser extends Mock implements fba.User {
 
   @override
   String? get email => 'test@test.com';
+
+  @override
+  bool get isAnonymous => false;
 }
+
+class MockAnonymousUser extends Mock implements fba.User {
+  @override
+  bool get isAnonymous => true;
+
+  @override
+  Future<fba.UserCredential> linkWithProvider(Object provider) async {
+    return super.noSuchMethod(
+      Invocation.method(#linkWithProvider, [provider]),
+      returnValue: Future.value(MockCredential()),
+      returnValueForMissingStub: Future.value(MockCredential()),
+    );
+  }
+}
+
+class MockAuthCredential extends Mock implements fba.AuthCredential {}
 
 class MockCredential extends Mock implements fba.UserCredential {
   @override
   fba.User? get user => MockUser();
+
+  @override
+  fba.AuthCredential? get credential => MockAuthCredential();
 }
 
 class MockProvider extends Mock implements fba.AppleAuthProvider {}
@@ -122,6 +144,11 @@ class MockProvider extends Mock implements fba.AppleAuthProvider {}
 class MockApp extends Mock implements FirebaseApp {}
 
 class MockAuth extends Mock implements fba.FirebaseAuth {
+  fba.User? currentUserOverride;
+
+  @override
+  fba.User? get currentUser => currentUserOverride;
+
   @override
   Future<fba.UserCredential> signInWithProvider(Object provider) async {
     return super.noSuchMethod(
