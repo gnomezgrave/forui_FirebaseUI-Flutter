@@ -18,6 +18,8 @@ void main() {
     ) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: (context, child) =>
+              FTheme(data: FTheme.neutral.light.touch, child: child!),
           home: FScaffold(
             child: ReauthenticateDialog(
               providers: [
@@ -33,7 +35,7 @@ void main() {
       );
 
       // Triggers keyboard to appear
-      await tester.tap(find.byType(TextFormField).first);
+      await tester.tap(find.byType(FTextFormField).first);
 
       // Waits for keyboard to appear
       await tester.pumpAndSettle();

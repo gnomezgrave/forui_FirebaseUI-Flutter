@@ -41,5 +41,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # SPM: Firebase iOS SDK 13 needs GTMSessionFetcher 4.x, but google_sign_in_ios
+  # still pins GoogleSignIn 9.x (Fetcher 3.x). Use CocoaPods (Firebase 12.19)
+  # until google_sign_in_ios depends on GoogleSignIn >= 10.1.
   config:
-    enable-swift-package-manager: true
+    enable-swift-package-manager: false

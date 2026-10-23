@@ -108,8 +108,14 @@ melos:
           - example
 
     test:e2e:
-      working-directory: tests
-      run: cd tests && flutter test integration_test/firebase_ui_test.dart -r github -d 
+      description: |
+        Run e2e tests (Firebase Emulator must already be running).
+        Default device: macos. Override with FLUTTER_TEST_DEVICE, e.g.:
+          FLUTTER_TEST_DEVICE=chrome melos run test:e2e
+          FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 melos run test:e2e
+      run: |
+        cd tests && flutter test integration_test/firebase_ui_test.dart -r github \
+          -d "${FLUTTER_TEST_DEVICE:-macos}"
 
     # Additional cleanup lifecycle script, executed when `melos clean` is run.
     postclean: >

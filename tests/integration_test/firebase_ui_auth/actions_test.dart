@@ -3,9 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 
 import '../utils.dart';
 
@@ -20,7 +20,7 @@ void main() {
     });
 
     Future<void> authenticate(WidgetTester tester) async {
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(FTextFormField);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -51,7 +51,7 @@ void main() {
       await authenticate(tester);
 
       expect(controller, isA<EmailAuthController>());
-    }, skip: isCI && defaultTargetPlatform == TargetPlatform.macOS);
+    }, skip: skipMacOSAuthKeychain);
 
     testWidgets('throws a StateError if used outside of the FirebaseUIAction', (
       tester,
@@ -72,6 +72,6 @@ void main() {
       await authenticate(tester);
 
       expect(() => getControllerForState(state), throwsStateError);
-    }, skip: isCI && defaultTargetPlatform == TargetPlatform.macOS);
+    }, skip: skipMacOSAuthKeychain);
   });
 }

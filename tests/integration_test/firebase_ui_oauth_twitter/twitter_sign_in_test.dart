@@ -11,6 +11,7 @@ import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:forui_firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -54,7 +55,7 @@ void main() async {
       await tester.tap(button);
       await tester.pump();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
     });
 
     testWidgets('signs the user in', (tester) async {
@@ -164,7 +165,7 @@ void main() async {
 
       final result = verify(listener.call(captureAny));
       expect(result.captured.last, isA<AuthFailed>());
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(LoadingIndicator), findsNothing);
       verifyNever(auth.signInWithProvider(fbProvider));
     });
 
@@ -192,7 +193,7 @@ void main() async {
 
       final result = verify(listener.call(captureAny));
       expect(result.captured.last, isNot(isA<AuthFailed>()));
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(LoadingIndicator), findsNothing);
     });
 
     testWidgets(

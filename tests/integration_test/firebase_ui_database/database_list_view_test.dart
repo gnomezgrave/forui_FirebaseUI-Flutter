@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_database/firebase_ui_database.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -27,7 +28,7 @@ void main() {
         final ref = rtdb.ref('unknown');
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: FScaffold(
               child: FirebaseDatabaseListView(
                 query: ref,
@@ -40,7 +41,7 @@ void main() {
           ),
         );
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.byType(LoadingIndicator), findsOneWidget);
         expect(find.byType(ListView), findsNothing);
 
         await tester.pumpAndSettle();
@@ -68,7 +69,7 @@ void main() {
         final ref = rtdb.ref(_kTestPath);
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: FScaffold(
               child: FirebaseDatabaseListView(
                 query: ref,
@@ -80,7 +81,7 @@ void main() {
         );
 
         expect(find.text('loading...'), findsOneWidget);
-        expect(find.byType(CircularProgressIndicator), findsNothing);
+        expect(find.byType(LoadingIndicator), findsNothing);
         expect(find.byType(ListView), findsNothing);
       },
       skip:
@@ -95,7 +96,7 @@ void main() {
         final ref = rtdb.ref(_kTestPath);
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: FScaffold(
               child: FirebaseDatabaseListView(
                 query: ref,
@@ -105,7 +106,7 @@ void main() {
           ),
         );
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.byType(LoadingIndicator), findsOneWidget);
         expect(find.byType(ListView), findsNothing);
       },
       skip:
@@ -121,7 +122,7 @@ void main() {
         final ref = rtdb.ref(_kTestPath);
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: FScaffold(
               child: FirebaseDatabaseListView(
                 query: ref,
@@ -134,7 +135,7 @@ void main() {
 
         verifyZeroInteractions(builderSpy);
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.byType(LoadingIndicator), findsOneWidget);
         expect(find.byType(ListView), findsNothing);
 
         await ref.onValue.first.then((value) {}, onError: (_) {});
@@ -158,7 +159,7 @@ void main() {
         late double size;
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: Material(
               child: Builder(
                 builder: (context) {
@@ -241,7 +242,7 @@ void main() {
         late double size;
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: Material(
               child: Builder(
                 builder: (context) {

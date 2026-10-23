@@ -142,14 +142,19 @@ melos emulator:start
 Once the Firebase Emulator is up and running, execute the following Melos command from the terminal:
 
 ```bash
-melos test:e2e
+melos run test:e2e
 ```
 
-If multiple devices are connected, you need to specify the target device by running the following command:
+That defaults to the `macos` device. To target another device, set `FLUTTER_TEST_DEVICE` (from `flutter devices`):
 
 ```bash
-melos test:e2e -- <device-id>
+FLUTTER_TEST_DEVICE=chrome melos run test:e2e
+FLUTTER_TEST_DEVICE=<device-id> melos run test:e2e
 ```
+
+The `tests` app keeps Swift Package Manager off: FlutterFire SPM pulls Firebase iOS SDK 13, which currently conflicts with `google_sign_in_ios` (GoogleSignIn 9.x). CocoaPods still uses Firebase 12.19.
+
+Auth e2e that persist users are skipped on macOS: unsigned debug builds cannot use the keychain (`SecItemAdd -34018`). Run those on iOS/Android/Chrome, or sign the macOS Runner with a development certificate.
 
 Before submitting your PR, please provide evidence of running the E2E tests on macOS, Android, and iOS by sharing terminal output or screenshots. This demonstrates that the few E2E tests skipped in CI run successfully locally, which will enhance the review process for your PR.
 

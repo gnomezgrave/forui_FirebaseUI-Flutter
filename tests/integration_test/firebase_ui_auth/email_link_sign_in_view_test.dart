@@ -3,8 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
@@ -29,7 +30,7 @@ void main() {
     testWidgets('validates email', (tester) async {
       await render(tester, EmailLinkSignInView(provider: emailLinkProvider));
 
-      final input = find.byType(TextFormField);
+      final input = find.byType(FTextFormField);
       await tester.enterText(input, 'notanemail');
       await tester.testTextInput.receiveAction(TextInputAction.done);
 
@@ -41,7 +42,7 @@ void main() {
     testWidgets('sends a link to an email', (tester) async {
       await render(tester, EmailLinkSignInView(provider: emailLinkProvider));
 
-      final input = find.byType(TextFormField);
+      final input = find.byType(FTextFormField);
       await tester.enterText(input, 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);
 

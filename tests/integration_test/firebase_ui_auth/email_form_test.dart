@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
@@ -20,7 +20,7 @@ void main() {
       (tester) async {
         await render(tester, const EmailForm(action: AuthAction.signUp));
 
-        final inputs = find.byType(TextFormField);
+        final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
         await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -40,9 +40,8 @@ void main() {
         expect(auth.currentUser, isNotNull);
       },
       skip:
-          isCI &&
-          (defaultTargetPlatform == TargetPlatform.macOS ||
-              defaultTargetPlatform == TargetPlatform.android),
+          skipMacOSAuthKeychain ||
+          (isCI && defaultTargetPlatform == TargetPlatform.android),
     );
 
     testWidgets('shows wrong password error', (tester) async {
@@ -55,7 +54,7 @@ void main() {
 
       await render(tester, const EmailForm(action: AuthAction.signIn));
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(FTextFormField);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -66,7 +65,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(labels.wrongOrNoPasswordErrorText), findsOneWidget);
-    }, skip: isCI && defaultTargetPlatform == TargetPlatform.macOS);
+    }, skip: skipMacOSAuthKeychain);
 
     testWidgets(
       'signs in the user',
@@ -92,7 +91,7 @@ void main() {
           ),
         );
 
-        final inputs = find.byType(TextFormField);
+        final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
         await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -103,9 +102,8 @@ void main() {
         await tester.pumpAndSettle();
       },
       skip:
-          isCI &&
-          (defaultTargetPlatform == TargetPlatform.macOS ||
-              defaultTargetPlatform == TargetPlatform.android),
+          skipMacOSAuthKeychain ||
+          (isCI && defaultTargetPlatform == TargetPlatform.android),
     );
 
     testWidgets(
@@ -116,7 +114,7 @@ void main() {
         await auth.signInAnonymously();
         final anonymousUid = auth.currentUser!.uid;
 
-        final inputs = find.byType(TextFormField);
+        final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
         await tester.testTextInput.receiveAction(TextInputAction.done);

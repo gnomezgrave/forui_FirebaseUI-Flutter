@@ -7,6 +7,7 @@ import 'package:forui_firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -24,7 +25,7 @@ void main() {
       final collection = db.collection('unknown');
 
       await tester.pumpWidget(
-        MaterialApp(
+        foruiApp(
           home: FScaffold(
             child: FirestoreListView<Map>(
               query: collection,
@@ -37,7 +38,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
 
       await collection.snapshots().first.then((_) {}, onError: (_) {});
@@ -56,7 +57,7 @@ void main() {
       final collection = db.collection('flutter-tests/list-view-builder/works');
 
       await tester.pumpWidget(
-        MaterialApp(
+        foruiApp(
           home: FScaffold(
             child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
@@ -69,7 +70,7 @@ void main() {
       );
 
       expect(find.text('loading...'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(LoadingIndicator), findsNothing);
       expect(find.byType(ListView), findsNothing);
     });
 
@@ -79,7 +80,7 @@ void main() {
       final collection = db.collection('flutter-tests/list-view-builder/works');
 
       await tester.pumpWidget(
-        MaterialApp(
+        foruiApp(
           home: FScaffold(
             child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
@@ -90,7 +91,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
     });
 
@@ -99,7 +100,7 @@ void main() {
       final collection = db.collection('unknown');
 
       await tester.pumpWidget(
-        MaterialApp(
+        foruiApp(
           home: FScaffold(
             child: FirestoreListView<Map>(
               query: collection,
@@ -113,7 +114,7 @@ void main() {
 
       verifyZeroInteractions(builderSpy);
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
 
       await collection.snapshots().first.then((value) {}, onError: (_) {});
@@ -131,7 +132,7 @@ void main() {
         late double size;
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: Material(
               child: Builder(
                 builder: (context) {

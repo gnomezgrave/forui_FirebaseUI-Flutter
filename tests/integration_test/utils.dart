@@ -34,6 +34,11 @@ bool get isMobile {
           defaultTargetPlatform == TargetPlatform.android);
 }
 
+/// Firebase Auth persistence needs keychain access. Unsigned macOS debug apps
+/// (`CODE_SIGN_IDENTITY=-`) hit SecItemAdd (-34018); same skip as CI.
+bool get skipMacOSAuthKeychain =>
+    !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS;
+
 late FirebaseFirestore db;
 late fba.FirebaseAuth auth;
 late FirebaseDatabase rtdb;
@@ -77,11 +82,18 @@ void setUpTests() {
   _testsSetUp = true;
 }
 
+/// [MaterialApp] + [FTheme] for e2e widgets that need Forui (e.g. [LoadingIndicator]).
+Widget foruiApp({required Widget home}) {
+  return MaterialApp(
+    builder: (context, child) =>
+        FTheme(data: FTheme.neutral.light.touch, child: child!),
+    home: home,
+  );
+}
+
 Future<void> render(WidgetTester tester, Widget widget) async {
   await tester.pumpWidget(
-    MaterialApp(
-      builder: (context, child) =>
-          FTheme(data: FTheme.neutral.light.touch, child: child!),
+    foruiApp(
       home: SafeArea(
         child: FScaffold(
           child: Padding(padding: const EdgeInsets.all(8), child: widget),

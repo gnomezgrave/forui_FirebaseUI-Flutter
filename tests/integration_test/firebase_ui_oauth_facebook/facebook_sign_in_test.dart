@@ -3,13 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:forui_firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -64,7 +64,7 @@ void main() async {
       await tester.tap(button);
       await tester.pump();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
     });
 
     testWidgets('signs the user in', (tester) async {
