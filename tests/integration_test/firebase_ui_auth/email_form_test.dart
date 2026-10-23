@@ -2,8 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
@@ -23,15 +24,9 @@ void main() {
         final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-        await tester.pumpAndSettle();
-
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-        await tester.pumpAndSettle();
-
         await tester.enterText(inputs.at(2), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.tap(find.text(labels.registerActionText));
         await tester.pump();
 
         expect(find.byType(LoadingIndicator), findsOneWidget);
@@ -57,11 +52,8 @@ void main() {
       final inputs = find.byType(FTextFormField);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-
       await tester.enterText(inputs.at(1), 'wrongpassword');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-
+      await tester.tap(find.text(labels.signInActionText));
       await tester.pumpAndSettle();
 
       expect(find.text(labels.wrongOrNoPasswordErrorText), findsOneWidget);
@@ -77,6 +69,8 @@ void main() {
 
         await auth.signOut();
 
+        final signedIn = Completer<void>();
+
         await render(
           tester,
           FirebaseUIActions(
@@ -85,6 +79,10 @@ void main() {
                 expect(state, isA<SignedIn>());
                 expect(state.user, isNotNull);
                 expect(state.user!.email, equals('test@test.com'));
+                signedIn.complete();
+              }),
+              AuthStateChangeAction<AuthFailed>((context, state) {
+                signedIn.completeError(state.exception);
               }),
             ],
             child: const EmailForm(action: AuthAction.signIn),
@@ -94,12 +92,10 @@ void main() {
         final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
+        await tester.tap(find.text(labels.signInActionText));
         await tester.pumpAndSettle();
+        await signedIn.future.timeout(const Duration(seconds: 15));
       },
       skip:
           skipMacOSAuthKeychain ||
@@ -109,22 +105,17 @@ void main() {
     testWidgets(
       'links email and password when auth action is link',
       (tester) async {
-        await render(tester, const EmailForm(action: AuthAction.link));
-
         await auth.signInAnonymously();
         final anonymousUid = auth.currentUser!.uid;
+
+        await render(tester, const EmailForm(action: AuthAction.link));
 
         final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(2), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
+        await tester.tap(find.text(labels.linkEmailButtonText));
         await tester.pumpAndSettle();
 
         expect(auth.currentUser!.email, 'test@test.com');

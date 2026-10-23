@@ -31,8 +31,7 @@ void main() {
 
       final input = find.byType(FTextFormField);
       await tester.enterText(input, 'notanemail');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-
+      await tester.tap(find.text(labels.sendLinkButtonLabel));
       await tester.pumpAndSettle();
 
       expect(find.text(labels.isNotAValidEmailErrorText), findsOneWidget);
@@ -43,7 +42,7 @@ void main() {
 
       final input = find.byType(FTextFormField);
       await tester.enterText(input, 'test@test.com');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.tap(find.text(labels.sendLinkButtonLabel));
 
       // sendSignInLinkToEmail is async; wait until the "link sent" state paints.
       await tester.pumpAndSettle();

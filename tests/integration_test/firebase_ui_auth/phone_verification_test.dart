@@ -27,7 +27,7 @@ Future<void> sendSMS(WidgetTester tester, String phoneNumber) async {
   await tester.pump();
 
   await tester.enterText(phoneNumberField(), phoneNumber);
-  await tester.testTextInput.receiveAction(TextInputAction.done);
+  await tester.tap(find.text(const DefaultLocalizations().verifyPhoneNumberButtonText));
   await tester.pumpAndSettle();
 }
 
