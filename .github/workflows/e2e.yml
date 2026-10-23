@@ -56,19 +56,40 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-ubuntu
+          key: avd-ubuntu-31-google_apis-x86_64
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
         with:
           channel: "stable"
+          flutter-version: "3.47.7"
           cache: true
       - name: "Install Tools"
-        run: sudo npm i -g firebase-tools
+        run: |
+          sudo npm i -g firebase-tools
+          echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Firebase Emulator Cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/firebase/emulators
-          key: firebase-emulators-v2-${{ github.run_id }}
-          restore-keys: firebase-emulators-v2
+          key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
+          restore-keys: firebase-emulators-v3-
+      - name: Cache functions node_modules
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: functions/node_modules
+          key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
+          restore-keys: functions-npm-
       - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
         with:
           run-bootstrap: false
@@ -89,6 +110,9 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: flutter test integration_test/firebase_ui_test.dart --dart-define=CI=true -d emulator-5554
 
   ios:
@@ -137,16 +161,25 @@ jobs:
           key: ${{ runner.os }}-ios-spm-v1-${{ hashFiles('tests/pubspec.yaml') }}
           restore-keys: ${{ runner.os }}-ios-spm-v1-
       - name: "Install Tools"
-        run: sudo npm i -g firebase-tools
+        run: |
+          sudo npm i -g firebase-tools
+          echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Firebase Emulator Cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/firebase/emulators
-          key: firebase-emulators-v1-${{ github.run_id }}
-          restore-keys: firebase-emulators-v1
+          key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
+          restore-keys: firebase-emulators-v3-
+      - name: Cache functions node_modules
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: functions/node_modules
+          key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
+          restore-keys: functions-npm-
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
         with:
           channel: "stable"
+          flutter-version: "3.47.7"
           cache: true
       - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
         with:
@@ -184,7 +217,7 @@ jobs:
       - name: "E2E Tests"
         working-directory: tests
         env:
-          SIMULATOR: ${{ steps.simulator.outputs.udid }}        
+          SIMULATOR: ${{ steps.simulator.outputs.udid }}
         run: |
           # Uncomment following line to have simulator logs printed out for debugging purposes.
           # xcrun simctl spawn booted log stream --predicate 'eventMessage contains "flutter"' &
@@ -222,16 +255,25 @@ jobs:
           key: ${{ runner.os }}-macos-deps-v1-${{ hashFiles('tests/pubspec.yaml') }}
           restore-keys: ${{ runner.os }}-macos-deps-v1-
       - name: "Install Tools"
-        run: sudo npm i -g firebase-tools
+        run: |
+          sudo npm i -g firebase-tools
+          echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Cache Firebase Emulator
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/firebase/emulators
-          key: firebase-emulators-v1-${{ github.run_id }}
-          restore-keys: firebase-emulators-v1
+          key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
+          restore-keys: firebase-emulators-v3-
+      - name: Cache functions node_modules
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: functions/node_modules
+          key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
+          restore-keys: functions-npm-
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
         with:
           channel: "stable"
+          flutter-version: "3.47.7"
           cache: true
       - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
         with:
@@ -260,20 +302,19 @@ jobs:
       - name: "E2E Tests"
         working-directory: tests
         run: flutter test ./integration_test/firebase_ui_test.dart -d macos --dart-define=CI=true
+
   web:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    container:
+      image: ghcr.io/gmeligio/flutter-web:3.47.7
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
-        with:
-          channel: 'stable'
-          cache: true
       - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
         with:
-          melos-version: "^6.3.3"
+          melos-version: "^7.5.0"
       - name: 'Build Test Applications'
         run: |
           cd packages/firebase_ui_auth/example
