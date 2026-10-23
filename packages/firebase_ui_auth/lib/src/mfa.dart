@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
@@ -48,17 +46,17 @@ Future<fba.UserCredential> startPhoneMFAVerification({
 }) async {
   final session = resolver.session;
   final hint = resolver.hints.first;
-  final completer = Completer<fba.UserCredential>();
 
   final navigator = Navigator.of(context);
 
   final provider = PhoneAuthProvider();
   provider.auth = auth ?? fba.FirebaseAuth.instance;
 
+  // Use the same provider instance for sending and verifying the SMS code.
   final flow = PhoneAuthFlow(
     auth: auth ?? fba.FirebaseAuth.instance,
     action: AuthAction.none,
-    provider: PhoneAuthProvider(),
+    provider: provider,
   );
 
   provider.authListener = flow;
@@ -67,12 +65,13 @@ Future<fba.UserCredential> startPhoneMFAVerification({
 
   final actions = [
     AuthStateChangeAction<CredentialReceived>((context, inner) async {
-      final cred = inner.credential as fba.PhoneAuthCredential;
-      final assertion = fba.PhoneMultiFactorGenerator.getAssertion(cred);
+      final phoneCred = inner.credential as fba.PhoneAuthCredential;
+      final assertion = fba.PhoneMultiFactorGenerator.getAssertion(phoneCred);
       try {
         final cred = await resolver.resolveSignIn(assertion);
-        if (!completer.isCompleted) {
-          completer.complete(cred);
+        // Pop with the credential so await navigator.push completes successfully.
+        if (context.mounted && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(cred);
         }
       } catch (e) {
         if (e is FirebaseException) {
@@ -118,14 +117,20 @@ Future<fba.UserCredential> startPhoneMFAVerification({
     );
   }
 
-  final pageRoute = createPageRoute(context: context, builder: builder);
+  final pageRoute = createPageRoute<fba.UserCredential>(
+    context: context,
+    builder: builder,
+  );
 
-  navigator.push(pageRoute);
+  final result = await navigator.push<fba.UserCredential>(pageRoute);
 
-  final cred = await completer.future;
+  // User dismissed the SMS screen without completing MFA.
+  if (result == null) {
+    throw fba.FirebaseAuthException(
+      code: 'firebase-ui/mfa-cancelled',
+      message: 'Multi-factor authentication was cancelled.',
+    );
+  }
 
-  // Do not pop here. Popping reveals the sign-in screen underneath
-  // before authStateChanges finishes routing to home. The app should
-  // clear the stack with pushNamedAndRemoveUntil after sign-in.
-  return cred;
+  return result;
 }

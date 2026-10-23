@@ -319,7 +319,17 @@ class _OAuthProviderButtonBaseState extends State<OAuthProviderButtonBase>
 
   @override
   void onMFARequired(fba.MultiFactorResolver resolver) {
-    startMFAVerification(context: context, resolver: resolver);
+    () async {
+      try {
+        final credential = await startMFAVerification(
+          context: context,
+          resolver: resolver,
+        );
+        onSignedIn(credential);
+      } catch (e) {
+        onError(e);
+      }
+    }();
   }
 
   @override

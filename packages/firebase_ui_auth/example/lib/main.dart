@@ -97,9 +97,15 @@ class FirebaseAuthUIExample extends StatelessWidget {
     ) async {
       final nav = Navigator.of(context);
 
-      await startMFAVerification(resolver: state.resolver, context: context);
+      try {
+        await startMFAVerification(resolver: state.resolver, context: context);
+      } on Exception {
+        // User cancelled MFA or verification failed after onError handling.
+        return;
+      }
 
-      nav.pushReplacementNamed('/profile');
+      // Clear sign-in + any residual MFA routes so the SMS screen cannot stick.
+      nav.pushNamedAndRemoveUntil('/profile', (route) => false);
     });
 
     return MaterialApp(

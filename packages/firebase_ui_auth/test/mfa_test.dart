@@ -194,5 +194,62 @@ void main() {
         expect(result, equals(expectedCredential));
       },
     );
+
+    testWidgets('completes with error when SMS screen is dismissed', (
+      tester,
+    ) async {
+      Future<fba.UserCredential>? verificationFuture;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () {
+                  verificationFuture = startMFAVerification(
+                    context: context,
+                    resolver: resolver,
+                    auth: auth,
+                    smsCodeInputScreenBuilder:
+                        (context, actions, flowKey, action) {
+                          return const FScaffold(
+                            child: Text('Custom SMS Code Input Screen'),
+                          );
+                        },
+                  );
+                },
+                child: const Text('Start MFA'),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Start MFA'));
+      await tester.pumpAndSettle();
+      expect(find.text('Custom SMS Code Input Screen'), findsOneWidget);
+      expect(verificationFuture, isNotNull);
+
+      // Attach before dismissing so the cancellation error is not unhandled.
+      final cancelled = expectLater(
+        verificationFuture!,
+        throwsA(
+          isA<fba.FirebaseAuthException>().having(
+            (e) => e.code,
+            'code',
+            'firebase-ui/mfa-cancelled',
+          ),
+        ),
+      );
+
+      // Simulate the user backing out of the MFA SMS screen.
+      Navigator.of(
+        tester.element(find.text('Custom SMS Code Input Screen')),
+      ).pop();
+      await tester.pumpAndSettle();
+      await cancelled;
+
+      expect(find.text('Custom SMS Code Input Screen'), findsNothing);
+    });
   });
 }
