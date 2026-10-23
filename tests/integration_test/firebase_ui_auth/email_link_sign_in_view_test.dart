@@ -45,9 +45,14 @@ void main() {
       await tester.enterText(input, 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);
 
+      // sendSignInLinkToEmail is async; wait until the "link sent" state paints.
       await tester.pumpAndSettle();
+      final sent = find.text(labels.signInWithEmailLinkSentText);
+      for (var i = 0; i < 50 && sent.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
 
-      expect(find.text(labels.signInWithEmailLinkSentText), findsOneWidget);
+      expect(sent, findsOneWidget);
     });
   });
 }

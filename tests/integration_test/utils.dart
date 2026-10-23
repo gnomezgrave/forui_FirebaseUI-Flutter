@@ -54,13 +54,14 @@ Future<void> prepare() async {
   }
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await fba.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  // Android emulator → host machine is 10.0.2.2, not localhost.
+  await fba.FirebaseAuth.instance.useAuthEmulator(testEmulatorHost, 9099);
   auth = fba.FirebaseAuth.instance;
 
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  FirebaseFirestore.instance.useFirestoreEmulator(testEmulatorHost, 8080);
   db = FirebaseFirestore.instance;
 
-  FirebaseDatabase.instance.useDatabaseEmulator('localhost', 9000);
+  FirebaseDatabase.instance.useDatabaseEmulator(testEmulatorHost, 9000);
 
   rtdb = FirebaseDatabase.instance;
 

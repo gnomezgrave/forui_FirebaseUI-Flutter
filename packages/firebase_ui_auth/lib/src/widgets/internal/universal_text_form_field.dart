@@ -54,6 +54,10 @@ class UniversalTextFormField extends StatelessWidget {
       autocorrect: autocorrect,
       enableSuggestions: enableSuggestions ?? true,
       keyboardType: keyboardType,
+      // Forui defaults to [TextInputAction.next]; use done when we handle submit.
+      textInputAction: onSubmitted != null
+          ? TextInputAction.done
+          : TextInputAction.next,
       inputFormatters: inputFormatters,
       autofillHints: autofillHints,
       validator: validator,

@@ -50,9 +50,14 @@ void main() {
       await tester.tap(find.text('United States'));
       await tester.pumpAndSettle();
 
+      // List is long and opens near the selected country; scroll Australia on-screen.
       final australia = find.text('Australia');
-      expect(australia, findsOneWidget);
-
+      await tester.scrollUntilVisible(
+        australia,
+        -400,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(australia);
       await tester.pumpAndSettle();
 
@@ -72,7 +77,7 @@ void main() {
       await tester.pump();
 
       await tester.enterText(phoneNumberField(), '12345');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.tap(find.text(labels.verifyPhoneNumberButtonText));
       await tester.pumpAndSettle();
 
       final errorText = find.text(labels.phoneNumberInvalidErrorText);
