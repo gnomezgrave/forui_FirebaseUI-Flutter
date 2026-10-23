@@ -8,6 +8,9 @@ resolution: workspace
 environment:
   sdk: ^3.13.0
 
+executables:
+  migrate_imports: migrate_imports
+
 dependencies:
   flutter:
     sdk: flutter

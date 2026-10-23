@@ -6,6 +6,11 @@ Firebase UI Auth widgets for Flutter, ported to [Forui](https://forui.dev). Drop
 
 Requires Dart `^3.13.0`, Flutter **3.47+**, and an `FTheme` ancestor.
 
+
+## Migrating from `firebase_ui_auth`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
+
 ## Platform support
 
 | Feature/platform   | Android | iOS | Web              | macOS            | Windows          | Linux            |

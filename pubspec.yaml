@@ -50,6 +50,12 @@ melos:
       description: |
         Run `dart analyze` in all packages.
 
+    # Rewrites package:firebase_ui_* → package:forui_firebase_ui_* (imports + pubspec).
+    fix:
+      run: dart run forui_firebase_ui_shared:migrate_imports
+      description: |
+        Migrate upstream Firebase UI imports/deps to forui_firebase_ui_*.
+
     format:
       run: |
         dart pub global run flutter_plugin_tools format && swiftformat .

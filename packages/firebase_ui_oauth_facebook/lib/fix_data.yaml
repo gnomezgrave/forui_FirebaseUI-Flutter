@@ -1,0 +1,16 @@
+# Import migration map for the Forui port of Firebase UI.
+#
+# Official `dart fix` data-driven library replacement only applies when the
+# *old* package ships a deprecation (we do not own firebase_ui_* on pub.dev).
+# Use the migrator instead:
+#   dart run forui_firebase_ui_shared:migrate_imports
+#
+# Spec (for reference): https://dart.dev/tools/pub/data-driven-fixes
+version: 1
+transforms:
+  - title: "Migrate package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart to package:forui_firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart"
+    date: 2026-10-23
+    library: "package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart"
+    changes:
+      - kind: "replacedBy"
+        newLibrary: "package:forui_firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart"

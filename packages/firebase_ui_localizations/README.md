@@ -2,6 +2,11 @@
 
 Localization labels for Firebase UI packages (`^0.1.0`).
 
+
+## Migrating from `firebase_ui_localizations`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
+
 ## Getting Started
 
 See the [documentation](../../docs/firebase-ui-localizations.md).

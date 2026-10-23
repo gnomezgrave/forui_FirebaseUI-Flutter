@@ -4,6 +4,11 @@
 
 Firebase UI Storage is a set of Flutter widgets and utilities for Firebase Storage, built with [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**.
 
+
+## Migrating from `firebase_ui_storage`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
+
 ## Documentation
 
 - [Getting started](../../docs/firebase-ui-storage/getting-started.md)

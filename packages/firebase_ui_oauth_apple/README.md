@@ -1,5 +1,10 @@
 # Firebase UI OAuth Apple
 
+
+## Migrating from `firebase_ui_oauth_apple`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
+
 ## Getting Started
 
 To get started with Firebase UI OAuth Apple, please [see the documentation](../../docs/firebase-ui-auth/providers/oauth.md#sign-in-with-apple). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
