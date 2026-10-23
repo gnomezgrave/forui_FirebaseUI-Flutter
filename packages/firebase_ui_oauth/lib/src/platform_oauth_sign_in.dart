@@ -7,7 +7,7 @@ import 'dart:io' show Platform;
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 import 'oauth/auth_result.dart';

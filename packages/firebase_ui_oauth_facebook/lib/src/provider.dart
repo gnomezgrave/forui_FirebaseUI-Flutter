@@ -7,9 +7,9 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 class FacebookProvider extends OAuthProvider {

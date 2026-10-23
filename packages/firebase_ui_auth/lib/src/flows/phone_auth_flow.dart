@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 /// An [AuthState] that indicates that [PhoneAuthFlow] is not yet initialized
 /// wuth the phone number. UI should provide a way to submit a phone number.

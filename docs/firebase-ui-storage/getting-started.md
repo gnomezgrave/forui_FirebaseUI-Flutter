@@ -7,7 +7,7 @@ Firebase UI Storage is a set of Flutter widgets and utilities designed to help y
 Install dependencies
 
 ```sh
-flutter pub add firebase_core firebase_storage firebase_ui_storage forui
+flutter pub add firebase_core firebase_storage forui_firebase_ui_storage forui
 ```
 
 Firebase UI Storage widgets require an [`FTheme`](https://forui.dev/docs) ancestor (typically via `MaterialApp.builder`).
@@ -97,15 +97,15 @@ Available file naming policies:
 - [`KeepPathUploadPolicy`] - keeps the original file path
 - [`UuidFileUploadNamingPolicy`] – generates a UUID for each uploaded file
 
-[`KeepOriginalNameUploadPolicy`]: https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/KeepOriginalNameUploadPolicy-class.html
-[`KeepPathUploadPolicy`]: https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/KeepPathUploadPolicy-class.html
-[`UuidFileUploadNamingPolicy`]: https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/UuidFileUploadNamingPolicy-class.html
+[`KeepOriginalNameUploadPolicy`]: https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/KeepOriginalNameUploadPolicy-class.html
+[`KeepPathUploadPolicy`]: https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/KeepPathUploadPolicy-class.html
+[`UuidFileUploadNamingPolicy`]: https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/UuidFileUploadNamingPolicy-class.html
 
 If you ever need to override this top-level configuration, you can do so by using `FirebaseUIStorageConfigOverride`:
 
 ```dart
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_storage/firebase_ui_storage.dart';
+import 'package:forui_firebase_ui_storage/firebase_ui_storage.dart';
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
@@ -133,4 +133,4 @@ class MyWidget extends StatelessWidget {
 
 ---
 
-> See [API reference](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/firebase_ui_storage-library.html) for more details.
+> See [API reference](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/forui_firebase_ui_storage-library.html) for more details.

@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:flutter/widgets.dart' hide Title;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:forui/forui.dart';
 
 import 'internal/title.dart';

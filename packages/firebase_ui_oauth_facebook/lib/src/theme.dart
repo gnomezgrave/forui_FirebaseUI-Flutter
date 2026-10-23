@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 
 const _facebookBlue = Color(0xff1878F2);
 const _facebookWhite = Color(0xffffffff);
@@ -35,5 +35,5 @@ class FacebookProviderButtonStyle extends ThemedOAuthProviderButtonStyle {
   ThemedIconSrc get iconSrc => _iconSrc;
 
   @override
-  String get assetsPackage => 'firebase_ui_oauth_facebook';
+  String get assetsPackage => 'forui_firebase_ui_oauth_facebook';
 }

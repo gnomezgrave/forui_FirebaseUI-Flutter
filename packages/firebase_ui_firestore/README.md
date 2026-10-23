@@ -7,7 +7,7 @@ Firebase UI widgets for Cloud Firestore, ported to [Forui](https://forui.dev). R
 See the [documentation](../../docs/firebase-ui-firestore.md).
 
 ```sh
-flutter pub add cloud_firestore firebase_ui_firestore forui
+flutter pub add cloud_firestore forui_firebase_ui_firestore forui
 ```
 
 ## Issues and feedback

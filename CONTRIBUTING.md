@@ -121,7 +121,7 @@ Before submitting your pull request, you need to sign the [Contributor License A
 Please make sure all your check-ins have detailed commit messages explaining the patch.
 
 When naming the title of your pull request, please follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/)
-guide. For example, for a fix to the `firebase_ui_auth` plugin:
+guide. For example, for a fix to the `forui_firebase_ui_auth` plugin:
 
 `fix(ui_auth): fixed a bug!`
 

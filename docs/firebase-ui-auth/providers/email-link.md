@@ -11,7 +11,7 @@ Configure email provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'firebase_options.dart';
 
@@ -26,7 +26,7 @@ void main() {
         handleCodeInApp: true,
         androidMinimumVersion: '1',
         androidPackageName:
-            'io.flutter.plugins.firebase_ui.firebase_ui_example',
+            'io.flutter.plugins.firebase_ui.forui_firebase_ui_example',
         iOSBundleId: 'io.flutter.plugins.flutterfireui.flutterfireUIExample',
       ),
     ),
@@ -74,7 +74,7 @@ MaterialApp(
 >
 > - a user signing in with an email link for the first time emits `UserCreated` rather than `SignedIn`, and an upgraded anonymous user (`upgradeAnonymousUsers`) emits `CredentialLinked`, so handle all three.
 > - see [navigation guide](../navigation.md) to learn how navigation works with Firebase UI.
-> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIAction-class.html).
+> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIAction-class.html).
 
 ## Handling the sign in link
 

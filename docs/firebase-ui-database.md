@@ -5,7 +5,7 @@ Firebase UI enables you to easily integrate your application UI with your Realti
 ## Installation
 
 ```sh
-flutter pub add firebase_database firebase_ui_database forui
+flutter pub add firebase_database forui_firebase_ui_database forui
 ```
 
 Wrap your app in an [`FTheme`](https://forui.dev/docs) ancestor (typically via `MaterialApp.builder`). List/grid query loading uses Forui indicators. `FirebaseDatabaseDataTable` remains Material-based.
@@ -15,8 +15,8 @@ Wrap your app in an [`FTheme`](https://forui.dev/docs) ancestor (typically via `
 Import the Firebase UI for Realtime Database package.
 
 ```dart
-import 'package:firebase_ui_database/firebase_ui_database.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart'; // LoadingIndicator
+import 'package:forui_firebase_ui_database/firebase_ui_database.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart'; // LoadingIndicator
 ```
 
 ### Infinite scrolling

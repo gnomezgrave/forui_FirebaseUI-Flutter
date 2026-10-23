@@ -18,27 +18,27 @@ Package APIs (`SignInScreen`, providers, actions, etc.) stay largely the same; t
 ```yaml
 dependencies:
   forui: ^0.27.0
-  firebase_ui_auth: ^0.1.0
+  forui_firebase_ui_auth: ^0.1.0
   # as needed:
-  firebase_ui_oauth: ^0.1.0
-  firebase_ui_oauth_google: ^0.1.0
-  firebase_ui_oauth_apple: ^0.1.0
-  firebase_ui_oauth_facebook: ^0.1.0
-  firebase_ui_oauth_twitter: ^0.1.0
-  firebase_ui_firestore: ^0.1.0
-  firebase_ui_database: ^0.1.0
-  firebase_ui_storage: ^0.1.0
-  firebase_ui_localizations: ^0.1.0
+  forui_firebase_ui_oauth: ^0.1.0
+  forui_firebase_ui_oauth_google: ^0.1.0
+  forui_firebase_ui_oauth_apple: ^0.1.0
+  forui_firebase_ui_oauth_facebook: ^0.1.0
+  forui_firebase_ui_oauth_twitter: ^0.1.0
+  forui_firebase_ui_firestore: ^0.1.0
+  forui_firebase_ui_database: ^0.1.0
+  forui_firebase_ui_storage: ^0.1.0
+  forui_firebase_ui_localizations: ^0.1.0
 ```
 
-Imports stay the same (`package:firebase_ui_auth/firebase_ui_auth.dart`, etc.).
+Imports stay the same (`package:forui_firebase_ui_auth/firebase_ui_auth.dart`, etc.).
 
 ## Wrap your app in `FTheme`
 
 ```diff
  import 'package:flutter/material.dart';
 +import 'package:forui/forui.dart';
- import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+ import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
  MaterialApp(
 +  builder: (context, child) => FTheme(

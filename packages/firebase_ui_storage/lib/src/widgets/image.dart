@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart' show BlurHash;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:forui/forui.dart';
 
 /// Describes what kind of placholder should be used while the image is

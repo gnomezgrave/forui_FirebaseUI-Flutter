@@ -5,7 +5,7 @@ Shared Forui-based building blocks used across Firebase UI packages.
 ## Getting started
 
 ```sh
-flutter pub add firebase_ui_shared
+flutter pub add forui_firebase_ui_shared
 ```
 
 Apps must wrap Firebase UI widgets in an [FTheme](https://forui.dev/docs) ancestor:
@@ -26,7 +26,7 @@ Requires Flutter **3.47+** and Forui **0.27.x**.
 
 ## Usage
 
-See [API docs](https://pub.dev/documentation/firebase_ui_shared/latest/).
+See [API docs](https://pub.dev/documentation/forui_firebase_ui_shared/latest/).
 
 ## License
 

@@ -1,4 +1,4 @@
-# firebase_ui_localizations_example
+# forui_firebase_ui_localizations_example
 
 An example project that shows how to implement multiple languages for Firebase UI widgets.
 

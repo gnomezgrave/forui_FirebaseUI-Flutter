@@ -12,10 +12,10 @@ Next, enable the "Google" provider in the Firebase Console:
 
 > To ensure cross-platform support, please ensure you have followed installation instructions for both the `google_sign_in` package and the provider on the Firebase Console (such as adding a [SHA1 fingerprint](https://developers.google.com/android/guides/client-auth?authuser=0) for Android applications).
 
-You will also need to install [`firebase_ui_oauth_google`](https://pub.dev/packages/firebase_ui_oauth_google):
+You will also need to install [`forui_firebase_ui_oauth_google`](https://pub.dev/packages/forui_firebase_ui_oauth_google):
 
 ```sh
-flutter pub add firebase_ui_oauth_google
+flutter pub add forui_firebase_ui_oauth_google
 ```
 
 And add a provider to the configuration:
@@ -96,10 +96,10 @@ To support Apple as a provider, enable the "Apple" provider in the Firebase Cons
 
 ![Enable Apple Provider](../images/ui-apple-provider.jpg)
 
-You will also need to install [`firebase_ui_oauth_apple`](https://pub.dev/packages/firebase_ui_oauth_apple):
+You will also need to install [`forui_firebase_ui_oauth_apple`](https://pub.dev/packages/forui_firebase_ui_oauth_apple):
 
 ```sh
-flutter pub add firebase_ui_oauth_apple
+flutter pub add forui_firebase_ui_oauth_apple
 ```
 
 And add a provider to the configuration:
@@ -127,10 +127,10 @@ Next, enable the "Facebook" provider in the Firebase Console & provide your crea
 
 ![Enable Facebook Provider](../images/ui-facebook-provider.jpg)
 
-You will also need to install [`firebase_ui_oauth_facebook`](https://pub.dev/packages/firebase_ui_oauth_facebook):
+You will also need to install [`forui_firebase_ui_oauth_facebook`](https://pub.dev/packages/forui_firebase_ui_oauth_facebook):
 
 ```sh
-flutter pub add firebase_ui_oauth_facebook
+flutter pub add forui_firebase_ui_oauth_facebook
 ```
 
 And add a provider to the configuration:
@@ -170,10 +170,10 @@ Console shows when you enable the provider:
 https://<your-project-id>.firebaseapp.com/__/auth/handler
 ```
 
-Install [`firebase_ui_oauth_twitter`](https://pub.dev/packages/firebase_ui_oauth_twitter):
+Install [`forui_firebase_ui_oauth_twitter`](https://pub.dev/packages/forui_firebase_ui_oauth_twitter):
 
 ```sh
-flutter pub add firebase_ui_oauth_twitter
+flutter pub add forui_firebase_ui_oauth_twitter
 ```
 
 And add the provider to the configuration:
@@ -220,7 +220,7 @@ Firebase can verify the sign in request.
 ### macOS and Windows setup
 
 Firebase does not support this sign in flow on macOS or Windows, so on those platforms
-`firebase_ui_oauth_twitter` performs the OAuth 1.0a flow itself and does need the API key and
+`forui_firebase_ui_oauth_twitter` performs the OAuth 1.0a flow itself and does need the API key and
 secret:
 
 ```dart
@@ -307,7 +307,7 @@ A headful operation is already in progress. Please wait for that to finish.
 ```
 
 Restarting the app clears it. This comes from the Firebase Android SDK rather than
-`firebase_ui_oauth_twitter`, and there is nothing the Dart layer can do about a sign in the SDK
+`forui_firebase_ui_oauth_twitter`, and there is nothing the Dart layer can do about a sign in the SDK
 never completes.
 
 See [Custom screens section](#custom-screens) to learn how to use a button on your custom screen.

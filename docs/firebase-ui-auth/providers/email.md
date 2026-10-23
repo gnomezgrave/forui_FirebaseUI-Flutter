@@ -11,7 +11,7 @@ Configure email provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 // If you need to use FirebaseAuth directly, make sure to hide EmailAuthProvider:
 // import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -50,7 +50,7 @@ SignInScreen(
 > Notes:
 >
 > - see [navigation guide](../navigation.md) to learn how navigation works with Firebase UI.
-> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIAction-class.html).
+> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIAction-class.html).
 
 ## Using view
 

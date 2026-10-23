@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:forui/forui.dart';
 
 /// {@template ui.oauth.oauth_provider_button_base.error_builder}

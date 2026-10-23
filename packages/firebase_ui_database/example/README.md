@@ -1,4 +1,4 @@
-# firebase_ui_database_example
+# forui_firebase_ui_database_example
 
 A new Flutter project.
 

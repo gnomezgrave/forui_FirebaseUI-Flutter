@@ -6,8 +6,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_auth/src/widgets/internal/universal_page_route.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/src/widgets/internal/universal_page_route.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 

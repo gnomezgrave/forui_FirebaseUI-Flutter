@@ -106,4 +106,4 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-To learn more about the available actions, check out the [FirebaseUIActions API reference](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIActions-class.html).
+To learn more about the available actions, check out the [FirebaseUIActions API reference](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIActions-class.html).

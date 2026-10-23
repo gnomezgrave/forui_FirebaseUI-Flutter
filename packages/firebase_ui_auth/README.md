@@ -1,6 +1,6 @@
 # Firebase UI Auth
 
-[![pub package](https://img.shields.io/pub/v/firebase_ui_auth.svg)](https://pub.dev/packages/firebase_ui_auth)
+[![pub package](https://img.shields.io/pub/v/forui_firebase_ui_auth.svg)](https://pub.dev/packages/forui_firebase_ui_auth)
 
 Firebase UI Auth widgets for Flutter, ported to [Forui](https://forui.dev). Drop in sign-in, registration, profile, and related auth screens.
 
@@ -25,7 +25,7 @@ Requires Dart `^3.13.0`, Flutter **3.47+**, and an `FTheme` ancestor.
 ## Installation
 
 ```sh
-flutter pub add firebase_ui_auth forui
+flutter pub add forui_firebase_ui_auth forui
 ```
 
 ## Example
@@ -34,7 +34,7 @@ flutter pub add firebase_ui_auth forui
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

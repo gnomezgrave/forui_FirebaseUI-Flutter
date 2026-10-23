@@ -4,8 +4,8 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_storage/firebase_ui_storage.dart';
-import 'package:firebase_ui_storage_example/firebase_options.dart';
+import 'package:forui_firebase_ui_storage/firebase_ui_storage.dart';
+import 'package:forui_firebase_ui_storage_example/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 

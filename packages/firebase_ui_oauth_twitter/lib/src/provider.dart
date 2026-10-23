@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' hide OAuthProvider;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 
 import 'theme.dart';
 

@@ -5,8 +5,8 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 import '../utils.dart';
 
@@ -14,7 +14,7 @@ final actionCodeSettings = fba.ActionCodeSettings(
   url: 'http://$testEmulatorHost:9099',
   handleCodeInApp: true,
   androidMinimumVersion: '1',
-  androidPackageName: 'io.flutter.plugins.firebase_ui.firebase_ui_example',
+  androidPackageName: 'io.flutter.plugins.firebase_ui.forui_firebase_ui_example',
   iOSBundleId: 'io.flutter.plugins.flutterfireui.flutterfireUIExample',
 );
 

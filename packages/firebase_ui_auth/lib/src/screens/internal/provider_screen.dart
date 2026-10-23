@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 abstract class ProviderScreen<T extends AuthProvider> extends StatelessWidget {
   final T? _provider;

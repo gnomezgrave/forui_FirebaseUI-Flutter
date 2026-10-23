@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
 
 void main() {
   group('ThemedValue', () {

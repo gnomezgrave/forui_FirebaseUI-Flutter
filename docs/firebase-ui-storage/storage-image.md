@@ -38,7 +38,7 @@ StorageImage(
 
 ### Loading indicator
 
-Loading indicator placeholder shows a Forui-backed [`LoadingIndicator`](https://pub.dev/documentation/firebase_ui_shared/latest/firebase_ui_shared/LoadingIndicator-class.html).
+Loading indicator placeholder shows a Forui-backed [`LoadingIndicator`](https://pub.dev/documentation/forui_firebase_ui_shared/latest/forui_firebase_ui_shared/LoadingIndicator-class.html).
 
 You can customize `size`, `color` and `strokeWidth` of the loading indicator:
 
@@ -164,4 +164,4 @@ StorageImage(
 
 ---
 
-See [API reference](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/StorageImage-class.html) for more details.
+See [API reference](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/StorageImage-class.html) for more details.

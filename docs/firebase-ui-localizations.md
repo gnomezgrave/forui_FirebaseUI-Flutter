@@ -8,7 +8,7 @@ Firebase UI for Flutter supports localization, so every single label can be cust
 dependencies:
   flutter_localizations:
     sdk: flutter
-  firebase_ui_localizations: ^0.1.0
+  forui_firebase_ui_localizations: ^0.1.0
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ For example, we could override the Spanish localization class and customize the 
 
 ```dart
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 // EsLocalizations is a class that provides Spanish labels. We override it here:
 class LabelOverrides extends EsLocalizations {

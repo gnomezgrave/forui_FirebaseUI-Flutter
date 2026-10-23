@@ -1,4 +1,4 @@
-name: firebase_ui_oauth_example
+name: forui_firebase_ui_oauth_example
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -38,11 +38,11 @@ dependencies:
   cupertino_icons: ^1.0.6
   firebase_auth: ^7.0.0
   firebase_core: ^5.0.0
-  firebase_ui_oauth: ^0.1.0
-  firebase_ui_oauth_apple: ^0.1.0
-  firebase_ui_oauth_facebook: ^0.1.0
-  firebase_ui_oauth_google: ^0.1.0
-  firebase_ui_oauth_twitter: ^0.1.0
+  forui_firebase_ui_oauth: ^0.1.0
+  forui_firebase_ui_oauth_apple: ^0.1.0
+  forui_firebase_ui_oauth_facebook: ^0.1.0
+  forui_firebase_ui_oauth_google: ^0.1.0
+  forui_firebase_ui_oauth_twitter: ^0.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

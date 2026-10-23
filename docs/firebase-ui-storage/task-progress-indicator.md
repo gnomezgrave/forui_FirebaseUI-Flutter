@@ -45,4 +45,4 @@ class MyProgressIndicator extends TaskProgressWidget {
 
 ---
 
-See [API reference](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/TaskProgressIndicator-class.html) for more details.
+See [API reference](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/TaskProgressIndicator-class.html) for more details.

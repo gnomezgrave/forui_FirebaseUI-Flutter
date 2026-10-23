@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 /// A listener of the [PhoneAuthFlow] lifecycle.
 abstract class PhoneAuthListener extends AuthListener {

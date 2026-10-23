@@ -4,8 +4,8 @@
 
 // ignore_for_file: constant_identifier_names
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 

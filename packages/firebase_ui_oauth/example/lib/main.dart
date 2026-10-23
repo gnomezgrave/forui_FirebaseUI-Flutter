@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
-import 'package:firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
-import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
-import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
+import 'package:forui_firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:forui_firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 

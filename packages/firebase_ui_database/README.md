@@ -7,7 +7,7 @@ Firebase UI widgets for Realtime Database, ported to [Forui](https://forui.dev).
 See the [documentation](../../docs/firebase-ui-database.md).
 
 ```sh
-flutter pub add firebase_database firebase_ui_database forui
+flutter pub add firebase_database forui_firebase_ui_database forui
 ```
 
 ## Issues and feedback

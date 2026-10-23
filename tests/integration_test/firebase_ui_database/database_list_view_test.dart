@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_database/firebase_ui_database.dart';
+import 'package:forui_firebase_ui_database/firebase_ui_database.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';

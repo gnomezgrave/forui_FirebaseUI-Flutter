@@ -6,7 +6,7 @@ Firebase UI for authentication provides screens and lower-level widgets for Fire
 
 ```sh
 dart pub global activate flutterfire_cli
-flutter pub add firebase_core firebase_auth firebase_ui_auth forui
+flutter pub add firebase_core firebase_auth forui_firebase_ui_auth forui
 ```
 
 Configure Firebase:
@@ -19,7 +19,7 @@ Initialize Firebase and wrap your app in `FTheme`:
 
 ```dart
 import 'package:forui/forui.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

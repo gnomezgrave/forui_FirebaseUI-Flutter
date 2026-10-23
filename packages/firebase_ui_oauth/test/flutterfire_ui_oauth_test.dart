@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,7 +57,7 @@ class GoogleProviderButtonStyle extends ThemedOAuthProviderButtonStyle {
   double get iconPadding => 1;
 
   @override
-  String get assetsPackage => 'firebase_ui_oauth_google';
+  String get assetsPackage => 'forui_firebase_ui_oauth_google';
 }
 
 class FakeOAuthProvider extends OAuthProvider {

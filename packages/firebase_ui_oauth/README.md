@@ -1,13 +1,13 @@
 # Firebase UI OAuth
 
-[![pub package](https://img.shields.io/pub/v/firebase_ui_oauth.svg)](https://pub.dev/packages/firebase_ui_oauth)
+[![pub package](https://img.shields.io/pub/v/forui_firebase_ui_oauth.svg)](https://pub.dev/packages/forui_firebase_ui_oauth)
 
 Base package for Firebase UI OAuth providers (Forui-backed buttons):
 
-- [Apple Sign In](https://pub.dev/packages/firebase_ui_oauth_apple)
-- [Google Sign In](https://pub.dev/packages/firebase_ui_oauth_google)
-- [Facebook Sign In](https://pub.dev/packages/firebase_ui_oauth_facebook)
-- [Twitter Sign In](https://pub.dev/packages/firebase_ui_oauth_twitter)
+- [Apple Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_apple)
+- [Google Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_google)
+- [Facebook Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_facebook)
+- [Twitter Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_twitter)
 
 See the [OAuth docs](../../docs/firebase-ui-auth/providers/oauth.md). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
 
