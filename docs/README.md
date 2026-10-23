@@ -13,6 +13,7 @@ These packages are a Forui port of Firebase UI for Flutter. Apps must wrap Fireb
   - [Navigation](./firebase-ui-auth/navigation.md)
   - [Theming](./firebase-ui-auth/theming.md)
   - [Migration](./firebase-ui-auth/migration.md)
+  - [Forui patterns](./forui-patterns.md) (agent cheatsheet)
 - [Firebase UI Localizations](./firebase-ui-localizations.md)
 - [Firebase UI Firestore](./firebase-ui-firestore.md)
 - [Firebase UI Database](./firebase-ui-database.md)
