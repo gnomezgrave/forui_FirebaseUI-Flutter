@@ -36,7 +36,7 @@ flutter pub add forui firebase_core firebase_auth forui_firebase_ui_auth
 
 ```dart
 import 'package:forui/forui.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 MaterialApp(
   builder: (context, child) => FTheme(
@@ -51,7 +51,7 @@ See the [docs](./docs/README.md) for auth providers, storage, Firestore/Database
 
 ## Migrating from upstream Firebase UI
 
-Package names are prefixed with `forui_` (for example `firebase_ui_auth` → `forui_firebase_ui_auth`). Library file paths are unchanged (`firebase_ui_auth.dart`).
+Package names are prefixed with `forui_` (for example `firebase_ui_auth` → `forui_firebase_ui_auth`). Library entrypoints match the package name (`forui_firebase_ui_auth.dart`).
 
 1. Depend on the `forui_firebase_ui_*` packages you need (and [`forui`](https://pub.dev/packages/forui)).
 2. Rewrite old imports and pubspec dependency keys:
@@ -73,7 +73,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 to:
 
 ```dart
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 ```
 
 and renames matching keys in `pubspec.yaml`. Then run `dart pub get`.

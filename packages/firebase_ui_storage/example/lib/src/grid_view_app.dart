@@ -5,7 +5,7 @@
 import 'dart:convert';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:forui_firebase_ui_storage/firebase_ui_storage.dart';
+import 'package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 

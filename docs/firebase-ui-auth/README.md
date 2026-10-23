@@ -19,7 +19,7 @@ Initialize Firebase and wrap your app in `FTheme`:
 
 ```dart
 import 'package:forui/forui.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

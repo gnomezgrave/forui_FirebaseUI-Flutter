@@ -4,7 +4,7 @@
 
 import 'package:forui/forui.dart';
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 import 'internal/provider_screen.dart';
 import 'internal/responsive_page.dart';

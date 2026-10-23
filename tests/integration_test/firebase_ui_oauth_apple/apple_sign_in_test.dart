@@ -4,12 +4,12 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:forui_firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
+import 'package:forui_firebase_ui_oauth_apple/forui_firebase_ui_oauth_apple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';

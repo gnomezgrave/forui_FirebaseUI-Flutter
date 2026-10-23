@@ -16,8 +16,8 @@ Wrap your app in an [`FTheme`](https://forui.dev/docs) ancestor (typically via `
 Import the Firebase UI for Firestore package:
 
 ```dart
-import 'package:forui_firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart'; // LoadingIndicator
+import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'; // LoadingIndicator
 ```
 
 ### Infinite scrolling

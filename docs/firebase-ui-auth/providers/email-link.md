@@ -11,7 +11,7 @@ Configure email provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 import 'firebase_options.dart';
 

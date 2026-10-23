@@ -4,10 +4,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:flutter/widgets.dart';
 
-export 'package:forui_firebase_ui_shared/firebase_ui_shared.dart'
+export 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'
     show ButtonVariant, LoadingIndicator;
 
 import 'src/actions.dart';

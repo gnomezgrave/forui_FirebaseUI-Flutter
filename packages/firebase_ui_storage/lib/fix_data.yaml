@@ -8,9 +8,9 @@
 # Spec (for reference): https://dart.dev/tools/pub/data-driven-fixes
 version: 1
 transforms:
-  - title: "Migrate package:firebase_ui_storage/firebase_ui_storage.dart to package:forui_firebase_ui_storage/firebase_ui_storage.dart"
+  - title: "Migrate package:firebase_ui_storage/firebase_ui_storage.dart to package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart"
     date: 2026-10-23
     library: "package:firebase_ui_storage/firebase_ui_storage.dart"
     changes:
       - kind: "replacedBy"
-        newLibrary: "package:forui_firebase_ui_storage/firebase_ui_storage.dart"
+        newLibrary: "package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart"

@@ -39,7 +39,7 @@ flutter pub add forui_firebase_ui_auth forui
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_database/firebase_database.dart';

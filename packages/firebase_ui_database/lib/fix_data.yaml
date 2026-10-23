@@ -8,9 +8,9 @@
 # Spec (for reference): https://dart.dev/tools/pub/data-driven-fixes
 version: 1
 transforms:
-  - title: "Migrate package:firebase_ui_database/firebase_ui_database.dart to package:forui_firebase_ui_database/firebase_ui_database.dart"
+  - title: "Migrate package:firebase_ui_database/firebase_ui_database.dart to package:forui_firebase_ui_database/forui_firebase_ui_database.dart"
     date: 2026-10-23
     library: "package:firebase_ui_database/firebase_ui_database.dart"
     changes:
       - kind: "replacedBy"
-        newLibrary: "package:forui_firebase_ui_database/firebase_ui_database.dart"
+        newLibrary: "package:forui_firebase_ui_database/forui_firebase_ui_database.dart"

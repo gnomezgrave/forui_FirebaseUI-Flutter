@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 /// {@template ui.auth.widget.forgot_password_button}
 /// A button that has a localized "Forgot password" label.

@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 abstract class MultiProviderScreen extends Widget {
   final List<AuthProvider>? _providers;
@@ -13,11 +13,7 @@ abstract class MultiProviderScreen extends Widget {
     return _auth ?? fba.FirebaseAuth.instance;
   }
 
-  const MultiProviderScreen({
-    super.key,
-    this._auth,
-    this._providers,
-  });
+  const MultiProviderScreen({super.key, this._auth, this._providers});
 
   List<AuthProvider> get providers {
     if (_providers != null) {

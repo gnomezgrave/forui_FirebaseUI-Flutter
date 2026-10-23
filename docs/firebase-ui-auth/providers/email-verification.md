@@ -60,7 +60,7 @@ If you want to build a custom email verification screen, you could use `EmailVer
 ```dart
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:forui/forui.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 class MyEmailVerificationScreen extends StatefulWidget {
   const MyEmailVerificationScreen({super.key});

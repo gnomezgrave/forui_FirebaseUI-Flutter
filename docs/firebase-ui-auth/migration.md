@@ -31,14 +31,14 @@ dependencies:
   forui_firebase_ui_localizations: ^0.1.0
 ```
 
-Imports stay the same (`package:forui_firebase_ui_auth/firebase_ui_auth.dart`, etc.).
+Imports use the Forui package and matching library name (`package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart`, etc.).
 
 ## Wrap your app in `FTheme`
 
 ```diff
  import 'package:flutter/material.dart';
 +import 'package:forui/forui.dart';
- import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+ import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
  MaterialApp(
 +  builder: (context, child) => FTheme(

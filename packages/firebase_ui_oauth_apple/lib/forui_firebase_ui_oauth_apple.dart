@@ -2,22 +2,19 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'src/provider.dart' show TwitterProvider;
-export 'src/theme.dart' show TwitterProviderButtonStyle;
+export 'src/provider.dart' show AppleProvider;
+export 'src/theme.dart' show AppleProviderButtonStyle;
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import 'src/provider.dart';
 
-class TwitterSignInButton extends _TwitterSignInButton {
-  const TwitterSignInButton({
+class AppleSignInButton extends _AppleSignInButton {
+  const AppleSignInButton({
     super.key,
     required super.loadingIndicator,
-    super.apiKey,
-    super.apiSecretKey,
-    super.redirectUri,
     super.action = null,
     super.auth,
     bool? isLoading,
@@ -32,11 +29,9 @@ class TwitterSignInButton extends _TwitterSignInButton {
   }) : super(isLoading: isLoading ?? false);
 }
 
-class TwitterSignInIconButton extends _TwitterSignInButton {
-  const TwitterSignInIconButton({
+class AppleSignInIconButton extends _AppleSignInButton {
+  const AppleSignInIconButton({
     super.key,
-    super.apiKey,
-    super.apiSecretKey,
     required super.loadingIndicator,
     super.action = null,
     super.auth,
@@ -46,20 +41,19 @@ class TwitterSignInIconButton extends _TwitterSignInButton {
     super.onTap,
     super.overrideDefaultTapAction,
     super.size,
-    super.redirectUri,
     super.onError,
     super.onCanceled,
   }) : super(isLoading: isLoading ?? false, label: '');
 }
 
-TwitterProvider? _mockProvider;
+AppleProvider? _mockProvider;
 
 @visibleForTesting
-void setMockTwitterProvider(TwitterProvider provider) {
+void setMockAppleProvider(AppleProvider provider) {
   _mockProvider = provider;
 }
 
-class _TwitterSignInButton extends StatelessWidget {
+class _AppleSignInButton extends StatelessWidget {
   final String label;
   final Widget loadingIndicator;
   final void Function()? onTap;
@@ -74,16 +68,11 @@ class _TwitterSignInButton extends StatelessWidget {
   final DifferentProvidersFoundCallback? onDifferentProvidersFound;
   final SignedInCallback? onSignedIn;
   final double size;
-  final String? apiKey;
-  final String? apiSecretKey;
-  final String? redirectUri;
   final void Function(Exception exception)? onError;
   final VoidCallback? onCanceled;
 
-  const _TwitterSignInButton({
+  const _AppleSignInButton({
     super.key,
-    this.apiKey,
-    this.apiSecretKey,
     required this.loadingIndicator,
     String? label,
     bool? overrideDefaultTapAction,
@@ -94,21 +83,18 @@ class _TwitterSignInButton extends StatelessWidget {
     this.onDifferentProvidersFound,
     this.onSignedIn,
     double? size,
-    this.redirectUri,
     this.onError,
     this.onCanceled,
-  }) : label = label ?? 'Sign in with Twitter',
+  }) : label = label ?? 'Sign in with Apple',
        overrideDefaultTapAction = overrideDefaultTapAction ?? false,
        size = size ?? 19;
 
-  TwitterProvider get provider {
-    if (_mockProvider != null) return _mockProvider!;
+  AppleProvider get provider {
+    if (_mockProvider != null) {
+      return _mockProvider!;
+    }
 
-    return TwitterProvider(
-      apiKey: apiKey,
-      apiSecretKey: apiSecretKey,
-      redirectUri: redirectUri,
-    );
+    return AppleProvider();
   }
 
   @override

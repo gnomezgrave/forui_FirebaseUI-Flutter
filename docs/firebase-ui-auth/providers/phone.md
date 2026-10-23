@@ -14,7 +14,7 @@ Configure phone provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 // If you need to use FirebaseAuth directly, make sure to hide PhoneAuthProvider:
 // import 'package:firebase_auth/firebase_auth.dart' hide PhoneAuthProvider;

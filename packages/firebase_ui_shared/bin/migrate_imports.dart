@@ -14,6 +14,7 @@ import 'dart:io';
 ///
 /// Updates:
 /// - Dart imports/exports: `package:firebase_ui_*` → `package:forui_firebase_ui_*`
+///   and library entrypoints `…/firebase_ui_*.dart` → `…/forui_firebase_ui_*.dart`
 /// - pubspec dependencies/dev_dependencies keys with the same rename
 void main(List<String> args) {
   final dryRun = args.contains('--dry-run');
@@ -130,8 +131,23 @@ int _rewriteDart(File file, {required bool dryRun}) {
   var count = 0;
 
   for (final name in _packages) {
+    final forui = 'forui_$name';
+    final toLib = 'package:$forui/$forui.dart';
+
+    // Entrypoint: upstream or already package-renamed with old library path.
+    for (final fromLib in [
+      'package:$name/$name.dart',
+      'package:$forui/$name.dart',
+    ]) {
+      if (!updated.contains(fromLib)) continue;
+      final matches = RegExp(RegExp.escape(fromLib)).allMatches(updated).length;
+      updated = updated.replaceAll(fromLib, toLib);
+      count += matches;
+    }
+
+    // Any remaining package:firebase_ui_*/ paths (e.g. src/).
     final from = 'package:$name/';
-    final to = 'package:forui_$name/';
+    final to = 'package:$forui/';
     if (!updated.contains(from)) continue;
     final matches = RegExp(RegExp.escape(from)).allMatches(updated).length;
     updated = updated.replaceAll(from, to);

@@ -19,7 +19,7 @@ For example, we could override the Spanish localization class and customize the 
 
 ```dart
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 // EsLocalizations is a class that provides Spanish labels. We override it here:
 class LabelOverrides extends EsLocalizations {

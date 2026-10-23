@@ -105,7 +105,7 @@ If you ever need to override this top-level configuration, you can do so by usin
 
 ```dart
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:forui_firebase_ui_storage/firebase_ui_storage.dart';
+import 'package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart';
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});

@@ -16,10 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      builder: (context, child) => FTheme(
-        data: FTheme.neutral.light.touch,
-        child: child!,
-      ),
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -52,15 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: context.theme.typography.display.md,
-            ),
+            Text('$_counter', style: context.theme.typography.display.md),
             const SizedBox(height: 16),
-            FButton(
-              onPress: _incrementCounter,
-              child: const Text('Increment'),
-            ),
+            FButton(onPress: _incrementCounter, child: const Text('Increment')),
           ],
         ),
       ),

@@ -261,7 +261,7 @@ import 'lang/en.dart';
 /// [MaterialApp.localizationsDelegates].
 ///
 /// ```dart
-/// import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
+/// import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 ///
 /// class LabelOverrides extends DefaultLocalizations {
 ///   const LabelOverrides();

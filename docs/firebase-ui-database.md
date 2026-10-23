@@ -15,8 +15,8 @@ Wrap your app in an [`FTheme`](https://forui.dev/docs) ancestor (typically via `
 Import the Firebase UI for Realtime Database package.
 
 ```dart
-import 'package:forui_firebase_ui_database/firebase_ui_database.dart';
-import 'package:forui_firebase_ui_shared/firebase_ui_shared.dart'; // LoadingIndicator
+import 'package:forui_firebase_ui_database/forui_firebase_ui_database.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'; // LoadingIndicator
 ```
 
 ### Infinite scrolling

@@ -5,7 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui_firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';

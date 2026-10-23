@@ -5,9 +5,10 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart' as ffui_oauth;
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart'
+    as ffui_oauth;
 import 'package:forui/forui.dart';
 
 typedef ErrorCallback = void Function(Exception e);

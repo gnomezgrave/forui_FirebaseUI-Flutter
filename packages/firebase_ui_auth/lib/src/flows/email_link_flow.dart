@@ -4,7 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 /// A state that indicates that the sign in link is being sent.
 /// UIs often reflect this state with a loading indicator.

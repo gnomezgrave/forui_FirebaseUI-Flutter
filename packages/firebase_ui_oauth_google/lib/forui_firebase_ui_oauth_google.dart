@@ -2,22 +2,23 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'src/provider.dart' show FacebookProvider;
-export 'src/theme.dart' show FacebookProviderButtonStyle;
+export 'src/provider.dart' show GoogleProvider;
+export 'src/theme.dart' show GoogleProviderButtonStyle;
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import 'src/provider.dart';
 
-class FacebookSignInButton extends _FacebookSignInButton {
-  const FacebookSignInButton({
+class GoogleSignInButton extends _GoogleSignInButton {
+  const GoogleSignInButton({
     super.key,
     required super.loadingIndicator,
     required super.clientId,
+    super.serverClientId,
     super.redirectUri,
+    super.scopes,
     super.action = null,
     super.auth,
     bool? isLoading,
@@ -32,11 +33,13 @@ class FacebookSignInButton extends _FacebookSignInButton {
   }) : super(isLoading: isLoading ?? false);
 }
 
-class FacebookSignInIconButton extends _FacebookSignInButton {
-  const FacebookSignInIconButton({
+class GoogleSignInIconButton extends _GoogleSignInButton {
+  const GoogleSignInIconButton({
     super.key,
     required super.clientId,
+    super.serverClientId,
     required super.loadingIndicator,
+    super.scopes,
     super.action = null,
     super.auth,
     bool? isLoading,
@@ -51,14 +54,14 @@ class FacebookSignInIconButton extends _FacebookSignInButton {
   }) : super(isLoading: isLoading ?? false, label: '');
 }
 
-FacebookProvider? _mockProvider;
+GoogleProvider? _mockProvider;
 
 @visibleForTesting
-void setMockFacebookProvider(FacebookProvider provider) {
+void setMockGoogleProvider(GoogleProvider provider) {
   _mockProvider = provider;
 }
 
-class _FacebookSignInButton extends StatelessWidget {
+class _GoogleSignInButton extends StatelessWidget {
   final String label;
   final Widget loadingIndicator;
   final void Function()? onTap;
@@ -74,14 +77,18 @@ class _FacebookSignInButton extends StatelessWidget {
   final SignedInCallback? onSignedIn;
   final double size;
   final String clientId;
+  final String? serverClientId;
   final String? redirectUri;
+  final List<String>? scopes;
   final void Function(Exception exception)? onError;
   final VoidCallback? onCanceled;
 
-  const _FacebookSignInButton({
+  const _GoogleSignInButton({
     super.key,
     required this.clientId,
+    this.serverClientId,
     required this.loadingIndicator,
+    this.scopes,
     String? label,
     bool? overrideDefaultTapAction,
     this.onTap,
@@ -94,14 +101,19 @@ class _FacebookSignInButton extends StatelessWidget {
     this.redirectUri,
     this.onError,
     this.onCanceled,
-  }) : label = label ?? 'Sign in with Facebook',
+  }) : label = label ?? 'Sign in with Google',
        overrideDefaultTapAction = overrideDefaultTapAction ?? false,
        size = size ?? 19;
 
-  FacebookProvider get provider {
+  GoogleProvider get provider {
     if (_mockProvider != null) return _mockProvider!;
 
-    return FacebookProvider(clientId: clientId, redirectUri: redirectUri);
+    return GoogleProvider(
+      clientId: clientId,
+      serverClientId: serverClientId,
+      redirectUri: redirectUri,
+      scopes: scopes ?? [],
+    );
   }
 
   @override

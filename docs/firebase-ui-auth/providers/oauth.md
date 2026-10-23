@@ -317,7 +317,7 @@ See [Custom screens section](#custom-screens) to learn how to use a button on yo
 If you want to use a button on your custom screen, use `OAuthProviderButton`. Ensure an [`FTheme`](../theming.md) ancestor.
 
 ```dart
-import 'package:forui_firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 
 class MyCustomScreen extends StatelessWidget {
   const MyCustomScreen({super.key});

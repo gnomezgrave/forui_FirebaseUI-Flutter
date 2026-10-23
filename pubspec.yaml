@@ -58,6 +58,10 @@ melos:
 
     format:
       run: |
+        # SPM checkouts under example/build/**/SourcePackages can contain
+        # pubspec.yaml files (e.g. firebase_auth) with resolution: workspace.
+        # flutter_plugin_tools discovers them and flutter pub get fails.
+        find packages -type d -path '*/build/*/SourcePackages' -exec rm -rf {} + 2>/dev/null || true
         dart pub global run flutter_plugin_tools format && swiftformat .
       description: |
         Formats the code of all packages (Java, Objective-C, and Dart).

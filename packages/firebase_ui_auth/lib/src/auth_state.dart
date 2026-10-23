@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart'
     show AuthCredential, MultiFactorResolver, User, UserCredential;
-import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:flutter/widgets.dart';
 
 /// An abstract class for all auth states.
