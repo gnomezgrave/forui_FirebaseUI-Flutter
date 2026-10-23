@@ -14,7 +14,7 @@ final actionCodeSettings = fba.ActionCodeSettings(
   url: 'http://$testEmulatorHost:9099',
   handleCodeInApp: true,
   androidMinimumVersion: '1',
-  androidPackageName: 'io.flutter.plugins.firebase_ui.forui_firebase_ui_example',
+  androidPackageName: 'io.flutter.plugins.firebase_ui_example',
   iOSBundleId: 'io.flutter.plugins.flutterfireui.flutterfireUIExample',
 );
 
