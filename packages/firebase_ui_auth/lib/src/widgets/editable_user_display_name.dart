@@ -58,9 +58,8 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
 
       if (!mounted) return;
 
-      FirebaseUIAction.ofType<DisplayNameChangedAction>(
-        context,
-      )?.callback(context, previousDisplayName, ctrl.text);
+      FirebaseUIAction.ofType<DisplayNameChangedAction>(context)
+          ?.callback(context, previousDisplayName, ctrl.text);
     } finally {
       setState(() {
         _editing = false;

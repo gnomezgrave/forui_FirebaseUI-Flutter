@@ -103,9 +103,8 @@ class _DeleteAccountButtonState extends State<DeleteAccountButton> {
 
       if (!mounted) return;
 
-      FirebaseUIAction.ofType<AccountDeletedAction>(
-        context,
-      )?.callback(context, user);
+      FirebaseUIAction.ofType<AccountDeletedAction>(context)
+          ?.callback(context, user);
       await FirebaseUIAuth.signOut(context: context, auth: auth);
     } on fba.FirebaseAuthException catch (err) {
       if (err.code == 'requires-recent-login') {

@@ -2,7 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'package:forui_firebase_ui_shared/firebase_ui_shared.dart' show ButtonVariant;
+export 'package:forui_firebase_ui_shared/firebase_ui_shared.dart'
+    show ButtonVariant;
 
 export 'src/config.dart'
     show

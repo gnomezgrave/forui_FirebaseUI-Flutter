@@ -12,12 +12,11 @@ import 'package:firebase_database/firebase_database.dart';
 /// A function that builds a widget from a [FirebaseQueryBuilderSnapshot]
 ///
 /// See also [FirebaseDatabaseQueryBuilder].
-typedef FirebaseQueryBuilderSnapshotBuilder =
-    Widget Function(
-      BuildContext context,
-      FirebaseQueryBuilderSnapshot snapshot,
-      Widget? child,
-    );
+typedef FirebaseQueryBuilderSnapshotBuilder = Widget Function(
+  BuildContext context,
+  FirebaseQueryBuilderSnapshot snapshot,
+  Widget? child,
+);
 
 /// {@template firebase_ui.firebase_database_query_builder}
 /// Listens to a query and paginates the result in a way that is compatible with
@@ -365,15 +364,20 @@ class _Sentinel {
 }
 
 /// A type representing the function passed to [FirebaseDatabaseListView] for its `itemBuilder`.
-typedef FirebaseItemBuilder =
-    Widget Function(BuildContext context, DataSnapshot doc);
+typedef FirebaseItemBuilder = Widget Function(
+  BuildContext context,
+  DataSnapshot doc,
+);
 
 /// A type representing the function passed to [FirebaseDatabaseListView] for its `loadingBuilder`.
 typedef FirebaseLoadingBuilder = Widget Function(BuildContext context);
 
 /// A type representing the function passed to [FirebaseDatabaseListView] for its `errorBuilder`.
-typedef FirebaseErrorBuilder =
-    Widget Function(BuildContext context, Object error, StackTrace stackTrace);
+typedef FirebaseErrorBuilder = Widget Function(
+  BuildContext context,
+  Object error,
+  StackTrace stackTrace,
+);
 
 /// {@template firebase_ui.firebase_database_list_view}
 /// A [ListView.builder] that obtains its items from a Firestore query.
@@ -435,7 +439,9 @@ class FirebaseDatabaseListView extends FirebaseDatabaseQueryBuilder {
          builder: (context, snapshot, _) {
            if (snapshot.isFetching) {
              return loadingBuilder?.call(context) ??
-                 const Center(child: LoadingIndicator(size: 32, borderWidth: 2));
+                 const Center(
+                   child: LoadingIndicator(size: 32, borderWidth: 2),
+                 );
            }
 
            if (snapshot.hasError && errorBuilder != null) {

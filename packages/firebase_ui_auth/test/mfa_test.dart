@@ -243,9 +243,8 @@ void main() {
       );
 
       // Simulate the user backing out of the MFA SMS screen.
-      Navigator.of(
-        tester.element(find.text('Custom SMS Code Input Screen')),
-      ).pop();
+      Navigator.of(tester.element(find.text('Custom SMS Code Input Screen')))
+          .pop();
       await tester.pumpAndSettle();
       await cancelled;
 

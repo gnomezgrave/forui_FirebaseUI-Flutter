@@ -20,9 +20,8 @@ import 'oauth_provider.dart';
 /// hosted auth handler is not reliable.
 /// See https://pub.dev/packages/flutter_web_auth_2.
 bool _macOSSupportsHttpsCallbackMatching() {
-  final match = RegExp(
-    r'(\d+)\.(\d+)',
-  ).firstMatch(Platform.operatingSystemVersion);
+  final match = RegExp(r'(\d+)\.(\d+)')
+      .firstMatch(Platform.operatingSystemVersion);
   if (match == null) return false;
 
   final major = int.parse(match.group(1)!);

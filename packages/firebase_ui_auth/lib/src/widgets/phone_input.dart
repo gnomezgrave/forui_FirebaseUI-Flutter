@@ -6,6 +6,7 @@ import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
+
 import '../validators.dart';
 
 import '../widgets/internal/universal_text_form_field.dart';
@@ -203,10 +204,7 @@ class PhoneInputState extends State<PhoneInput> {
                       ],
                       controller: countryController,
                       prefix: const Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          start: 12,
-                          end: 4,
-                        ),
+                        padding: EdgeInsetsDirectional.only(start: 12, end: 4),
                         child: Text('+'),
                       ),
                       placeholder: l.countryCode,

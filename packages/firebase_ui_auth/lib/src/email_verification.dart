@@ -5,6 +5,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:app_links/app_links.dart';
 import 'package:flutter/widgets.dart';
+
 import 'dart:async';
 
 /// All possible states of the email verification process.

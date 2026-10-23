@@ -58,8 +58,7 @@ class SMSCodeInputState extends State<SMSCodeInput> {
 
     if (authState is PhoneVerified) {
       if (authState.credential is PhoneAuthCredential) {
-        final smsCode =
-            (authState.credential as PhoneAuthCredential).smsCode;
+        final smsCode = (authState.credential as PhoneAuthCredential).smsCode;
         if (smsCode != null && controller.text != smsCode) {
           controller.text = smsCode;
         }
@@ -102,10 +101,7 @@ class SMSCodeInputState extends State<SMSCodeInput> {
           },
         ),
         if (widget.text != null || text != null)
-          Padding(
-            padding: const EdgeInsets.all(6),
-            child: widget.text ?? text,
-          ),
+          Padding(padding: const EdgeInsets.all(6), child: widget.text ?? text),
       ],
     );
   }

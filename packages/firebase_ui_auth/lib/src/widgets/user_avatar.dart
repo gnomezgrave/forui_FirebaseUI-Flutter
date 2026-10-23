@@ -61,10 +61,6 @@ class _UserAvatarState extends State<UserAvatar> {
       return FAvatar.raw(size: size, style: style);
     }
 
-    return FAvatar(
-      image: NetworkImage(photoUrl!),
-      size: size,
-      style: style,
-    );
+    return FAvatar(image: NetworkImage(photoUrl!), size: size, style: style);
   }
 }

@@ -9,13 +9,12 @@ import 'package:forui_firebase_ui_auth/src/widgets/internal/universal_page_route
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-typedef SMSCodeInputScreenBuilder =
-    Widget Function(
-      BuildContext context,
-      List<FirebaseUIAction> actions,
-      Object flowKey,
-      AuthAction action,
-    );
+typedef SMSCodeInputScreenBuilder = Widget Function(
+  BuildContext context,
+  List<FirebaseUIAction> actions,
+  Object flowKey,
+  AuthAction action,
+);
 
 Future<fba.UserCredential> startMFAVerification({
   required BuildContext context,

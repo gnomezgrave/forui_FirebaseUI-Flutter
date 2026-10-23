@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart' hide Title;
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
+
 import '../widgets/internal/title.dart';
 
 /// {@template ui.auth.views.forgot_password_view}

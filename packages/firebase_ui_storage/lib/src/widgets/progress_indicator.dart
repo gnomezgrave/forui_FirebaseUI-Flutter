@@ -7,8 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
 /// A builder that is invoked for each progress event.
-typedef TaskProgressBuilder =
-    Widget Function(BuildContext context, double progress);
+typedef TaskProgressBuilder = Widget Function(
+  BuildContext context,
+  double progress,
+);
 
 /// A builder that is invoked when an error occurs.
 typedef ErrorBuilder = Widget Function(BuildContext context, Object? error);

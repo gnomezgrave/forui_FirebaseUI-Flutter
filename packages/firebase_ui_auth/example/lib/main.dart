@@ -109,10 +109,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
     });
 
     return MaterialApp(
-      builder: (context, child) => FTheme(
-        data: FTheme.neutral.light.touch,
-        child: child!,
-      ),
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
       initialRoute: initialRoute,
       routes: {
         '/': (context) {

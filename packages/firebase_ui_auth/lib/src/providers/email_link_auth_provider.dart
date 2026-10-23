@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:app_links/app_links.dart';
 import 'package:clock/clock.dart';
+
 import 'dart:async';
 
 import 'email_link_session.dart';

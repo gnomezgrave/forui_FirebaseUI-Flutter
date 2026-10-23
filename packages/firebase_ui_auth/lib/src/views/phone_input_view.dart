@@ -10,13 +10,12 @@ import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 import '../widgets/internal/title.dart';
 
-typedef SMSCodeRequestedCallback =
-    void Function(
-      BuildContext context,
-      AuthAction? action,
-      Object flowKey,
-      String phoneNumber,
-    );
+typedef SMSCodeRequestedCallback = void Function(
+  BuildContext context,
+  AuthAction? action,
+  Object flowKey,
+  String phoneNumber,
+);
 
 typedef PhoneNumberSubmitCallback = void Function(String phoneNumber);
 
@@ -104,9 +103,8 @@ class _PhoneInputViewState extends State<PhoneInputView> {
         if (newState is SMSCodeRequested) {
           final cb =
               widget.onSMSCodeRequested ??
-              FirebaseUIAction.ofType<SMSCodeRequestedAction>(
-                context,
-              )?.callback;
+              FirebaseUIAction.ofType<SMSCodeRequestedAction>(context)
+                  ?.callback;
 
           cb?.call(
             context,

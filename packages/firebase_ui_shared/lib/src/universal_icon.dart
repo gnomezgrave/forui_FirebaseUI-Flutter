@@ -10,12 +10,7 @@ class UniversalIcon extends StatelessWidget {
   final Color? color;
   final double? size;
 
-  const UniversalIcon({
-    super.key,
-    required this.icon,
-    this.color,
-    this.size,
-  });
+  const UniversalIcon({super.key, required this.icon, this.color, this.size});
 
   @override
   Widget build(BuildContext context) {

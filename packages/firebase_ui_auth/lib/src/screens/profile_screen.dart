@@ -627,10 +627,7 @@ class _MFAToggleState extends State<_MFAToggle> {
       children: [
         Row(
           children: [
-            UniversalIcon(
-              icon: getStatusIcon(),
-              color: getColor(),
-            ),
+            UniversalIcon(icon: getStatusIcon(), color: getColor()),
             const SizedBox(width: 8),
             Expanded(child: Text(widget.enrolled ? l.on : l.off)),
             LoadingButton(

@@ -41,21 +41,20 @@ import 'query_builder.dart';
 /// {@endtemplate}
 ///
 
-typedef CellBuilder =
-    Widget Function(
-      QueryDocumentSnapshot<Map<String, Object?>> snapshot,
-      String colKey,
-    );
+typedef CellBuilder = Widget Function(
+  QueryDocumentSnapshot<Map<String, Object?>> snapshot,
+  String colKey,
+);
 
-typedef OnTapCell =
-    void Function(
-      QueryDocumentSnapshot<Map<String, Object?>> snapshot,
-      Object? value,
-      String propertyName,
-    );
+typedef OnTapCell = void Function(
+  QueryDocumentSnapshot<Map<String, Object?>> snapshot,
+  Object? value,
+  String propertyName,
+);
 
-typedef OnSelectedRows =
-    void Function(List<QueryDocumentSnapshot<Map<String, Object?>>> items);
+typedef OnSelectedRows = void Function(
+  List<QueryDocumentSnapshot<Map<String, Object?>>> items,
+);
 
 class FirestoreDataTable extends StatefulWidget {
   /// {@macro firebase_ui.firestore_table}

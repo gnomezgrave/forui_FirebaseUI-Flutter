@@ -123,35 +123,32 @@ void main() {
         },
       );
 
-      test(
-        'does not call onError if autoresolution timed out',
-        () async {
-          // Timeout is expected on many devices and does not mean SMS failed.
-          provider.sendVerificationCode(
-            phoneNumber: '+123456789',
-            action: AuthAction.signIn,
-          );
+      test('does not call onError if autoresolution timed out', () async {
+        // Timeout is expected on many devices and does not mean SMS failed.
+        provider.sendVerificationCode(
+          phoneNumber: '+123456789',
+          action: AuthAction.signIn,
+        );
 
-          final invocation = verify(
-            auth.verifyPhoneNumber(
-              phoneNumber: anyNamed('phoneNumber'),
-              verificationCompleted: anyNamed('verificationCompleted'),
-              verificationFailed: anyNamed('verificationFailed'),
-              codeSent: anyNamed('codeSent'),
-              codeAutoRetrievalTimeout: captureAnyNamed(
-                'codeAutoRetrievalTimeout',
-              ),
+        final invocation = verify(
+          auth.verifyPhoneNumber(
+            phoneNumber: anyNamed('phoneNumber'),
+            verificationCompleted: anyNamed('verificationCompleted'),
+            verificationFailed: anyNamed('verificationFailed'),
+            codeSent: anyNamed('codeSent'),
+            codeAutoRetrievalTimeout: captureAnyNamed(
+              'codeAutoRetrievalTimeout',
             ),
-          );
+          ),
+        );
 
-          await untilCalled(listener.onSMSCodeRequested(any));
+        await untilCalled(listener.onSMSCodeRequested(any));
 
-          final timeout = invocation.captured[0];
-          timeout('+123456789');
+        final timeout = invocation.captured[0];
+        timeout('+123456789');
 
-          verifyNever(listener.onError(any));
-        },
-      );
+        verifyNever(listener.onError(any));
+      });
 
       test('calls onError if verification failed', () async {
         provider.sendVerificationCode(

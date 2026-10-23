@@ -1089,7 +1089,9 @@ void storeSession({required String email, required String sessionId}) {
 
 Future<List<Map<String, dynamic>>> storedSessions() async {
   final prefs = await SharedPreferences.getInstance();
-  final stored = prefs.getStringList('forui_firebase_ui_auth.email_link.sessions');
+  final stored = prefs.getStringList(
+    'forui_firebase_ui_auth.email_link.sessions',
+  );
   return [
     for (final entry in stored ?? const <String>[])
       jsonDecode(entry) as Map<String, dynamic>,

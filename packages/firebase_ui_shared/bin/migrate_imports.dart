@@ -24,7 +24,9 @@ void main(List<String> args) {
   }
 
   final paths = args.where((a) => !a.startsWith('-')).toList();
-  final roots = paths.isEmpty ? <Directory>[Directory.current] : paths.map(Directory.new);
+  final roots = paths.isEmpty
+      ? <Directory>[Directory.current]
+      : paths.map(Directory.new);
 
   var filesChanged = 0;
   var replacements = 0;
@@ -47,14 +49,18 @@ void main(List<String> args) {
         if (result > 0) {
           filesChanged++;
           replacements += result;
-          stdout.writeln('${dryRun ? 'Would update' : 'Updated'} $path ($result)');
+          stdout.writeln(
+            '${dryRun ? 'Would update' : 'Updated'} $path ($result)',
+          );
         }
       } else if (lower.endsWith('pubspec.yaml')) {
         final result = _rewritePubspec(entity, dryRun: dryRun);
         if (result > 0) {
           filesChanged++;
           replacements += result;
-          stdout.writeln('${dryRun ? 'Would update' : 'Updated'} $path ($result)');
+          stdout.writeln(
+            '${dryRun ? 'Would update' : 'Updated'} $path ($result)',
+          );
         }
       }
     }
@@ -70,7 +76,9 @@ void main(List<String> args) {
     if (dryRun) {
       stdout.writeln('Re-run without --dry-run to apply.');
     } else {
-      stdout.writeln('Next: update pubspec versions if needed, then run `dart pub get`.');
+      stdout.writeln(
+        'Next: update pubspec versions if needed, then run `dart pub get`.',
+      );
     }
   }
 }
