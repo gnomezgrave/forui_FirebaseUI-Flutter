@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -134,8 +133,8 @@ void main() {
                           (context, actions, flowKey, action) {
                             capturedActions = actions;
                             capturedFlowKey = flowKey;
-                            return const FScaffold(
-                              child: Text('Custom SMS Code Input Screen'),
+                            return const Scaffold(
+                              body: Text('Custom SMS Code Input Screen'),
                             );
                           },
                     );
@@ -212,8 +211,8 @@ void main() {
                     auth: auth,
                     smsCodeInputScreenBuilder:
                         (context, actions, flowKey, action) {
-                          return const FScaffold(
-                            child: Text('Custom SMS Code Input Screen'),
+                          return const Scaffold(
+                            body: Text('Custom SMS Code Input Screen'),
                           );
                         },
                   );

@@ -15,8 +15,8 @@ This will ensure a smooth and quick review process. Updating the `pubspec.yaml` 
 - [ ] My PR includes unit or integration tests for _all_ changed/updated/fixed behaviors (See [Contributor Guide]).
 - [ ] All existing and new tests are passing.
 - [ ] I updated/added relevant documentation (doc comments with `///`).
-- [ ] The analyzer (`melos run analyze`) does not report any problems on my PR.
-- [ ] All unit tests pass (`melos run test:unit:all` doesn't fail).
+- [ ] The analyzer (`dart run melos run analyze`) does not report any problems on my PR.
+- [ ] All unit tests pass (`dart run melos run test:unit:all` doesn't fail).
 - [ ] I read and followed the [Flutter Style Guide].
 - [ ] I signed the [CLA].
 - [ ] I am willing to follow-up on review comments in a timely manner.

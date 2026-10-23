@@ -34,7 +34,7 @@ jobs:
         with:
           melos-version: "^7.5.0"
       - name: "Run Analyze"
-        run: melos run analyze
+        run: dart run melos run analyze
 
   pub_dry_run:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
           melos-version: "^7.5.0"
       - name: "Pub Check"
         run: |
-          melos exec -c 1 --no-private --ignore="*example*" -- \
+          dart run melos exec -c 1 --no-private --ignore="*example*" -- \
             dart pub publish --dry-run
 
   pub_get_check:
@@ -69,7 +69,7 @@ jobs:
           melos-version: "^7.5.0"
       - name: "flutter pub get"
         run: |
-          melos exec -c 1 --scope="*example*" -- \
+          dart run melos exec -c 1 --scope="*example*" -- \
             "flutter pub get"
 
   format:
@@ -129,4 +129,4 @@ jobs:
           run-bootstrap: false
           melos-version: "^7.5.0"
       - name: Check license header
-        run: melos run check-license-header
+        run: dart run melos run check-license-header

@@ -106,9 +106,13 @@ class PhoneInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flowKey = Object();
+    final resolvedActions = <FirebaseUIAction>[...?actions];
+    if (!resolvedActions.any((a) => a is SMSCodeRequestedAction)) {
+      resolvedActions.add(SMSCodeRequestedAction(_next));
+    }
 
     return FirebaseUIActions(
-      actions: actions ?? [SMSCodeRequestedAction(_next)],
+      actions: resolvedActions,
       child: FScaffold(
         child: ResponsivePage(
           desktopLayoutDirection: desktopLayoutDirection,

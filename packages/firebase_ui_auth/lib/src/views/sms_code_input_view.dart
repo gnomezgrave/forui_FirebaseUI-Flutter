@@ -83,10 +83,15 @@ class _SMSCodeInputViewState extends State<SMSCodeInputView> {
       action: widget.action,
       flowKey: widget.flowKey,
       listener: (oldState, newState, controller) {
-        // CredentialReceived is used for MFA enrollment (AuthAction.none).
-        if (newState is SignedIn ||
+        // CredentialReceived means the SMS credential was built, not that
+        // Firebase accepted it. Only treat it as done for MFA (AuthAction.none);
+        // link/sign-in wait for CredentialLinked / SignedIn.
+        final codeVerified =
+            newState is SignedIn ||
             newState is CredentialLinked ||
-            newState is CredentialReceived) {
+            (newState is CredentialReceived &&
+                controller.action == AuthAction.none);
+        if (codeVerified) {
           widget.onCodeVerified?.call();
         }
 
@@ -95,31 +100,26 @@ class _SMSCodeInputViewState extends State<SMSCodeInputView> {
         }
       },
       builder: (context, state, ctrl, child) {
-        return IntrinsicWidth(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SMSCodeInput(
-                key: key,
-                onSubmit: (smsCode) {
-                  submit(smsCode, ctrl);
-                },
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: UniversalButton(
-                  onPressed: () {
-                    final code = key.currentState!.code;
-                    if (code.length < 6) return;
-                    submit(code, ctrl);
-                  },
-                  text: l.verifyCodeButtonText,
-                ),
-              ),
-            ],
-          ),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SMSCodeInput(
+              key: key,
+              onSubmit: (smsCode) {
+                submit(smsCode, ctrl);
+              },
+            ),
+            const SizedBox(height: 16),
+            UniversalButton(
+              onPressed: () {
+                final code = key.currentState!.code;
+                if (code.length < 6) return;
+                submit(code, ctrl);
+              },
+              text: l.verifyCodeButtonText,
+            ),
+          ],
         );
       },
     );

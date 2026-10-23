@@ -21,9 +21,9 @@ To contribute a change to this plugin, please review our [contributing guide](ht
 
 ### Adding a new language
 
-If you want to add a new language, make sure to add a relevant `.arb` file into `lib/i10n`.
+If you want to add a new language, make sure to add a relevant `.arb` file into `lib/l10n`.
 
-- copy `lib/i10n/forui_firebase_ui_en.arb` to `lib/i10n/forui_firebase_ui_<your-language-code>.arb`
+- copy `lib/l10n/firebase_ui_en.arb` to `lib/l10n/firebase_ui_<your-language-code>.arb`
 - translate labels
 - run `dart run forui_firebase_ui_localizations:gen_l10n`
 - commit the `.arb` and generated `.dart` file

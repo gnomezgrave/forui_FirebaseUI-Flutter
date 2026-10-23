@@ -16,5 +16,5 @@ Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_
 ## Constraints
 
 - Dart `^3.13`, Flutter **3.47+**, Forui **0.27.x**
-- Prefer `melos run analyze` / package `flutter test` over inventing new check scripts
+- Prefer `dart run melos run analyze` / package `flutter test` over inventing new check scripts
 - Do not migrate DataTables unless the user asks

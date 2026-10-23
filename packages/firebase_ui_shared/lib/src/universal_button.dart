@@ -2,6 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
@@ -110,6 +113,10 @@ class UniversalButton extends StatelessWidget {
       _ => label,
     };
 
+    // mainAxisSize.max fills a bounded width and shrinks when the parent width
+    // is unbounded (a trailing action in a Row). The label must not be an
+    // Expanded or a LayoutBuilder: SMS code entry wraps this button in
+    // IntrinsicWidth, and LayoutBuilder cannot answer intrinsic dimensions.
     return FButton(
       variant: _foruiVariant,
       style: _style,
@@ -118,21 +125,84 @@ class UniversalButton extends StatelessWidget {
       suffix: suffix,
       mainAxisSize: .max,
       mainAxisAlignment: .center,
-      // Keep label flexible so stretched buttons don't overflow in tight layouts,
-      // but center the label within the available width.
       builder: (context, style, textStyle, iconStyle, progressStyle, child) {
-        return Expanded(
-          child: Align(
-            alignment: .center,
-            child: DefaultTextStyle.merge(
-              style: textStyle,
-              textAlign: .center,
-              child: child ?? const SizedBox.shrink(),
-            ),
+        return _EllipsizedSlot(
+          child: DefaultTextStyle.merge(
+            style: textStyle,
+            textAlign: .center,
+            child: child ?? const SizedBox.shrink(),
           ),
         );
       },
       child: buttonChild,
+    );
+  }
+}
+
+/// Sizes to the child, but caps the child to the surrounding [Row]'s width so
+/// a long label ellipsizes. Unlike [Expanded], this still reports intrinsic
+/// dimensions, so it can sit under [IntrinsicWidth].
+class _EllipsizedSlot extends SingleChildRenderObjectWidget {
+  const _EllipsizedSlot({required Widget child}) : super(child: child);
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderEllipsizedSlot();
+}
+
+class _RenderEllipsizedSlot extends RenderProxyBox {
+  BoxConstraints _constraintsForChild(BoxConstraints constraints) {
+    final maxWidth = _availableWidth(constraints);
+    if (!maxWidth.isFinite || maxWidth >= constraints.maxWidth) {
+      return constraints;
+    }
+    return constraints.copyWith(
+      maxWidth: math.max(constraints.minWidth, maxWidth),
+    );
+  }
+
+  double _availableWidth(BoxConstraints constraints) {
+    final parent = this.parent;
+    if (parent is! RenderFlex || parent.direction != Axis.horizontal) {
+      return constraints.maxWidth;
+    }
+
+    final parentMax = parent.constraints.maxWidth;
+    if (!parentMax.isFinite) return constraints.maxWidth;
+
+    var others = 0.0;
+    RenderBox? sibling = parent.firstChild;
+    while (sibling != null) {
+      if (!identical(sibling, this)) {
+        others += sibling.getMaxIntrinsicWidth(double.infinity);
+      }
+      sibling = parent.childAfter(sibling);
+    }
+
+    final gaps = parent.childCount > 1
+        ? parent.spacing * (parent.childCount - 1)
+        : 0.0;
+    return math.max(0, parentMax - others - gaps);
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = computeSizeForNoChild(constraints);
+      return;
+    }
+
+    child.layout(_constraintsForChild(constraints), parentUsesSize: true);
+    size = constraints.constrain(child.size);
+  }
+
+  @override
+  Size computeDryLayout(covariant BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) return computeSizeForNoChild(constraints);
+    return constraints.constrain(
+      child.getDryLayout(_constraintsForChild(constraints)),
     );
   }
 }

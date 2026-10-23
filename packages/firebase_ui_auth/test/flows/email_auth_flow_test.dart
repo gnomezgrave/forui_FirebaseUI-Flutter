@@ -160,8 +160,12 @@ void main() {
     testWidgets('emits correct states during sign in', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: FScaffold(
-            child: AuthFlowBuilder<EmailAuthController>(
+          builder: (context, child) => FTheme(
+            data: FTheme.neutral.light.touch,
+            child: child!,
+          ),
+          home: Scaffold(
+            body: AuthFlowBuilder<EmailAuthController>(
               auth: auth,
               listener: (prevState, state, ctrl) {
                 if (prevState is AwaitingEmailAndPassword) {
@@ -195,8 +199,12 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: FScaffold(
-            child: AuthFlowBuilder<EmailAuthController>(
+          builder: (context, child) => FTheme(
+            data: FTheme.neutral.light.touch,
+            child: child!,
+          ),
+          home: Scaffold(
+            body: AuthFlowBuilder<EmailAuthController>(
               auth: auth,
               listener: (prevState, state, ctrl) {
                 if (prevState is AwaitingEmailAndPassword) {

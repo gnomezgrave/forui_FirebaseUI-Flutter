@@ -74,7 +74,7 @@ jobs:
           run-bootstrap: false
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
-        run: melos bootstrap --scope tests
+        run: dart run melos bootstrap --scope tests
       - name: Start Firebase Emulator
         run: |
           cd functions/
@@ -153,7 +153,7 @@ jobs:
           run-bootstrap: false
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
-        run: melos bootstrap --scope tests
+        run: dart run melos bootstrap --scope tests
       - name: Clean up previous build artifacts
         run: |
           rm -rf build
@@ -238,7 +238,7 @@ jobs:
           run-bootstrap: false
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
-        run: melos bootstrap --scope tests
+        run: dart run melos bootstrap --scope tests
       - name: "Build Application"
         working-directory: tests
         run: |

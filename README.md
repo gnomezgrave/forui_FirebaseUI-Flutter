@@ -78,7 +78,7 @@ import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 and renames matching keys in `pubspec.yaml`. Then run `dart pub get`.
 
-From this repo you can run `melos run fix`. (Official `dart fix` data-driven library moves require deprecations in the *old* packages, which we do not publish.)
+From this repo you can run `dart run melos run fix`. (Official `dart fix` data-driven library moves require deprecations in the *old* packages, which we do not publish.)
 
 ## Issues
 

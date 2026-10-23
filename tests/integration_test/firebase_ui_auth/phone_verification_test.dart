@@ -13,12 +13,20 @@ import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 import '../utils.dart';
 
+Finder phoneNumberField() => find.descendant(
+  of: find.byType(PhoneInput),
+  matching: find.byType(EditableText),
+).at(1);
+
+Finder countryCodeField() => find.descendant(
+  of: find.byType(PhoneInput),
+  matching: find.byType(EditableText),
+).at(0);
+
 Future<void> sendSMS(WidgetTester tester, String phoneNumber) async {
   await tester.pump();
 
-  final phoneInput = find.byType(TextField).at(1);
-  await tester.enterText(phoneInput, phoneNumber);
-
+  await tester.enterText(phoneNumberField(), phoneNumber);
   await tester.testTextInput.receiveAction(TextInputAction.done);
   await tester.pumpAndSettle();
 }
@@ -32,31 +40,26 @@ void main() {
       await render(tester, const PhoneInputScreen());
       await tester.pump();
 
-      final popUpMenu = find.byWidgetPredicate((widget) {
-        return widget is PopupMenuButton;
-      });
+      // Default locale country (en_US → United States) via FSelect.
+      expect(find.text('United States'), findsOneWidget);
 
-      expect(popUpMenu, findsOneWidget);
-
-      await tester.tap(popUpMenu);
+      await tester.tap(find.text('United States'));
       await tester.pumpAndSettle();
 
-      final australia = find.text('Australia (+61)');
+      final australia = find.text('Australia');
       expect(australia, findsOneWidget);
 
       await tester.tap(australia);
       await tester.pumpAndSettle();
 
-      final inputs = find.byType(TextField);
-      expect(inputs, findsNWidgets(2));
-
-      final elements = inputs.evaluate();
-
-      final codeInput = elements.first.widget as TextField;
-
-      expect(codeInput.decoration!.labelText, labels.countryCode);
-      expect((codeInput.decoration!.prefix! as Text).data, '+');
-      expect(codeInput.controller!.text, '61');
+      expect(
+        (countryCodeField().evaluate().single.widget as EditableText)
+            .controller
+            ?.text,
+        '61',
+      );
+      expect(find.text('+'), findsWidgets);
+      expect(find.text(labels.countryCode), findsOneWidget);
     });
 
     testWidgets('validates phone number', (tester) async {
@@ -64,9 +67,7 @@ void main() {
 
       await tester.pump();
 
-      final phoneInput = find.byType(TextField).at(1);
-      await tester.enterText(phoneInput, '12345');
-
+      await tester.enterText(phoneNumberField(), '12345');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
 

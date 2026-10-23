@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
   final cwd = Directory.current.path;
   final l10nSrc = Directory(path.join(cwd, 'lib', 'l10n'));
 
-  final enArb = File(path.join(l10nSrc.path, 'forui_firebase_ui_en.arb'));
+  final enArb = File(path.join(l10nSrc.path, 'firebase_ui_en.arb'));
   final enContent =
       jsonDecode(await enArb.readAsString()) as Map<String, dynamic>;
 

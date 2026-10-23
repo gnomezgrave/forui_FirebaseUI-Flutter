@@ -62,16 +62,10 @@ information on using pull requests.
 
 FirebaseUI-Flutter uses [Melos](https://github.com/invertase/melos) to manage the project and dependencies.
 
-To install Melos, run the following command from your SSH client:
+Melos is a dev dependency of this repo. From the repository root, bootstrap the project dependencies with:
 
 ```bash
-dart pub global activate melos
-```
-
-Next, at the root of your locally cloned repository bootstrap the projects dependencies:
-
-```bash
-melos bootstrap
+dart run melos bootstrap
 ```
 
 The bootstrap command locally links all dependencies within the project without having to
@@ -79,7 +73,7 @@ provide manual [`dependency_overrides`](https://dart.dev/tools/pub/pubspec). Thi
 plugins, examples and tests to build from the local clone project.
 
 > - You do not need to run `flutter pub get` once bootstrap has been completed.
-> - If you're using [fvm](https://fvm.app/) you might need to specify the sdk-path: `melos bs --sdk-path=/Users/user/fvm/default/`
+> - If you're using [fvm](https://fvm.app/) you might need to specify the sdk-path: `dart run melos bs --sdk-path=/Users/user/fvm/default/`
 
 ### 4. Contributing code
 
@@ -102,10 +96,10 @@ commands can be run locally to highlight any issues before committing your code:
 
 ```bash
 # Run the analyze check
-melos run analyze
+dart run melos run analyze
 
 # Format code
-melos run format
+dart run melos run format
 ```
 
 Assuming all is successful, commit and push your code:
@@ -136,20 +130,20 @@ These tests require the Firebase Emulator.
 To start the Firebase Emulator, run this command:
 
 ```bash
-melos emulator:start
+dart run melos run emulator:start
 ```
 
 Once the Firebase Emulator is up and running, execute the following Melos command from the terminal:
 
 ```bash
-melos run test:e2e
+dart run melos run test:e2e
 ```
 
 That defaults to the `macos` device. To target another device, set `FLUTTER_TEST_DEVICE` (from `flutter devices`):
 
 ```bash
-FLUTTER_TEST_DEVICE=chrome melos run test:e2e
-FLUTTER_TEST_DEVICE=<device-id> melos run test:e2e
+FLUTTER_TEST_DEVICE=chrome dart run melos run test:e2e
+FLUTTER_TEST_DEVICE=<device-id> dart run melos run test:e2e
 ```
 
 The `tests` app keeps Swift Package Manager off: FlutterFire SPM pulls Firebase iOS SDK 13, which currently conflicts with `google_sign_in_ios` (GoogleSignIn 9.x). CocoaPods still uses Firebase 12.19.
@@ -180,7 +174,7 @@ Linux or macOS, you need to add `export PATH="$HOME/go/bin:$PATH"` to your
 To add the license header to all files, run from the root of the repository:
 
 ```bash
-melos run add-license-header
+dart run melos run add-license-header
 ```
 
 This command uses `addlicense` with all necessary flags.
@@ -218,12 +212,12 @@ Some things to keep in mind before publishing the release:
 2. Run `git pull origin main`.
 3. Run `git pull --tags` to make sure all tags are fetched.
 4. Create new branch with the signature "release/[year]-[month]-[day]".
-5. Run `melos version --no-git-tag-version` to automatically version packages and update Changelogs.
-6. Run `melos publish` to dry run and confirm all packages are publishable.
+5. Run `dart run melos version --no-git-tag-version` to automatically version packages and update Changelogs.
+6. Run `dart run melos publish` to dry run and confirm all packages are publishable.
 7. After successful dry run, commit all changes with the signature `chore(release): prepare for release`.
 8. Run `git push origin [RELEASE BRANCH NAME]` & open pull request for review on GitHub.
 9. After successful review and merge of the pull request, switch to `main` branch locally, & run `git pull origin main`.
-10. Run `melos publish --no-dry-run --git-tag-version` to now publish to Pub.dev.
+10. Run `dart run melos publish --no-dry-run --git-tag-version` to now publish to Pub.dev.
 11. Run `git push --tags` to push tags to repository.
 
 ### Graduate packages
@@ -234,7 +228,7 @@ to graduate multiple packages using the following steps:
 1. Switch to `master` branch locally.
 2. Run 'git pull origin master'.
 3. Run `git fetch --all` to make sure all tags and commits are fetched.
-4. Run `melos version --graduate` to prompt a list of all packages to be graduated (You may also specifically select packages using the scope flag like this: `--scope="*firestore*"`)
+4. Run `dart run melos version --graduate` to prompt a list of all packages to be graduated (You may also specifically select packages using the scope flag like this: `--scope="*firestore*"`)
 5. Run `git push --follow-tags` to push the auto commits and tags to the remote repository.
-6. Run `melos publish` to dry run and confirm all packages are publishable.
-7. Run `melos publish --no-dry-run` to now publish to Pub.dev.
+6. Run `dart run melos publish` to dry run and confirm all packages are publishable.
+7. Run `dart run melos publish --no-dry-run` to now publish to Pub.dev.

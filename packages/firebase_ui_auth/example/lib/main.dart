@@ -240,6 +240,10 @@ class FirebaseAuthUIExample extends StatelessWidget {
               AuthStateChangeAction<SignedIn>((context, state) {
                 Navigator.of(context).pushReplacementNamed('/profile');
               }),
+              // A first phone sign-in is UserCreated, not SignedIn.
+              AuthStateChangeAction<UserCreated>((context, state) {
+                Navigator.of(context).pushReplacementNamed('/profile');
+              }),
             ],
             flowKey: arguments?['flowKey'],
             action: arguments?['action'],

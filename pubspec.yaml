@@ -41,12 +41,12 @@ melos:
 
   scripts:
     lint:
-      run: melos run analyze && melos run format
+      run: dart run melos run analyze && dart run melos run format
       description: Run all static analysis checks.
 
     analyze:
       run: |
-        melos exec -- dart analyze . --fatal-infos
+        dart run melos exec -- dart analyze . --fatal-infos
       description: |
         Run `dart analyze` in all packages.
 
@@ -68,14 +68,14 @@ melos:
 
     test:
       run: |
-        melos run test:unit:all
+        dart run melos run test:unit:all
       description: |
         Run all tests available.
 
     test:unit:all:
       run: |
-        melos run test:unit --no-select && \
-        melos run test:unit:web --no-select
+        dart run melos run test:unit --no-select && \
+        dart run melos run test:unit:web --no-select
       description: Run unit tests for all packages.
       packageFilters:
         dirExists:
@@ -83,7 +83,7 @@ melos:
 
     test:unit:
       run: |
-        melos exec -c 6 --fail-fast -- "flutter test"
+        dart run melos exec -c 6 --fail-fast -- "flutter test"
       description: Run `flutter test` for a specific package.
       packageFilters:
         dirExists:
@@ -91,7 +91,7 @@ melos:
 
     test:unit:web:
       run: |
-        melos exec -c 1 --fail-fast -- "flutter test --platform=chrome"
+        dart run melos exec -c 1 --fail-fast -- "flutter test --platform=chrome"
       description: Run `flutter test --platform=chrome`.
       packageFilters:
         dirExists:
@@ -99,7 +99,7 @@ melos:
 
     test:build:web:
       run: |
-        melos exec -c 1 --fail-fast -- \
+        dart run melos exec -c 1 --fail-fast -- \
           "cd example && flutter build web"
       description: |
         Build all example apps for web platform
@@ -111,15 +111,15 @@ melos:
       description: |
         Run e2e tests (Firebase Emulator must already be running).
         Default device: macos. Override with FLUTTER_TEST_DEVICE, e.g.:
-          FLUTTER_TEST_DEVICE=chrome melos run test:e2e
-          FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 melos run test:e2e
+          FLUTTER_TEST_DEVICE=chrome dart run melos run test:e2e
+          FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 dart run melos run test:e2e
       run: |
         cd tests && flutter test integration_test/firebase_ui_test.dart -r github \
           -d "${FLUTTER_TEST_DEVICE:-macos}"
 
     # Additional cleanup lifecycle script, executed when `melos clean` is run.
     postclean: >
-      melos exec -c 6 -- "flutter clean"
+      dart run melos exec -c 6 -- "flutter clean"
 
     add-license-header:
       # If you add here another --ignore flag, add it also to

@@ -22,7 +22,7 @@ if [[ $(git ls-files --modified) ]]; then
   echo ""
   echo "❌ Some files are incorrectly formatted, see above output."
   echo ""
-  echo "To fix these locally, run: 'melos run format'."
+  echo "To fix these locally, run: 'dart run melos run format'."
   exit 1
 else
   echo ""

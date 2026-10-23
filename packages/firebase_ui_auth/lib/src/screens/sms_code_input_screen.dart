@@ -103,40 +103,49 @@ class SMSCodeInputScreen extends StatelessWidget {
       child: FirebaseUIActions(
         actions: actions ?? const [],
         child: FScaffold(
-          child: Center(
-            child: ResponsivePage(
-              breakpoint: breakpoint,
-              maxWidth: maxWidth,
-              desktopLayoutDirection: desktopLayoutDirection,
-              sideBuilder: sideBuilder,
-              headerBuilder: headerBuilder,
-              headerMaxExtent: headerMaxExtent,
-              contentFlex: contentFlex,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SMSCodeInputView(
-                    auth: auth,
-                    action: action,
-                    flowKey: flowKey,
-                    onCodeVerified: () {
-                      // Custom actions (e.g. MFA enroll) handle navigation.
-                      if (actions != null && actions!.isNotEmpty) return;
+          child: ResponsivePage(
+            breakpoint: breakpoint,
+            maxWidth: maxWidth,
+            desktopLayoutDirection: desktopLayoutDirection,
+            sideBuilder: sideBuilder,
+            headerBuilder: headerBuilder,
+            headerMaxExtent: headerMaxExtent,
+            contentFlex: contentFlex,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: ConstrainedBox(
+                  // Cap width so long AuthFailed messages wrap instead of
+                  // stretching the column; keep the block centered.
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SMSCodeInputView(
+                        auth: auth,
+                        action: action,
+                        flowKey: flowKey,
+                        onCodeVerified: () {
+                          // Custom actions (e.g. MFA enroll) handle navigation.
+                          if (actions != null && actions!.isNotEmpty) return;
 
-                      Navigator.of(context).popUntil((route) {
-                        return route.isFirst;
-                      });
-                    },
+                          Navigator.of(context).popUntil((route) {
+                            return route.isFirst;
+                          });
+                        },
+                      ),
+                      UniversalButton(
+                        variant: ButtonVariant.text,
+                        text: l.goBackButtonLabel,
+                        onPressed: () {
+                          _reset();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   ),
-                  UniversalButton(
-                    variant: ButtonVariant.text,
-                    text: l.goBackButtonLabel,
-                    onPressed: () {
-                      _reset();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
           ),

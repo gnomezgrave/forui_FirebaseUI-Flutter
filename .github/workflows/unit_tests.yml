@@ -61,7 +61,7 @@ jobs:
       - name: Run unit tests on Chrome
         if: matrix.target == 'html'
         run: |
-          melos exec \
+          dart run melos exec \
             --scope=${MATRIX_PACKAGE}* \
             --dir-exists="test" \
             --fail-fast -- "flutter test --platform chrome"
@@ -71,7 +71,7 @@ jobs:
       - name: Run unit tests
         if: matrix.target == 'io'
         run: |
-          melos exec \
+          dart run melos exec \
             --scope=${MATRIX_PACKAGE}* \
             --dir-exists="test" \
             --fail-fast -- "flutter test"

@@ -72,36 +72,62 @@ class SMSCodeInputState extends State<SMSCodeInput> {
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
     final state = AuthState.maybeOf(context);
+    final theme = context.theme;
 
-    Widget? text;
+    Widget? status;
     if (state is CredentialReceived ||
         state is SigningIn ||
         state is SignedIn) {
-      text = Text(l.verifyingSMSCodeText);
+      status = Text(
+        l.verifyingSMSCodeText,
+        textAlign: TextAlign.center,
+        style: theme.typography.body.sm,
+      );
     }
 
     if (state is AuthFailed) {
-      text = ErrorText(exception: state.exception);
+      status = ErrorText(
+        exception: state.exception,
+        textAlign: TextAlign.center,
+      );
     }
 
+    status ??= widget.text;
+
+    // Stretch so label/error `textAlign: center` have a full line width.
+    // UnconstrainedBox keeps FOtpField at its intrinsic width and centered
+    // (FLabel uses crossAxisAlignment.start, which left-aligns if expanded).
     return Column(
       mainAxisSize: .min,
-      crossAxisAlignment: .start,
+      crossAxisAlignment: .stretch,
       children: [
-        FOtpField(
-          control: .managed(controller: controller),
-          autofocus: widget.autofocus,
-          autofillHints: const [AutofillHints.oneTimeCode],
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          label: Text(l.enterSMSCodeText),
-          onSubmit: (v) {
-            if (v.length < 6) return;
-            widget.onSubmit?.call(v);
-          },
+        Text(
+          l.enterSMSCodeText,
+          textAlign: TextAlign.center,
+          style: theme.typography.body.sm.copyWith(
+            fontWeight: .w600,
+            color: theme.colors.foreground,
+          ),
         ),
-        if (widget.text != null || text != null)
-          Padding(padding: const EdgeInsets.all(6), child: widget.text ?? text),
+        const SizedBox(height: 8),
+        UnconstrainedBox(
+          child: FOtpField(
+            control: .managed(controller: controller),
+            autofocus: widget.autofocus,
+            autofillHints: const [AutofillHints.oneTimeCode],
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onSubmit: (v) {
+              if (v.length < 6) return;
+              widget.onSubmit?.call(v);
+            },
+          ),
+        ),
+        if (status != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: status,
+          ),
       ],
     );
   }
