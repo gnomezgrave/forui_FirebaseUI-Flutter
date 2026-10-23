@@ -13,15 +13,19 @@ import 'package:forui_firebase_ui_localizations/firebase_ui_localizations.dart';
 
 import '../utils.dart';
 
-Finder phoneNumberField() => find.descendant(
-  of: find.byType(PhoneInput),
-  matching: find.byType(EditableText),
-).at(1);
+Finder phoneNumberField() => find
+    .descendant(
+      of: find.byType(PhoneInput),
+      matching: find.byType(EditableText),
+    )
+    .at(1);
 
-Finder countryCodeField() => find.descendant(
-  of: find.byType(PhoneInput),
-  matching: find.byType(EditableText),
-).at(0);
+Finder countryCodeField() => find
+    .descendant(
+      of: find.byType(PhoneInput),
+      matching: find.byType(EditableText),
+    )
+    .at(0);
 
 Future<void> sendSMS(WidgetTester tester, String phoneNumber) async {
   await tester.pump();
@@ -55,7 +59,7 @@ void main() {
       expect(
         (countryCodeField().evaluate().single.widget as EditableText)
             .controller
-            ?.text,
+            .text,
         '61',
       );
       expect(find.text('+'), findsWidgets);
