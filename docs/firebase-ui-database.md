@@ -158,7 +158,7 @@ FirebaseDatabaseQueryBuilder(
         return Container(
           padding: const EdgeInsets.all(8),
           color: Colors.teal[100],
-          child: const Text("User name is ${user['name']}"),
+          child: Text("User name is ${user['name']}"),
         );
       },
     );

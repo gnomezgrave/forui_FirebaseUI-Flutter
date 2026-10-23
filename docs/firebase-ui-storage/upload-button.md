@@ -62,6 +62,8 @@ By default, `UploadButton` will show all files in the file picker. You can filte
 UploadButton(
   extensions: ['jpg', 'png'],
   mimeTypes: ['image/jpeg', 'image/png'],
+  onUploadComplete: (ref) {/* handle successful upload */},
+  onError: (e, stackTrace) {/* handle error */},
 );
 ```
 

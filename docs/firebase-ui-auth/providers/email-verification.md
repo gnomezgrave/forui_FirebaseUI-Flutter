@@ -59,6 +59,7 @@ If you want to build a custom email verification screen, you could use `EmailVer
 
 ```dart
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/firebase_ui_auth.dart';
 
 class MyEmailVerificationScreen extends StatefulWidget {
@@ -87,14 +88,14 @@ class _MyEmailVerificationScreenState extends State<MyEmailVerificationScreen> {
     switch (ctrl.state) {
       case EmailVerificationState.unresolved:
       case EmailVerificationState.unverified:
-        return TextButton(
-          onPressed: () {
+        return FButton(
+          onPress: () {
             ctrl.sendVerificationEmail(
               defaultTargetPlatform,
               ActionCodeSettings(...),
             );
           },
-          child: Text('Send verification email'),
+          child: const Text('Send verification email'),
         );
       case EmailVerificationState.dismissed:
         return Text("Ok, let's verify your email next time");

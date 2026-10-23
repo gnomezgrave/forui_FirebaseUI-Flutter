@@ -32,9 +32,13 @@ Firebase UI storage provides an abstract class that simplifies building custom p
 
 ```dart
 class MyProgressIndicator extends TaskProgressWidget {
+  @override
   final Task task;
 
   const MyProgressIndicator({super.key, required this.task});
+
+  @override
+  ErrorBuilder? get errorBuilder => null;
 
   @override
   Widget buildProgressIndicator(BuildContext context, double progress) {

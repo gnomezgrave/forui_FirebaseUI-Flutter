@@ -30,7 +30,7 @@ The color could be customized:
 StorageImage(
   ref: FirebaseStorage.instance.ref('images/dash_and_sparky.png'),
   fit: BoxFit.cover,
-  loadingState: LoadingStateVariant.solidColor(
+  loadingStateVariant: LoadingStateVariant.solidColor(
     color: Colors.white.withOpacity(0.5)
   ),
 );
@@ -46,7 +46,7 @@ You can customize `size`, `color` and `strokeWidth` of the loading indicator:
 StorageImage(
   ref: FirebaseStorage.instance.ref('images/dash_and_sparky.png'),
   fit: BoxFit.cover,
-  loadingState: LoadingStateVariant.loadingIndicator(
+  loadingStateVariant: LoadingStateVariant.loadingIndicator(
     size: 48.0,
     color: Colors.pink,
     strokeWidth: 1.0,
@@ -63,7 +63,7 @@ Shimmer placeholder is a combination of the `solidColor` placeholder with a
 StorageImage(
   ref: FirebaseStorage.instance.ref('images/dash_and_sparky.png'),
   fit: BoxFit.cover,
-  loadingState: LoadingStateVariant.shimmer(),
+  loadingStateVariant: LoadingStateVariant.shimmer(),
 );
 ```
 
@@ -75,7 +75,7 @@ StorageImage(
 StorageImage(
   ref: FirebaseStorage.instance.ref('images/dash_and_sparky.png'),
   fit: BoxFit.cover,
-  loadingState: LoadingStateVariant.blurHash(),
+  loadingStateVariant: LoadingStateVariant.blurHash(),
 );
 ```
 
@@ -154,7 +154,7 @@ Alternatively, you could set a genereic, pre-generated blur-hash string directly
 StorageImage(
   ref: FirebaseStorage.instance.ref('images/dash_and_sparky.png'),
   fit: BoxFit.cover,
-  loadingState: LoadingStateVariant.blurHash(
+  loadingStateVariant: LoadingStateVariant.blurHash(
     blurHash: ':eDJq[9wo~xUbKNexqWG-@M|xuRlt7ayWVoMIwskxVIvs+slNHt'
       '2j]j?RiocR%fRo0oJtRW=V@t2R*bHoMfSbca#oJaybHj@flbIsoWCbHaya}bHoeazbIayofWC'
       'n~j[R*oJ';
