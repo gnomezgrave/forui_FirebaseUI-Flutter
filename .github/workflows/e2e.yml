@@ -131,7 +131,7 @@ jobs:
 
   ios:
     runs-on: macos-26
-    # Cold Xcode of Firebase/Firestore/abseil is ~25–30m; warm DerivedData is much less.
+    # Binary Firestore avoids ~25m abseil/gRPC compile; leave headroom for one e2e retry.
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -208,6 +208,11 @@ jobs:
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
         run: dart run melos bootstrap --scope tests
+      # Pre-build keeps `flutter test`'s Xcode pass incremental. Cheap now that
+      # Firestore ships as Invertase XCFrameworks (see tests/ios/Podfile).
+      - name: "Build Application"
+        working-directory: tests
+        run: flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
       - name: Start Firebase Emulator and proxy
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
@@ -220,16 +225,26 @@ jobs:
         with:
           # List of available simulators: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
           model: "iPhone 17"
-      # No separate `flutter build ios`: it was a full cold Xcode (~25–30m) and
-      # `flutter test` still recompiled. One compile path + DerivedData cache.
       - name: "E2E Tests"
         working-directory: tests
         env:
           SIMULATOR: ${{ steps.simulator.outputs.udid }}
         run: |
-          # Uncomment following line to have simulator logs printed out for debugging purposes.
-          # xcrun simctl spawn booted log stream --predicate 'eventMessage contains "flutter"' &
-          flutter test ./integration_test/firebase_ui_test.dart -d "$SIMULATOR" --dart-define=CI=true
+          run_e2e() {
+            # --no-dds: avoid DDS URL swap races; connectToVmService is only 5s.
+            flutter test ./integration_test/firebase_ui_test.dart \
+              -d "$SIMULATOR" \
+              --dart-define=CI=true \
+              --no-dds
+          }
+          if ! run_e2e; then
+            echo "::warning::iOS e2e failed (often VM Service connect); resetting simulator and retrying once"
+            xcrun simctl terminate "$SIMULATOR" io.flutter.plugins.firebase.tests || true
+            xcrun simctl shutdown "$SIMULATOR" || true
+            xcrun simctl boot "$SIMULATOR"
+            xcrun simctl bootstatus "$SIMULATOR" -b
+            run_e2e
+          fi
 
   macos:
     runs-on: macos-26
