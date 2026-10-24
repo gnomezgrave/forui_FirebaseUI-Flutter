@@ -25,7 +25,7 @@ Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_
 
 - Pin every third-party Action by **commit SHA** with a `# version` comment (match existing workflows).
 - Android e2e runs on host `ubuntu-latest` + `reactivecircus/android-emulator-runner` (KVM). Do **not** switch that job to a `flutter-android` container — nested virt breaks the emulator path. (`ghcr.io/gmeligio/flutter-web` is fine for the web job only.)
-- Flutter pins `ndkVersion` to **r28c** (`28.2.13676358`). Install via `nttld/setup-ndk` with `ndk-version: r28c`, `link-to-sdk: true`, `local-cache: true`.
+- Flutter pins `ndkVersion` to **28.2.13676358** (r28c). Install with `sdkmanager "ndk;28.2.13676358"` + `actions/cache` on that path (do **not** use `nttld/setup-ndk` — its SDK link can omit `clang` and break `jni` CMake).
 - iOS/macOS e2e runners: **`macos-26`**. Simulator model must exist on that image (currently `iPhone 17`).
 
 ### When upgrading Flutter
@@ -36,7 +36,7 @@ Update these together (same version string unless noted):
 | --- | --- |
 | [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) | every `flutter-version:` |
 | [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) web job | `ghcr.io/gmeligio/flutter-web:<version>` |
-| [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) Android | `nttld/setup-ndk` `ndk-version` if `flutter.ndkVersion` changed |
+| [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) Android | NDK cache path/`sdkmanager` package id if `flutter.ndkVersion` changed |
 | [`unit_tests.yml`](.github/workflows/unit_tests.yml) / [`code_health.yml`](.github/workflows/code_health.yml) | usually `channel: stable` only; pin `flutter-version` if e2e is pinned and analyze must match |
 | [AGENTS.md](AGENTS.md) Constraints | Flutter **x.y+** line |
 | Runner OS / simulators | only if the image or Xcode set forces it (e.g. `macos-*`, simulator model) |

@@ -64,14 +64,24 @@ Future<void> submitSmsCode(WidgetTester tester, String code) async {
   await settle(tester);
 }
 
+Future<void> tapVerifyPhoneNumber(WidgetTester tester) async {
+  // Soft keyboard / focus often covers the Forui FButton; hit-testing the
+  // label Text then misses and validation never runs.
+  FocusManager.instance.primaryFocus?.unfocus();
+  await tester.pump();
+  final next = find.text(
+    const DefaultLocalizations().verifyPhoneNumberButtonText,
+  );
+  await tester.ensureVisible(next);
+  await tester.tap(next);
+  await settle(tester);
+}
+
 Future<void> sendSMS(WidgetTester tester, String phoneNumber) async {
   await tester.pump();
 
   await tester.enterText(phoneNumberField(), phoneNumber);
-  await tester.tap(
-    find.text(const DefaultLocalizations().verifyPhoneNumberButtonText),
-  );
-  await settle(tester);
+  await tapVerifyPhoneNumber(tester);
 }
 
 void main() {
@@ -116,8 +126,7 @@ void main() {
       await tester.pump();
 
       await tester.enterText(phoneNumberField(), '12345');
-      await tester.tap(find.text(labels.verifyPhoneNumberButtonText));
-      await settle(tester);
+      await tapVerifyPhoneNumber(tester);
 
       final errorText = find.text(labels.phoneNumberInvalidErrorText);
       expect(errorText, findsOneWidget);
