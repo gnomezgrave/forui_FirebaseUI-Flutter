@@ -22,6 +22,10 @@ String? localizedErrorText(
     case 'too-many-requests':
       return labels.accessDisabledErrorText;
     case 'wrong-password':
+    // Identity Toolkit / Auth emulator often return this instead of
+    // wrong-password for email+password failures.
+    case 'invalid-credential':
+    case 'INVALID_LOGIN_CREDENTIALS':
       return labels.wrongOrNoPasswordErrorText;
     case 'credential-already-in-use':
       return labels.credentialAlreadyInUseErrorText;

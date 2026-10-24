@@ -61,10 +61,11 @@ class ReauthenticateDialog extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 400),
         child: FDialog(
           builder: (context, style) {
+            // FDialog may shrink when the keyboard opens; keep Cancel visible
+            // and scroll the provider list instead of overflowing the Column.
             return Padding(
               padding: verticalPadding,
               child: Column(
-                mainAxisSize: .min,
                 crossAxisAlignment: .stretch,
                 children: [
                   Padding(
@@ -72,10 +73,7 @@ class ReauthenticateDialog extends StatelessWidget {
                     child: Title(text: l.verifyItsYouText),
                   ),
                   const SizedBox(height: 16),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.sizeOf(context).shortestSide / 1.5,
-                    ),
+                  Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(

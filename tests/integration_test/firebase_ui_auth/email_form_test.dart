@@ -54,9 +54,11 @@ void main() {
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.enterText(inputs.at(1), 'wrongpassword');
       await tester.tap(find.text(labels.signInActionText));
-      await tester.pumpAndSettle();
 
-      expect(find.text(labels.wrongOrNoPasswordErrorText), findsOneWidget);
+      final error = find.text(labels.wrongOrNoPasswordErrorText);
+      await pumpUntil(tester, () => error.evaluate().isNotEmpty);
+
+      expect(error, findsOneWidget);
     }, skip: skipMacOSAuthKeychain);
 
     testWidgets(

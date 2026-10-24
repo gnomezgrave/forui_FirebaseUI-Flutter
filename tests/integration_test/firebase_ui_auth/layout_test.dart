@@ -34,17 +34,21 @@ void main() {
         ),
       );
 
-      // Triggers keyboard to appear
-      await tester.tap(find.byType(FTextFormField).first);
-
-      // Waits for keyboard to appear
+      // Simulate a reduced viewport (keyboard) so the dialog must scroll
+      // instead of overflowing. Integration tests do not always raise a real
+      // IME when tapping a Forui text field.
+      final view = tester.view;
+      view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(view.resetViewInsets);
       await tester.pumpAndSettle();
 
       // No need for an expect.
       // Test will fail if there is an overflow.
       // This is a built-in flutter functionality
 
-      await tester.tap(find.text('Cancel'));
+      final cancel = find.text('Cancel');
+      await tester.ensureVisible(cancel);
+      await tester.tap(cancel);
       await tester.pumpAndSettle();
     });
   });

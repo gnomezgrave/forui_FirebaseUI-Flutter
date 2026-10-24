@@ -5,7 +5,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
@@ -58,13 +57,13 @@ void main() async {
     });
 
     testWidgets('signs the user in', (tester) async {
-      final listener = MockListener();
+      final states = <AuthState>[];
 
       await render(
         tester,
         AuthStateListener<OAuthController>(
           listener: (oldState, state, controller) {
-            listener(state);
+            states.add(state);
             return null;
           },
           child: OAuthProviderButton(provider: provider, auth: auth),
@@ -73,14 +72,12 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      // MockAuth.signInWithProvider delays 500ms without scheduling frames.
+      await pumpUntil(tester, () => states.any((s) => s is SignedIn));
 
-      final result = verify(listener.call(captureAny));
-      expect(result.captured[1], isA<SignedIn>());
-
-      final user = (result.captured[1] as SignedIn).user!;
-      expect(user.displayName, 'Test User');
-      expect(user.email, 'test@test.com');
+      final signedIn = states.whereType<SignedIn>().last;
+      expect(signedIn.user!.displayName, 'Test User');
+      expect(signedIn.user!.email, 'test@test.com');
     });
 
     testWidgets('links the credential when the user is anonymous', (
@@ -198,28 +195,28 @@ void main() async {
     testWidgets(
       'reports an error rather than hanging when desktop keys are missing',
       (tester) async {
-        final listener = MockListener();
+        // OAuth uses [defaultTargetPlatform], not Theme.platform.
+        debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+        addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+        final states = <AuthState>[];
 
         await render(
           tester,
-          Theme(
-            data: ThemeData(platform: TargetPlatform.macOS),
-            child: AuthStateListener<OAuthController>(
-              listener: (oldState, state, controller) {
-                listener(state);
-                return null;
-              },
-              child: OAuthProviderButton(provider: provider, auth: auth),
-            ),
+          AuthStateListener<OAuthController>(
+            listener: (oldState, state, controller) {
+              states.add(state);
+              return null;
+            },
+            child: OAuthProviderButton(provider: provider, auth: auth),
           ),
         );
 
         final button = find.byType(OAuthProviderButtonBase);
         await tester.tap(button);
-        await tester.pumpAndSettle();
+        await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-        final result = verify(listener.call(captureAny));
-        expect(result.captured.last, isA<AuthFailed>());
+        expect(states.last, isA<AuthFailed>());
       },
     );
   }, skip: !provider.supportsPlatform(defaultTargetPlatform));

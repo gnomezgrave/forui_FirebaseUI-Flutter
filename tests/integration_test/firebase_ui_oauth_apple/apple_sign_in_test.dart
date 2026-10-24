@@ -59,13 +59,13 @@ void main() async {
     });
 
     testWidgets('signs the user in', (tester) async {
-      final listener = MockListener();
+      final states = <AuthState>[];
 
       await render(
         tester,
         AuthStateListener<OAuthController>(
           listener: (oldState, state, controller) {
-            listener(state);
+            states.add(state);
             return null;
           },
           child: OAuthProviderButton(provider: provider, auth: auth),
@@ -74,14 +74,12 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      // MockAuth.signInWithProvider delays 500ms without scheduling frames.
+      await pumpUntil(tester, () => states.any((s) => s is SignedIn));
 
-      final result = verify(listener.call(captureAny));
-      expect(result.captured[1], isA<SignedIn>());
-
-      final user = (result.captured[1] as SignedIn).user!;
-      expect(user.displayName, 'Test User');
-      expect(user.email, 'test@test.com');
+      final signedIn = states.whereType<SignedIn>().last;
+      expect(signedIn.user!.displayName, 'Test User');
+      expect(signedIn.user!.email, 'test@test.com');
     });
   }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 

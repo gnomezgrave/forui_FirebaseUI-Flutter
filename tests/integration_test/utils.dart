@@ -104,6 +104,25 @@ Future<void> render(WidgetTester tester, Widget widget) async {
   );
 }
 
+/// Pumps until [condition] is true or [timeout] elapses.
+///
+/// Prefer this over a bare [WidgetTester.pumpAndSettle] when waiting on a
+/// [Future] that does not schedule frames (e.g. [Future.delayed] in mocks).
+Future<void> pumpUntil(
+  WidgetTester tester,
+  bool Function() condition, {
+  Duration timeout = const Duration(seconds: 15),
+  Duration step = const Duration(milliseconds: 50),
+}) async {
+  final end = DateTime.now().add(timeout);
+  while (!condition()) {
+    if (DateTime.now().isAfter(end)) {
+      throw TestFailure('pumpUntil timed out after $timeout');
+    }
+    await tester.pump(step);
+  }
+}
+
 Future<T> retry<T>(Future<T> Function() fn, [int maxAttempts = 5]) async {
   var delay = const Duration(milliseconds: 100);
   int attempts = 0;
