@@ -31,6 +31,7 @@ dependencies:
   firebase_database: ^13.0.0
   forui_firebase_ui_database: ^0.1.0
 
+  material_ui: ^1.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

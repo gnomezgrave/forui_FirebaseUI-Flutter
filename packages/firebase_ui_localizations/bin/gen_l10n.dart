@@ -274,8 +274,7 @@ import 'lang/en.dart';
 ///   // ...
 ///   localizationsDelegates: [
 ///     FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
-///     GlobalMaterialLocalizations.delegate,
-///     GlobalWidgetsLocalizations.delegate,
+///     ...GlobalMaterialLocalizations.delegates,
 ///     FirebaseUILocalizations.delegate,
 ///   ],
 /// )

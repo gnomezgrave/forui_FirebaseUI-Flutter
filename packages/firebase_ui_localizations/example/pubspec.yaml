@@ -39,9 +39,7 @@ dependencies:
   forui_firebase_ui_localizations: ^0.1.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-
+  material_ui: ^1.8.0
 dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_test:

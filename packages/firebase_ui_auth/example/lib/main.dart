@@ -12,10 +12,9 @@ import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_faceboo
 import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 import 'package:forui_firebase_ui_oauth_twitter/forui_firebase_ui_oauth_twitter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'config.dart';
 import 'decorations.dart';
@@ -303,8 +302,7 @@ class FirebaseAuthUIExample extends StatelessWidget {
       supportedLocales: const [Locale('en')],
       localizationsDelegates: [
         FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         FirebaseUILocalizations.delegate,
       ],
     );

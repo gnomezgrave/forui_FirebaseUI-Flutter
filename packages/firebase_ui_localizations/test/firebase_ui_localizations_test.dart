@@ -3,9 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 const localeZh = Locale('zh');
 const localeTW = Locale('zh', 'TW');
@@ -140,9 +139,10 @@ class TestMaterialApp extends StatelessWidget {
     return MaterialApp(
       supportedLocales: const [localeZh, localeTW],
       locale: locale,
+      // material_ui owns Global*Localizations; do not also import
+      // flutter_localizations (ambiguous symbols).
       localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         localizationsOverride == null
             ? FirebaseUILocalizations.delegate
             : localizationsOverride!,

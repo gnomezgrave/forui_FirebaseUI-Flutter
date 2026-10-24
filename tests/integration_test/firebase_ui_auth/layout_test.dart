@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_oauth_apple/forui_firebase_ui_oauth_apple.dart';
 import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

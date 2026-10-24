@@ -43,6 +43,7 @@ dependencies:
   forui_firebase_ui_oauth_facebook: ^0.1.0
   forui_firebase_ui_oauth_google: ^0.1.0
   forui_firebase_ui_oauth_twitter: ^0.1.0
+  material_ui: ^1.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

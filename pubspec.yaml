@@ -117,6 +117,8 @@ melos:
         Default device: macos. Override with FLUTTER_TEST_DEVICE, e.g.:
           FLUTTER_TEST_DEVICE=chrome dart run melos run test:e2e
           FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 dart run melos run test:e2e
+        If macOS pod install fails on a missing Firebase version, refresh once:
+          (cd tests/macos && pod install --repo-update)
       run: |
         cd tests && flutter test integration_test/firebase_ui_test.dart -r github \
           -d "${FLUTTER_TEST_DEVICE:-macos}"
@@ -196,6 +198,16 @@ melos:
       description: Add a license header to all necessary files.
 
     emulator:start:
-      run: firebase emulators:start --only firestore,auth,functions,storage,database --project flutterfire-e2e-tests --import=./emulators-data --export-on-exit=./emulators-data
+      run: |
+        # Free ports left by a previous emulator suite (common after Ctrl-C / crash).
+        for port in 4000 5001 8080 9000 9099 9199; do
+          pids=$(lsof -nP -tiTCP:$port -sTCP:LISTEN 2>/dev/null || true)
+          if [ -n "$pids" ]; then
+            echo "Killing process(es) on port $port: $pids"
+            kill -9 $pids 2>/dev/null || true
+          fi
+        done
+        firebase emulators:start --only firestore,auth,functions,storage,database --project flutterfire-e2e-tests --import=./emulators-data --export-on-exit=./emulators-data
+      description: Start Firebase emulators (kills any existing listeners on emulator ports first).
     update-dependencies:
       run: dart scripts/update_dependencies.dart

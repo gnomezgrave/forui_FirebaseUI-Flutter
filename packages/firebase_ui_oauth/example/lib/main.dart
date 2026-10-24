@@ -7,7 +7,7 @@ import 'package:forui_firebase_ui_oauth_apple/forui_firebase_ui_oauth_apple.dart
 import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_facebook.dart';
 import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 import 'package:forui_firebase_ui_oauth_twitter/forui_firebase_ui_oauth_twitter.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 void main() async {

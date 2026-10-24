@@ -5,10 +5,9 @@
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 import 'package:forui_firebase_ui_localizations_example/firebase_options.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +30,8 @@ class MyApp extends StatelessWidget {
               FTheme(data: FTheme.neutral.light.touch, child: child!),
           supportedLocales: const [Locale('en'), Locale('fr')],
           locale: locale,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+          localizationsDelegates: [
+            ...GlobalMaterialLocalizations.delegates,
             FirebaseUILocalizations.delegate,
           ],
           home: Column(

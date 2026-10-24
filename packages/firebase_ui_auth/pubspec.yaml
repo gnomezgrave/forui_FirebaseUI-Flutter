@@ -20,12 +20,11 @@ dependencies:
   forui_firebase_ui_shared: ^0.1.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
   forui: ^0.27.0
   meta: ^1.10.0
   shared_preferences: ^2.5.0
-
+  cupertino_ui: ^1.1.4
+  material_ui: ^1.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

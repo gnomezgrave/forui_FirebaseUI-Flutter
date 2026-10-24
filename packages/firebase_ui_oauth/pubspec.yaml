@@ -25,6 +25,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  material_ui: ^1.8.0
 false_secrets:
   - "/example/**/google-services.json"
   - "/example/**/firebase_options.dart"

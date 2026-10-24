@@ -19,6 +19,7 @@ Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_
 - Dart `^3.13`, Flutter **3.47+**, Forui **0.27.x**
 - Prefer `dart run melos run analyze` / package `flutter test` over inventing new check scripts
 - Do not migrate DataTables unless the user asks
+- Design widgets: `package:material_ui` / `package:cupertino_ui` (not `flutter/material.dart`). App/Material delegates: `...GlobalMaterialLocalizations.delegates` from `material_ui` — do **not** also import `flutter_localizations` (ambiguous `Global*` symbols).
 
 ## CI
 

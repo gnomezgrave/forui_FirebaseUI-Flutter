@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:app_links/app_links.dart';
 import 'package:clock/clock.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';

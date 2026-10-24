@@ -6,7 +6,7 @@ export 'src/provider.dart' show FacebookProvider;
 export 'src/theme.dart' show FacebookProviderButtonStyle;
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 

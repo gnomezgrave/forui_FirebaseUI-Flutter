@@ -4,7 +4,7 @@
 
 import 'package:forui_firebase_ui_storage_example/storybook.dart';
 import 'package:forui_firebase_ui_storage_example/src/storage_image_app.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'grid_view_app.dart';
 import 'progress_bar_app.dart';

@@ -9,7 +9,7 @@
  *  See README.md for instructions on how to generate this file.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'lang/en.dart';
 
@@ -34,8 +34,7 @@ import 'lang/en.dart';
 ///   // ...
 ///   localizationsDelegates: [
 ///     FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
-///     GlobalMaterialLocalizations.delegate,
-///     GlobalWidgetsLocalizations.delegate,
+///     ...GlobalMaterialLocalizations.delegates,
 ///     FirebaseUILocalizations.delegate,
 ///   ],
 /// )

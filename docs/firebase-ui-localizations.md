@@ -6,10 +6,11 @@ Firebase UI for Flutter supports localization, so every single label can be cust
 
 ```yaml
 dependencies:
-  flutter_localizations:
-    sdk: flutter
+  material_ui: ^1.8.0 # or a pinned version; provides GlobalMaterialLocalizations
   forui_firebase_ui_localizations: ^0.1.0
 ```
+
+Material/Cupertino/Widgets localization delegates ship with `material_ui` (not `flutter_localizations`). Do not import both — the `Global*` symbols clash.
 
 ## Usage
 
@@ -18,7 +19,6 @@ If your app supports only a single language, and you want to override labels –
 For example, we could override the Spanish localization class and customize the email and password labels:
 
 ```dart
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 // EsLocalizations is a class that provides Spanish labels. We override it here:
@@ -37,6 +37,7 @@ Once created, pass the instance of `LabelOverrides` to the `localizationsDelegat
 
 ```dart
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -50,11 +51,10 @@ class MyApp extends StatelessWidget {
         // Creates an instance of FirebaseUILocalizationDelegate with overridden labels
         FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
 
-        // Delegates below take care of built-in flutter widgets
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
+        // Material + Cupertino + Widgets delegates (from material_ui)
+        ...GlobalMaterialLocalizations.delegates,
 
-        // This delegate is required to provide the labels that are not overridden by LabelOverrides
+        // Required for labels that are not overridden by LabelOverrides
         FirebaseUILocalizations.delegate,
       ],
       // ...
@@ -63,5 +63,5 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-If you need to support multiple languages – follow the [official Flutter localization guide](https://docs.flutter.dev/development/accessibility-and-localization/internationalization#an-alternative-class-for-the-apps-localized-resources)
+If you need to support multiple languages – follow the [official Flutter localization guide](https://docs.flutter.dev/ui/internationalization)
 and create a `LocalizationsDelegate` that resolves to a `FirebaseUILocalizations` subclass for each locale.
