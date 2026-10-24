@@ -11,11 +11,11 @@ Configure email provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -26,7 +26,7 @@ void main() {
         handleCodeInApp: true,
         androidMinimumVersion: '1',
         androidPackageName:
-            'io.flutter.plugins.firebase_ui.firebase_ui_example',
+            'io.flutter.plugins.firebase_ui.forui_firebase_ui_example',
         iOSBundleId: 'io.flutter.plugins.flutterfireui.flutterfireUIExample',
       ),
     ),
@@ -41,8 +41,16 @@ See [this doc](https://firebase.google.com/docs/auth/flutter/email-link-auth) fo
 
 After adding `EmailLinkAuthProvider` to the `FirebaseUIAuth.configureProviders`, `SignInScreen` or `RegisterScreen` will have a button that will trigger `EmailLinkSignInAction`, or, if no action provided, will open `EmailLinkSignInScreen` using `Navigator.push`.
 
+Apps must wrap Firebase UI in [`FTheme`](../theming.md) (typically via `MaterialApp.builder`):
+
 ```dart
+import 'package:forui/forui.dart';
+
 MaterialApp(
+  builder: (context, child) => FTheme(
+    data: FTheme.neutral.light.touch,
+    child: child!,
+  ),
   initialRoute: '/login',
   routes: {
     '/login': (context) {
@@ -66,7 +74,7 @@ MaterialApp(
       ],
     ),
     '/profile': (context) => ProfileScreen(),
-  }
+  },
 )
 ```
 
@@ -74,7 +82,7 @@ MaterialApp(
 >
 > - a user signing in with an email link for the first time emits `UserCreated` rather than `SignedIn`, and an upgraded anonymous user (`upgradeAnonymousUsers`) emits `CredentialLinked`, so handle all three.
 > - see [navigation guide](../navigation.md) to learn how navigation works with Firebase UI.
-> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIAction-class.html).
+> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIAction-class.html).
 
 ## Handling the sign in link
 
@@ -87,6 +95,10 @@ When the link is sent, the email is stored on the device, so the link completes 
       await emailLinkProvider.isLaunchedFromSignInLink();
 
   MaterialApp(
+    builder: (context, child) => FTheme(
+      data: FTheme.neutral.light.touch,
+      child: child!,
+    ),
     initialRoute: launchedFromSignInLink ? '/email-link-sign-in' : '/login',
     // ...
   );
@@ -100,19 +112,19 @@ When the link is sent, the email is stored on the device, so the link completes 
 
 ## Using view
 
-If the pre-built screen don't suit the app's needs, you could use a `EmailLinkSignInView` to build your custom screen:
+If the pre-built screen don't suit the app's needs, you could use a `EmailLinkSignInView` to build your custom screen (ensure an `FTheme` ancestor):
 
 ```dart
 class MyEmailLinkSignInScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           MyCustomHeader(),
           Expanded(
             child: Padding(
-            padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: FirebaseUIActions(
                 actions: [
                   AuthStateChangeAction((context, state) {
@@ -121,15 +133,15 @@ class MyEmailLinkSignInScreen extends StatelessWidget {
                         state is CredentialLinked) {
                       Navigator.pushReplacementNamed(context, '/profile');
                     }
-                  }
+                  }),
                 ],
                 child: EmailLinkSignInView(provider: emailLinkAuthProvider),
               ),
             ),
           ),
-        ]
-      )
-    )
+        ],
+      ),
+    );
   }
 }
 ```
@@ -150,7 +162,7 @@ class MyCustomWidget extends StatelessWidget {
             newState is CredentialLinked) {
           Navigator.of(context).pushReplacementNamed('/profile');
         }
-      }
+      },
       builder: (context, state, ctrl, child) {
         if (state is Uninitialized) {
           return TextField(
@@ -160,7 +172,7 @@ class MyCustomWidget extends StatelessWidget {
             },
           );
         } else if (state is AwaitingDynamicLink) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is EmailRequired) {
           // The link was opened on another device.
           return TextField(
@@ -182,7 +194,7 @@ class MyCustomWidget extends StatelessWidget {
 
 ## Building a custom stateful widget
 
-For full control over every phase of the authentication lifecycle you could build a stateful widget, which implements `EmailLinkAuthListener`:
+For full control over every phase of the authentication lifecycle you could build a stateful widget which implements `EmailLinkAuthListener`. Ensure an [`FTheme`](../theming.md) ancestor.
 
 ```dart
 class CustomEmailLinkSignIn extends StatefulWidget {
@@ -194,37 +206,43 @@ class CustomEmailLinkSignIn extends StatefulWidget {
 
 class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
     implements EmailLinkAuthListener {
+  @override
   final auth = FirebaseAuth.instance;
-  late final EmailLinkAuthProvider provider =
+
+  late final EmailLinkAuthProvider _provider =
       EmailLinkAuthProvider(actionCodeSettings: actionCodeSettings)
+        ..auth = auth
         ..authListener = this;
+
+  @override
+  AuthProvider get provider => _provider;
 
   late Widget child = TextField(
     decoration: const InputDecoration(
       labelText: 'Email',
     ),
-    onSubmitted: provider.sendLink,
+    onSubmitted: _provider.sendLink,
   );
 
   @override
   void initState() {
     super.initState();
     // Completes the sign in if a sign in link launched the app.
-    provider.handleIncomingLinks();
+    _provider.handleIncomingLinks();
   }
 
   @override
   void onBeforeLinkSent(String email) {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onLinkSent(String email) {
-    provider.awaitLink(email);
+    _provider.awaitLink(email);
     setState(() {
-      child = Text('Check your email and click the link');
+      child = const Text('Check your email and click the link');
     });
   }
 
@@ -235,7 +253,7 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
         decoration: const InputDecoration(
           labelText: 'Confirm your email',
         ),
-        onSubmitted: (email) => provider.signInWithLink(email, link),
+        onSubmitted: (email) => _provider.signInWithLink(email, link),
       );
     });
   }
@@ -246,30 +264,23 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
   }
 
   @override
-  void onBeforeCredentialLinked(AuthCredential credential) {
+  void onCredentialReceived(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
-    });
-  }
-
-  @override
-  void onBeforeProvidersForEmailFetch() {
-    setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onCanceled() {
     setState(() {
-      child = Text('Authenticated cancelled');
+      child = const Text('Authentication cancelled');
     });
   }
 
@@ -279,23 +290,12 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
   }
 
   @override
-  void onDifferentProvidersFound(
-      String email, List<String> providers, AuthCredential? credential) {
-    showDifferentMethodSignInDialog(
-      context: context,
-      availableProviders: providers,
-      providers: FirebaseUIAuth.providersFor(FirebaseAuth.instance.app),
-    );
-  }
-
-  @override
   void onError(Object error) {
     try {
-      // tries default recovery strategy
-      defaultOnAuthError(provider, error);
-    } catch (err) {
+      defaultOnAuthError(_provider, error);
+    } on Exception catch (err) {
       setState(() {
-        defaultOnAuthError(provider, error);
+        child = ErrorText(exception: err);
       });
     }
   }
@@ -303,6 +303,11 @@ class _CustomEmailLinkSignInState extends State<CustomEmailLinkSignIn>
   @override
   void onSignedIn(UserCredential credential) {
     Navigator.of(context).pushReplacementNamed('/profile');
+  }
+
+  @override
+  void onMFARequired(MultiFactorResolver resolver) {
+    startMFAVerification(context: context, resolver: resolver, auth: auth);
   }
 }
 ```

@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 abstract class MultiProviderScreen extends Widget {
   final List<AuthProvider>? _providers;
@@ -13,12 +13,7 @@ abstract class MultiProviderScreen extends Widget {
     return _auth ?? fba.FirebaseAuth.instance;
   }
 
-  const MultiProviderScreen({
-    super.key,
-    fba.FirebaseAuth? auth,
-    List<AuthProvider>? providers,
-  }) : _auth = auth,
-       _providers = providers;
+  const MultiProviderScreen({super.key, this._auth, this._providers});
 
   List<AuthProvider> get providers {
     if (_providers != null) {

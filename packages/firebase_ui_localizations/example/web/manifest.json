@@ -1,6 +1,6 @@
 {
-    "name": "firebase_ui_localizations_example",
-    "short_name": "firebase_ui_localizations_example",
+    "name": "forui_firebase_ui_localizations_example",
+    "short_name": "forui_firebase_ui_localizations_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

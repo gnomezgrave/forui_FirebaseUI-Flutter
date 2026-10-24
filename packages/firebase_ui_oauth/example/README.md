@@ -1,4 +1,4 @@
-# firebase_ui_oauth_example
+# forui_firebase_ui_oauth_example
 
 A new Flutter project.
 

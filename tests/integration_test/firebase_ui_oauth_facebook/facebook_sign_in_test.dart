@@ -3,13 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
-import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_facebook.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -18,72 +17,93 @@ void main() async {
   late FacebookProvider provider = FacebookProvider(clientId: 'clientId');
 
   setUp(() {
+    // Force classic login in tests — ATT status can hang on iOS simulator CI.
+    FacebookProvider.debugHasTrackingPermission = () async => true;
     provider.provider = MockFacebookAuth();
     setMockFacebookProvider(provider);
   });
 
+  tearDown(() {
+    FacebookProvider.debugHasTrackingPermission = null;
+  });
+
   const labels = DefaultLocalizations();
 
-  group(
-    'Sign in with Facebook button',
-    () {
-      testWidgets('has a correct button label', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
-        expect(find.text(labels.signInWithFacebookButtonText), findsOneWidget);
+  group('Sign in with Facebook button', () {
+    testWidgets('has a correct button label', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider));
+      expect(find.text(labels.signInWithFacebookButtonText), findsOneWidget);
+    });
+
+    testWidgets('calls sign in when tapped', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider));
+
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+
+      await tester.pumpAndSettle();
+
+      // Verify login was invoked by checking that the mock's login method
+      // completed successfully (actual parameter verification happens in unit tests)
+      expect(true, isTrue);
+    });
+
+    testWidgets('shows loading indicator when sign in is in progress', (
+      tester,
+    ) async {
+      // Create a new provider with a mock that delays
+      final delayedProvider = FacebookProvider(clientId: 'clientId');
+      final delayedMock = MockFacebookAuth();
+      delayedProvider.provider = delayedMock;
+      setMockFacebookProvider(delayedProvider);
+
+      // Override noSuchMethod to add delay
+      when(delayedMock.login()).thenAnswer((realInvocation) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        return MockLoginResult();
       });
 
-      testWidgets('calls sign in when tapped', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
+      await render(tester, OAuthProviderButton(provider: delayedProvider));
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pump();
 
-        await tester.pumpAndSettle();
+      expect(find.byType(LoadingIndicator), findsOneWidget);
+    });
 
-        // Verify login was invoked by checking that the mock's login method
-        // completed successfully (actual parameter verification happens in unit tests)
-        expect(true, isTrue);
-      });
+    testWidgets('signs the user in', (tester) async {
+      final states = <AuthState>[];
 
-      testWidgets('shows loading indicator when sign in is in progress', (
+      await render(
         tester,
-      ) async {
-        // Create a new provider with a mock that delays
-        final delayedProvider = FacebookProvider(clientId: 'clientId');
-        final delayedMock = MockFacebookAuth();
-        delayedProvider.provider = delayedMock;
-        setMockFacebookProvider(delayedProvider);
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(provider: provider),
+        ),
+      );
 
-        // Override noSuchMethod to add delay
-        when(delayedMock.login()).thenAnswer((realInvocation) async {
-          await Future.delayed(const Duration(milliseconds: 50));
-          return MockLoginResult();
-        });
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      // Auth emulator sign-in is async and may not schedule frames.
+      await pumpUntil(
+        tester,
+        () => states.any((s) => s is SignedIn || s is AuthFailed),
+      );
 
-        await render(tester, OAuthProviderButton(provider: delayedProvider));
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pump();
-
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      });
-
-      testWidgets('signs the user in', (tester) async {
-        await render(tester, OAuthProviderButton(provider: provider));
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-
-        final user = auth.currentUser!;
-
-        expect(user.displayName, 'Test User');
-        expect(user.email, 'test@test.com');
-      });
-    },
-    skip: !provider.supportsPlatform(defaultTargetPlatform),
-  );
+      expect(
+        states.whereType<AuthFailed>(),
+        isEmpty,
+        reason: states.whereType<AuthFailed>().map((e) => e.exception).join(),
+      );
+      expect(auth.currentUser, isNotNull);
+      expect(auth.currentUser!.displayName, 'Test User');
+      expect(auth.currentUser!.email, 'test@test.com');
+    });
+  }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 }
 
 // Mock JWT with the following payload:
@@ -120,14 +140,14 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
     String? nonce,
   }) async {
     return super.noSuchMethod(
-      Invocation.method(#signIn, [], {
+      Invocation.method(#login, null, {
         #permissions: permissions ?? ['email', 'public_profile'],
         #loginBehavior: loginBehavior ?? LoginBehavior.dialogOnly,
         #loginTracking: loginTracking ?? LoginTracking.enabled,
         #nonce: nonce,
       }),
-      returnValue: MockLoginResult(),
-      returnValueForMissingStub: MockLoginResult(),
+      returnValue: Future<LoginResult>.value(MockLoginResult()),
+      returnValueForMissingStub: Future<LoginResult>.value(MockLoginResult()),
     );
   }
 }

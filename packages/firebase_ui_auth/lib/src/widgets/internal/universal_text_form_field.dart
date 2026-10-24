@@ -2,16 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 /// {@template ui.auth.widgets.internal.universal_text_form_field}
-/// Uses [TextFormField] under material library and [CupertinoTextFormFieldRow]
-/// under cupertion.
+/// Text form field backed by Forui [FTextFormField].
 /// {@endtemplate}
-class UniversalTextFormField extends PlatformWidget {
+class UniversalTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final String? placeholder;
   final String? Function(String?)? validator;
@@ -46,64 +44,30 @@ class UniversalTextFormField extends PlatformWidget {
   });
 
   @override
-  Widget buildCupertino(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(bottom: 8),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: CupertinoColors.inactiveGray),
-            ),
-          ),
-          child: CupertinoTextFormFieldRow(
-            autocorrect: autocorrect,
-            autofillHints: autofillHints,
-            focusNode: focusNode,
-            padding: EdgeInsets.zero,
-            controller: controller,
-            placeholder: placeholder,
-            validator: validator,
-            onFieldSubmitted: onSubmitted,
-            autofocus: autofocus,
-            inputFormatters: inputFormatters,
-            keyboardType: keyboardType,
-            obscureText: obscureText,
-            prefix: prefix,
-          ),
-        ),
-        if (suffixIcon != null)
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: suffixIcon,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return TextFormField(
-      autocorrect: autocorrect,
-      autofillHints: autofillHints,
-      autofocus: autofocus,
+  Widget build(BuildContext context) {
+    return FTextFormField(
+      control: .managed(controller: controller),
+      label: placeholder == null ? null : Text(placeholder!),
       focusNode: focusNode,
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: placeholder,
-        prefix: prefix,
-        suffixIcon: suffixIcon,
-      ),
-      validator: validator,
-      onFieldSubmitted: onSubmitted,
-      inputFormatters: inputFormatters,
-      keyboardType: keyboardType,
+      autofocus: autofocus,
       obscureText: obscureText,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions ?? true,
+      keyboardType: keyboardType,
+      // Forui defaults to [TextInputAction.next]; use done when we handle submit.
+      textInputAction: onSubmitted != null
+          ? TextInputAction.done
+          : TextInputAction.next,
+      inputFormatters: inputFormatters,
+      autofillHints: autofillHints,
+      validator: validator,
+      onSubmit: onSubmitted == null ? null : (value) => onSubmitted!(value),
+      prefixBuilder: prefix == null
+          ? null
+          : (context, style, variants) => prefix!,
+      suffixBuilder: suffixIcon == null
+          ? null
+          : (context, style, variants) => suffixIcon!,
     );
   }
 }

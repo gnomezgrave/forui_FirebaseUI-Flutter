@@ -5,12 +5,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
-import 'package:firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth_twitter/forui_firebase_ui_oauth_twitter.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -29,225 +28,213 @@ void main() async {
     setMockTwitterProvider(provider);
   });
 
-  group(
-    'Sign in with Twitter button',
-    () {
-      testWidgets('has a correct button label', (tester) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
-        expect(find.text(labels.signInWithTwitterButtonText), findsOneWidget);
-      });
+  group('Sign in with Twitter button', () {
+    testWidgets('has a correct button label', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
+      expect(find.text(labels.signInWithTwitterButtonText), findsOneWidget);
+    });
 
-      testWidgets('calls sign in when tapped', (tester) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
+    testWidgets('calls sign in when tapped', (tester) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
 
-        await tester.pumpAndSettle();
-        verify(auth.signInWithProvider(fbProvider)).called(1);
-      });
+      await tester.pumpAndSettle();
+      verify(auth.signInWithProvider(fbProvider)).called(1);
+    });
 
-      testWidgets('shows loading indicator when sign in is in progress', (
+    testWidgets('shows loading indicator when sign in is in progress', (
+      tester,
+    ) async {
+      await render(tester, OAuthProviderButton(provider: provider, auth: auth));
+
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pump();
+
+      expect(find.byType(LoadingIndicator), findsOneWidget);
+    });
+
+    testWidgets('signs the user in', (tester) async {
+      final states = <AuthState>[];
+
+      await render(
         tester,
-      ) async {
-        await render(
-          tester,
-          OAuthProviderButton(provider: provider, auth: auth),
-        );
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(provider: provider, auth: auth),
+        ),
+      );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pump();
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      // MockAuth.signInWithProvider delays 500ms without scheduling frames.
+      await pumpUntil(tester, () => states.any((s) => s is SignedIn));
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      });
+      final signedIn = states.whereType<SignedIn>().last;
+      expect(signedIn.user!.displayName, 'Test User');
+      expect(signedIn.user!.email, 'test@test.com');
+    });
 
-      testWidgets('signs the user in', (tester) async {
-        final listener = MockListener();
+    testWidgets('links the credential when the user is anonymous', (
+      tester,
+    ) async {
+      final anonymousUser = MockAnonymousUser();
+      auth.currentUserOverride = anonymousUser;
 
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              listener(state);
-              return null;
-            },
-            child: OAuthProviderButton(provider: provider, auth: auth),
-          ),
-        );
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-
-        final result = verify(listener.call(captureAny));
-        expect(result.captured[1], isA<SignedIn>());
-
-        final user = (result.captured[1] as SignedIn).user!;
-        expect(user.displayName, 'Test User');
-        expect(user.email, 'test@test.com');
-      });
-
-      testWidgets('links the credential when the user is anonymous', (
+      // AuthAction.signIn is explicit: the flow would otherwise resolve to
+      // AuthAction.link on its own whenever currentUser is non-null, and the
+      // test would pass without shouldUpgradeAnonymous being consulted.
+      await render(
         tester,
-      ) async {
-        final anonymousUser = MockAnonymousUser();
-        auth.currentUserOverride = anonymousUser;
+        OAuthProviderButton(
+          provider: provider,
+          auth: auth,
+          action: AuthAction.signIn,
+        ),
+      );
 
-        // AuthAction.signIn is explicit: the flow would otherwise resolve to
-        // AuthAction.link on its own whenever currentUser is non-null, and the
-        // test would pass without shouldUpgradeAnonymous being consulted.
-        await render(
-          tester,
-          OAuthProviderButton(
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await tester.pump();
+
+      verify(anonymousUser.linkWithProvider(fbProvider)).called(1);
+      verifyNever(auth.signInWithProvider(fbProvider));
+    });
+
+    testWidgets('reports an error when linking with no signed in user', (
+      tester,
+    ) async {
+      final states = <AuthState>[];
+
+      await render(
+        tester,
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(
             provider: provider,
             auth: auth,
-            action: AuthAction.signIn,
+            action: AuthAction.link,
           ),
-        );
+        ),
+      );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-        verify(anonymousUser.linkWithProvider(fbProvider)).called(1);
-        verifyNever(auth.signInWithProvider(fbProvider));
-      });
+      expect(states.last, isA<AuthFailed>());
+      verifyNever(auth.signInWithProvider(fbProvider));
+    });
 
-      testWidgets('reports an error when linking with no signed in user', (
+    testWidgets('reports an error rather than hanging for AuthAction.none', (
+      tester,
+    ) async {
+      final states = <AuthState>[];
+
+      await render(
         tester,
-      ) async {
-        final listener = MockListener();
-
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              listener(state);
-              return null;
-            },
-            child: OAuthProviderButton(
-              provider: provider,
-              auth: auth,
-              action: AuthAction.link,
-            ),
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(
+            provider: provider,
+            auth: auth,
+            action: AuthAction.none,
           ),
-        );
+        ),
+      );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-        final result = verify(listener.call(captureAny));
-        expect(result.captured.last, isA<AuthFailed>());
-        verifyNever(auth.signInWithProvider(fbProvider));
-      });
+      expect(states.last, isA<AuthFailed>());
+      expect(find.byType(LoadingIndicator), findsNothing);
+      verifyNever(auth.signInWithProvider(fbProvider));
+    });
 
-      testWidgets('reports an error rather than hanging for AuthAction.none', (
+    testWidgets('resets the flow when the user cancels', (tester) async {
+      auth.signInErrorOverride = fba.FirebaseAuthException(
+        code: 'web-context-cancelled',
+      );
+
+      final states = <AuthState>[];
+
+      await render(
         tester,
-      ) async {
-        final listener = MockListener();
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(provider: provider, auth: auth),
+        ),
+      );
 
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              listener(state);
-              return null;
-            },
-            child: OAuthProviderButton(
-              provider: provider,
-              auth: auth,
-              action: AuthAction.none,
-            ),
-          ),
-        );
+      final button = find.byType(OAuthProviderButtonBase);
+      await tester.tap(button);
+      // Cancel path delays 50ms then resets; wait until loading is cleared.
+      await pumpUntil(
+        tester,
+        () =>
+            states.isNotEmpty &&
+            find.byType(LoadingIndicator).evaluate().isEmpty,
+      );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
+      expect(states.last, isNot(isA<AuthFailed>()));
+      expect(find.byType(LoadingIndicator), findsNothing);
+    });
 
-        final result = verify(listener.call(captureAny));
-        expect(result.captured.last, isA<AuthFailed>());
-        expect(find.byType(CircularProgressIndicator), findsNothing);
-        verifyNever(auth.signInWithProvider(fbProvider));
-      });
+    testWidgets(
+      'reports an error rather than hanging when desktop keys are missing',
+      (tester) async {
+        // OAuth uses [defaultTargetPlatform], not Theme.platform.
+        // Clear in [finally]: IntegrationTestWidgetsFlutterBinding verifies
+        // foundation invariants before package:test tearDowns run.
+        debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+        addTearDown(() => debugDefaultTargetPlatformOverride = null);
 
-      testWidgets('resets the flow when the user cancels', (tester) async {
-        auth.signInErrorOverride = fba.FirebaseAuthException(
-          code: 'web-context-cancelled',
-        );
-
-        final listener = MockListener();
-
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              listener(state);
-              return null;
-            },
-            child: OAuthProviderButton(provider: provider, auth: auth),
-          ),
-        );
-
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-
-        final result = verify(listener.call(captureAny));
-        expect(result.captured.last, isNot(isA<AuthFailed>()));
-        expect(find.byType(CircularProgressIndicator), findsNothing);
-      });
-
-      testWidgets(
-        'reports an error rather than hanging when desktop keys are missing',
-        (tester) async {
-          final listener = MockListener();
+        try {
+          final states = <AuthState>[];
 
           await render(
             tester,
-            Theme(
-              data: ThemeData(platform: TargetPlatform.macOS),
-              child: AuthStateListener<OAuthController>(
-                listener: (oldState, state, controller) {
-                  listener(state);
-                  return null;
-                },
-                child: OAuthProviderButton(provider: provider, auth: auth),
-              ),
+            AuthStateListener<OAuthController>(
+              listener: (oldState, state, controller) {
+                states.add(state);
+                return null;
+              },
+              child: OAuthProviderButton(provider: provider, auth: auth),
             ),
           );
 
           final button = find.byType(OAuthProviderButtonBase);
           await tester.tap(button);
-          await tester.pumpAndSettle();
+          await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-          final result = verify(listener.call(captureAny));
-          expect(result.captured.last, isA<AuthFailed>());
-        },
-      );
-    },
-    skip: !provider.supportsPlatform(defaultTargetPlatform),
-  );
+          expect(states.last, isA<AuthFailed>());
+        } finally {
+          debugDefaultTargetPlatformOverride = null;
+        }
+      },
+    );
+  }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 
   group('TwitterProvider', () {
     test('throws from desktopSignInArgs when the API keys are missing', () {
       expect(() => TwitterProvider().desktopSignInArgs, throwsArgumentError);
     });
   });
-}
-
-class MockListener<T> extends Mock {
-  void call(AuthState? state) {
-    super.noSuchMethod(Invocation.method(#call, [state]));
-  }
 }
 
 class MockUser extends Mock implements fba.User {
@@ -306,9 +293,8 @@ class MockAuth extends Mock implements fba.FirebaseAuth {
 
     return super.noSuchMethod(
       Invocation.method(#signInWithProvider, [provider]),
-      returnValue: Future.delayed(
-        const Duration(milliseconds: 500),
-      ).then((_) => MockCredential()),
+      returnValue: Future.delayed(const Duration(milliseconds: 500))
+          .then((_) => MockCredential()),
       returnValueForMissingStub: Future.delayed(
         const Duration(milliseconds: 500),
       ).then((_) => MockCredential()),

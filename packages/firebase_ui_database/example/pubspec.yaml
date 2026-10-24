@@ -1,4 +1,4 @@
-name: firebase_ui_database_example
+name: forui_firebase_ui_database_example
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
 
 resolution: workspace
 
@@ -29,14 +29,16 @@ resolution: workspace
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  forui: ^0.27.0
   flutter:
     sdk: flutter
-  firebase_ui_database: ^2.1.0
+  forui_firebase_ui_database: ^0.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
-  firebase_core: ^4.15.0
-  firebase_database: ^12.4.4
+  cupertino_icons: ^2.0.0
+  firebase_core: ^5.0.0
+  firebase_database: ^13.0.0
+  material_ui: ^1.8.0
 dev_dependencies:
   drive: ^1.0.0-1.0.nullsafety.5
   flutter_test:

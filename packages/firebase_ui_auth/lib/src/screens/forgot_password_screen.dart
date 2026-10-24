@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 import 'internal/responsive_page.dart';
 
@@ -35,7 +35,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   /// {@macro ui.auth.screens.responsive_page.desktop_layout_direction}
   final TextDirection? desktopLayoutDirection;
 
-  /// See [Scaffold.resizeToAvoidBottomInset]
+  /// See [FScaffold.resizeToAvoidBottomInset]
   final bool? resizeToAvoidBottomInset;
 
   /// {@macro ui.auth.screens.responsive_page.breakpoint}
@@ -68,9 +68,9 @@ class ForgotPasswordScreen extends StatelessWidget {
       subtitleBuilder: subtitleBuilder,
     );
 
-    return UniversalScaffold(
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      body: ResponsivePage(
+    return FScaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+      child: ResponsivePage(
         desktopLayoutDirection: desktopLayoutDirection,
         headerBuilder: headerBuilder,
         headerMaxExtent: headerMaxExtent,

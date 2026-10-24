@@ -2,14 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
+import 'package:forui/forui.dart';
 import 'package:mockito/mockito.dart';
-
-import 'package:firebase_ui_auth/src/widgets/internal/universal_text_form_field.dart';
 
 import '../test_utils.dart';
 
@@ -27,18 +26,15 @@ void main() {
       );
     });
 
-    testWidgets('has a Sign in button of outlined variant', (tester) async {
+    testWidgets('has a Sign in button', (tester) async {
       await tester.pumpWidget(widget);
-      final button = find.byType(OutlinedButton);
-
-      expect(button, findsOneWidget);
+      expect(find.byType(FButton), findsWidgets);
+      expect(find.text(labels.signInActionText), findsOneWidget);
     });
 
-    testWidgets('has a Forgot password button of text variant', (tester) async {
+    testWidgets('has a Forgot password button', (tester) async {
       await tester.pumpWidget(widget);
-      final button = find.byType(TextButton);
-
-      expect(button, findsOneWidget);
+      expect(find.text(labels.forgotPasswordButtonLabel), findsOneWidget);
     });
 
     testWidgets('respects EmailFormStyle passed to FirebaseUITheme', (
@@ -53,8 +49,8 @@ void main() {
         ),
       );
 
-      final button = find.byType(ElevatedButton);
-      expect(button, findsOneWidget);
+      expect(find.text(labels.signInActionText), findsOneWidget);
+      expect(find.byType(FButton), findsWidgets);
     });
 
     testWidgets('respects EmailFormStyle passed via property', (tester) async {
@@ -70,8 +66,7 @@ void main() {
         ),
       );
 
-      final button = find.byType(ElevatedButton);
-      expect(button, findsOneWidget);
+      expect(find.text(labels.signInActionText), findsOneWidget);
     });
 
     testWidgets('EmailFormStyle passed via property is higher priority', (
@@ -94,8 +89,7 @@ void main() {
         ),
       );
 
-      final button = find.byType(ElevatedButton);
-      expect(button, findsOneWidget);
+      expect(find.text(labels.signInActionText), findsOneWidget);
     });
 
     testWidgets('has password visibility toggle', (tester) async {
@@ -109,8 +103,7 @@ void main() {
         ),
       );
 
-      final toggleFinder = find.byIcon(Icons.visibility);
-      expect(toggleFinder, findsOneWidget);
+      expect(find.byIcon(FLucideIcons.eye), findsOneWidget);
     });
 
     testWidgets('allows to toggle password visibility', (tester) async {
@@ -124,26 +117,12 @@ void main() {
         ),
       );
 
-      final passwordHost = find.byType(PasswordInput);
-      final toggleFinder = find.byIcon(Icons.visibility);
+      expect(find.byIcon(FLucideIcons.eye), findsOneWidget);
 
-      final textField = find.descendant(
-        of: passwordHost,
-        matching: find.byType(UniversalTextFormField),
-      );
+      await tester.tap(find.byIcon(FLucideIcons.eye));
+      await tester.pumpAndSettle();
 
-      expect(
-        tester.widget<UniversalTextFormField>(textField).obscureText,
-        isTrue,
-      );
-
-      await tester.tap(toggleFinder);
-      await tester.pump();
-
-      expect(
-        tester.widget<UniversalTextFormField>(textField).obscureText,
-        isFalse,
-      );
+      expect(find.byIcon(FLucideIcons.eyeClosed), findsOneWidget);
     });
 
     testWidgets('validates email', (tester) async {
@@ -151,7 +130,7 @@ void main() {
         TestMaterialApp(child: EmailForm(auth: MockAuth())),
       );
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(EditableText);
       final emailInput = inputs.first;
 
       await tester.enterText(emailInput, 'not a vailid email');
@@ -166,7 +145,7 @@ void main() {
         TestMaterialApp(child: EmailForm(auth: MockAuth())),
       );
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(EditableText);
       final emailInput = inputs.first;
       final passwordInput = inputs.at(1);
 
@@ -188,7 +167,7 @@ void main() {
         ),
       );
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(EditableText);
       expect(inputs, findsNWidgets(3));
     });
 
@@ -199,7 +178,7 @@ void main() {
         ),
       );
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(EditableText);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -227,7 +206,7 @@ void main() {
         ),
       );
 
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(EditableText);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.testTextInput.receiveAction(TextInputAction.done);

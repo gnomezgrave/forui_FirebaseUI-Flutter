@@ -3,7 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 /// {@template ui.auth.widgets.user_avatar}
 ///
@@ -21,13 +22,13 @@ class UserAvatar extends StatefulWidget {
   final double? size;
 
   /// {@template ui.auth.widgets.user_avatar.shape}
-  /// A shape of the avatar.
-  /// A [CircleBorder] is used by default.
+  /// Previously used to set avatar shape. Forui avatars are circular; this is
+  /// kept for API compatibility and currently ignored.
   /// {@endtemplate}
   final ShapeBorder? shape;
 
   /// {@template ui.auth.widgets.user_avatar.placeholder_color}
-  /// A color of the avatar placeholder.
+  /// A color of the avatar placeholder background.
   /// {@endtemplate}
   final Color? placeholderColor;
 
@@ -46,51 +47,20 @@ class UserAvatar extends StatefulWidget {
 
 class _UserAvatarState extends State<UserAvatar> {
   fba.FirebaseAuth get auth => widget.auth ?? fba.FirebaseAuth.instance;
-  ShapeBorder get shape => widget.shape ?? const CircleBorder();
-  Color get placeholderColor => widget.placeholderColor ?? Colors.grey;
   double get size => widget.size ?? 120;
 
   late String? photoUrl = auth.currentUser?.photoURL;
 
-  Widget _imageFrameBuilder(
-    BuildContext context,
-    Widget? child,
-    int? frame,
-    bool? _,
-  ) {
-    if (frame == null) {
-      return Container(color: placeholderColor);
-    }
-
-    return child!;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: size,
-      width: size,
-      child: ClipPath(
-        clipper: ShapeBorderClipper(shape: shape),
-        clipBehavior: Clip.hardEdge,
-        child: photoUrl != null
-            ? Image.network(
-                photoUrl!,
-                width: size,
-                height: size,
-                cacheWidth: size.toInt(),
-                cacheHeight: size.toInt(),
-                fit: BoxFit.cover,
-                frameBuilder: _imageFrameBuilder,
-              )
-            : Center(
-                child: Icon(
-                  Icons.account_circle,
-                  size: size,
-                  color: placeholderColor,
-                ),
-              ),
-      ),
-    );
+    final FAvatarStyleDelta style = widget.placeholderColor == null
+        ? const .context()
+        : .delta(backgroundColor: widget.placeholderColor);
+
+    if (photoUrl == null) {
+      return FAvatar.raw(size: size, style: style);
+    }
+
+    return FAvatar(image: NetworkImage(photoUrl!), size: size, style: style);
   }
 }

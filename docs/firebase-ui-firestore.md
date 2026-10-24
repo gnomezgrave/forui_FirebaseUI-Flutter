@@ -6,16 +6,18 @@ Firestore database.
 ## Installation
 
 ```sh
-flutter pub add cloud_firestore
-flutter pub add firebase_ui_firestore
+flutter pub add cloud_firestore forui_firebase_ui_firestore forui
 ```
+
+Wrap your app in an [`FTheme`](https://forui.dev/docs) ancestor (typically via `MaterialApp.builder`). List/grid query loading uses Forui indicators. `FirestoreDataTable` remains Material-based.
 
 ## Usage
 
 Import the Firebase UI for Firestore package:
 
 ```dart
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'; // LoadingIndicator
 ```
 
 ### Infinite scrolling
@@ -166,7 +168,7 @@ FirestoreQueryBuilder<Map<String, dynamic>>(
   query: usersQuery,
   builder: (context, snapshot, _) {
     if (snapshot.isFetching) {
-      return const CircularProgressIndicator();
+      return const LoadingIndicator(size: 32, borderWidth: 2);
     }
 
     if (snapshot.hasError) {
@@ -203,7 +205,7 @@ FirestoreQueryBuilder<Map<String, dynamic>>(
         return Container(
           padding: const EdgeInsets.all(8),
           color: Colors.teal[100],
-          child: const Text("User name is ${user['name']}"),
+          child: Text("User name is ${user['name']}"),
         );
       },
     );

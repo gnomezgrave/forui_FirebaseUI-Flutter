@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart'
     show AuthCredential, MultiFactorResolver, User, UserCredential;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:flutter/widgets.dart';
 
 /// An abstract class for all auth states.
@@ -199,8 +199,11 @@ class AuthStateTransition<T extends AuthController> extends Notification {
   AuthStateTransition(this.from, this.to, this.controller);
 }
 
-typedef AuthStateListenerCallback<T extends AuthController> =
-    bool? Function(AuthState oldState, AuthState state, T controller);
+typedef AuthStateListenerCallback<T extends AuthController> = bool? Function(
+  AuthState oldState,
+  AuthState state,
+  T controller,
+);
 
 /// {@template ui.auth.auth_state.auth_state_listener}
 /// A [Widget] that could be used to listen auth state transitions.
@@ -237,14 +240,23 @@ class AuthStateListener<T extends AuthController> extends StatelessWidget {
   Widget build(BuildContext context) {
     return NotificationListener(
       onNotification: (notification) {
-        if (notification is! AuthStateTransition<T>) {
+        // AuthStateTransition is generic (e.g. PhoneAuthController). Dart
+        // generics are invariant, so `is AuthStateTransition<AuthController>`
+        // fails for PhoneAuthFlow transitions and MFA CredentialReceived
+        // actions never run. Match the untyped notification, then the
+        // controller type.
+        if (notification is! AuthStateTransition) {
+          return false;
+        }
+
+        if (notification.controller is! T) {
           return false;
         }
 
         return listener(
               notification.from,
               notification.to,
-              notification.controller,
+              notification.controller as T,
             ) ??
             false;
       },

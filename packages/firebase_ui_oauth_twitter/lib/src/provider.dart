@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' hide OAuthProvider;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import 'theme.dart';
 
@@ -100,7 +100,7 @@ class TwitterProvider extends OAuthProvider {
       '"$defaultRedirectUri", and that you have added the '
       'Encoded App ID URL scheme (iOS) or your SHA-1 fingerprint '
       '(Android). See '
-      'https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#twitter-login',
+      'https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md#twitter-login',
     );
   }
 

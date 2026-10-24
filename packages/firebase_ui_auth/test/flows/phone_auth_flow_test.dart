@@ -5,7 +5,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:mockito/mockito.dart';
 
 import '../test_utils.dart';
@@ -123,7 +123,8 @@ void main() {
         },
       );
 
-      test('calls onError if autoresolution timed out', () async {
+      test('does not call onError if autoresolution timed out', () async {
+        // Timeout is expected on many devices and does not mean SMS failed.
         provider.sendVerificationCode(
           phoneNumber: '+123456789',
           action: AuthAction.signIn,
@@ -146,13 +147,7 @@ void main() {
         final timeout = invocation.captured[0];
         timeout('+123456789');
 
-        final onErrorInvocation = verify(listener.onError(captureAny));
-
-        expect(onErrorInvocation.callCount, 1);
-        expect(
-          onErrorInvocation.captured.first,
-          isA<AutoresolutionFailedException>(),
-        );
+        verifyNever(listener.onError(any));
       });
 
       test('calls onError if verification failed', () async {
@@ -331,6 +326,25 @@ void main() {
           expect(invocation.callCount, 1);
           expect(invocation.captured, ['+123456789']);
         });
+      });
+
+      test('ignores a duplicate codeSent for the same verification id', () {
+        final provider = MockProvider();
+        final ctrl = PhoneAuthFlow(provider: provider, auth: MockAuth());
+        var notifications = 0;
+        ctrl.addListener(() => notifications++);
+
+        ctrl.onCodeSent('verification-id', 7);
+        ctrl.onCodeSent('verification-id', 7);
+
+        expect(notifications, 1);
+        final state = ctrl.value as SMSCodeSent;
+        expect(state.verificationId, 'verification-id');
+        expect(state.resendToken, 7);
+
+        ctrl.onCodeSent('another-id', 8);
+        expect(notifications, 2);
+        expect((ctrl.value as SMSCodeSent).verificationId, 'another-id');
       });
 
       group('#verifySMSCode', () {

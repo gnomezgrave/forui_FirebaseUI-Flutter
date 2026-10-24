@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart' hide Title;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart' hide Title;
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui/forui.dart';
 
 import 'internal/title.dart';
 
@@ -58,46 +59,45 @@ class ReauthenticateDialog extends StatelessWidget {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: Dialog(
-          child: Padding(
-            padding: verticalPadding,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: horizontalPadding,
-                  child: Title(text: l.verifyItsYouText),
-                ),
-                const SizedBox(height: 16),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.shortestSide / 1.5,
+        child: FDialog(
+          builder: (context, style) {
+            // FDialog may shrink when the keyboard opens; keep Cancel visible
+            // and scroll the provider list instead of overflowing the Column.
+            return Padding(
+              padding: verticalPadding,
+              child: Column(
+                crossAxisAlignment: .stretch,
+                children: [
+                  Padding(
+                    padding: horizontalPadding,
+                    child: Title(text: l.verifyItsYouText),
                   ),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    child: ListView(
-                      shrinkWrap: true,
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        reauthenticateView,
-                        const SizedBox(height: 16),
-                      ],
+                      child: Column(
+                        children: [
+                          reauthenticateView,
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: horizontalPadding.copyWith(top: verticalPadding.top),
-                  child: UniversalButton(
-                    text: l.cancelButtonLabel,
-                    variant: ButtonVariant.text,
-                    onPressed: () => Navigator.of(context).pop(),
+                  Padding(
+                    padding: horizontalPadding.copyWith(
+                      top: verticalPadding.top,
+                    ),
+                    child: UniversalButton(
+                      text: l.cancelButtonLabel,
+                      variant: ButtonVariant.text,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

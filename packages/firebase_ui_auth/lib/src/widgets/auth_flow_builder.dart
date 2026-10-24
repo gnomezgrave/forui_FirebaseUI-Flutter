@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import '../auth_controller.dart';
 import '../auth_state.dart';
@@ -14,38 +14,36 @@ import '../auth_state.dart';
 /// A callback that is being called every time the [AuthFlow] changes it's
 /// state. Returned widget is rendered as a child of [AuthFlowBuilder].
 /// {@endtemplate}
-typedef AuthFlowBuilderCallback<T extends AuthController> =
-    Widget Function(
-      BuildContext context,
+typedef AuthFlowBuilderCallback<T extends AuthController> = Widget Function(
+  BuildContext context,
 
-      /// Current [AuthState] of the [AuthFlow].
-      AuthState state,
+  /// Current [AuthState] of the [AuthFlow].
+  AuthState state,
 
-      /// An instance of [AuthController] that could be used to control the
-      /// [AuthFlow].
-      T ctrl,
+  /// An instance of [AuthController] that could be used to control the
+  /// [AuthFlow].
+  T ctrl,
 
-      /// A [Widget] that was provided to the [AuthFlowBuilder].
-      Widget? child,
-    );
+  /// A [Widget] that was provided to the [AuthFlowBuilder].
+  Widget? child,
+);
 
 /// {@template ui.auth.widgets.auth_flow_builder.state_transition_listener}
 /// A callback that is being called when [AuthFlow] changes it's state.
 ///
 /// Invoked before the widget is built.
 /// {@endtemplate}
-typedef StateTransitionListener<T extends AuthController> =
-    void Function(
-      /// Previous state of the [AuthFlow].
-      AuthState oldState,
+typedef StateTransitionListener<T extends AuthController> = void Function(
+  /// Previous state of the [AuthFlow].
+  AuthState oldState,
 
-      /// Current state of the [AuthFlow].
-      AuthState newState,
+  /// Current state of the [AuthFlow].
+  AuthState newState,
 
-      /// An instance of the [AuthController] that could be used to manipulate the
-      /// [AuthFlow].
-      T controller,
-    );
+  /// An instance of the [AuthController] that could be used to manipulate the
+  /// [AuthFlow].
+  T controller,
+);
 
 /// {@template ui.auth.widgets.auth_flow_builder}
 /// A widget that is used to wire up the [AuthFlow]s with the widget tree.

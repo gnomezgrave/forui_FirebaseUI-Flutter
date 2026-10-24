@@ -4,20 +4,19 @@
 
 import 'dart:async';
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// A function that builds a widget from a [FirestoreQueryBuilderSnapshot]
 ///
 /// See also [FirebaseDatabaseQueryBuilder].
-typedef FirestoreQueryBuilderSnapshotBuilder<T> =
-    Widget Function(
-      BuildContext context,
-      FirestoreQueryBuilderSnapshot<T> snapshot,
-      Widget? child,
-    );
+typedef FirestoreQueryBuilderSnapshotBuilder<T> = Widget Function(
+  BuildContext context,
+  FirestoreQueryBuilderSnapshot<T> snapshot,
+  Widget? child,
+);
 
 /// {@template firebase_ui.firestore_query_builder}
 /// Listens to a query and paginates the result in a way that is compatible with
@@ -37,7 +36,7 @@ typedef FirestoreQueryBuilderSnapshotBuilder<T> =
 ///   query: moviesCollection.orderBy('title'),
 ///   builder: (context, snapshot, _) {
 ///     if (snapshot.isFetching) {
-///       return const CircularProgressIndicator();
+///       return const LoadingIndicator(size: 32, borderWidth: 2);
 ///     }
 ///     if (snapshot.hasError) {
 ///       return Text('error ${snapshot.error}');
@@ -380,23 +379,26 @@ class _Sentinel {
 }
 
 /// A type representing the function passed to [FirestoreListView] for its `itemBuilder`.
-typedef FirestoreItemBuilder<Document> =
-    Widget Function(
-      BuildContext context,
-      QueryDocumentSnapshot<Document> doc,
-      int index,
-    );
+typedef FirestoreItemBuilder<Document> = Widget Function(
+  BuildContext context,
+  QueryDocumentSnapshot<Document> doc,
+  int index,
+);
 
 /// A type representing the function passed to [FirestoreListView] for its `loadingBuilder`.
 typedef FirestoreLoadingBuilder = Widget Function(BuildContext context);
 
 /// A type representing the function passed to [FirestoreListView] for its `loadingIndicatorBuilder`.
-typedef FirestoreFetchingIndicatorBuilder =
-    Widget Function(BuildContext context);
+typedef FirestoreFetchingIndicatorBuilder = Widget Function(
+  BuildContext context,
+);
 
 /// A type representing the function passed to [FirestoreListView] for its `errorBuilder`.
-typedef FirestoreErrorBuilder =
-    Widget Function(BuildContext context, Object error, StackTrace stackTrace);
+typedef FirestoreErrorBuilder = Widget Function(
+  BuildContext context,
+  Object error,
+  StackTrace stackTrace,
+);
 
 /// A type representing the function passed to [FirestoreListView] for its `emptyBuilder`.
 typedef FirestoreEmptyBuilder = Widget Function(BuildContext context);
@@ -488,7 +490,9 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
          builder: (context, snapshot, _) {
            if (snapshot.isFetching) {
              return loadingBuilder?.call(context) ??
-                 const Center(child: CircularProgressIndicator.adaptive());
+                 const Center(
+                   child: LoadingIndicator(size: 32, borderWidth: 2),
+                 );
            }
 
            if (snapshot.hasError && errorBuilder != null) {
@@ -600,7 +604,9 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
          builder: (context, snapshot, _) {
            if (snapshot.isFetching) {
              return loadingBuilder?.call(context) ??
-                 const Center(child: CircularProgressIndicator.adaptive());
+                 const Center(
+                   child: LoadingIndicator(size: 32, borderWidth: 2),
+                 );
            }
 
            if (snapshot.hasError && errorBuilder != null) {

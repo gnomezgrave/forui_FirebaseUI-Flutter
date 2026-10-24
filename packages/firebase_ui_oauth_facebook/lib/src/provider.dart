@@ -4,12 +4,13 @@
 
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_facebook.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 class FacebookProvider extends OAuthProvider {
@@ -20,6 +21,11 @@ class FacebookProvider extends OAuthProvider {
   final String clientId;
   final String? redirectUri;
   String? _rawNonce;
+
+  /// When set (tests), skips [AppTrackingTransparency] which can hang on
+  /// simulator CI and never emit SignedIn/AuthFailed.
+  @visibleForTesting
+  static Future<bool> Function()? debugHasTrackingPermission;
 
   @override
   final style = const FacebookProviderButtonStyle();
@@ -52,6 +58,9 @@ class FacebookProvider extends OAuthProvider {
 
   /// Checks if tracking permission has been granted on iOS
   Future<bool> _hasTrackingPermission() async {
+    final override = debugHasTrackingPermission;
+    if (override != null) return override();
+
     // Only check on iOS
     if (defaultTargetPlatform != TargetPlatform.iOS) {
       return true; // Classic login available on Android

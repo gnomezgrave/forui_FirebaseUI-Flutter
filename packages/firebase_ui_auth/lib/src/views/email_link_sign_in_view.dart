@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/widgets.dart' hide Title;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 import '../widgets/internal/title.dart';
 
@@ -39,6 +39,7 @@ class EmailLinkSignInView extends StatefulWidget {
 
 class _EmailLinkSignInViewState extends State<EmailLinkSignInView> {
   final emailCtrl = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   late final canPop = Navigator.canPop(context);
 
   // Stays true after a failed attempt, so the user can correct the email.
@@ -47,7 +48,6 @@ class _EmailLinkSignInViewState extends State<EmailLinkSignInView> {
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-    final formKey = GlobalKey<FormState>();
     // SignedIn, UserCreated and CredentialLinked stay hidden until the app
     // navigates away, so the form does not flash after a successful sign in.
     const statesToHideForm = [

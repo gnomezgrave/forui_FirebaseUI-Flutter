@@ -5,16 +5,16 @@
 import 'package:firebase_auth/firebase_auth.dart'
     hide PhoneAuthProvider, EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
-import 'package:firebase_ui_oauth_facebook/firebase_ui_oauth_facebook.dart';
-import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth_apple/forui_firebase_ui_oauth_apple.dart';
+import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_facebook.dart';
+import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
+import 'package:forui_firebase_ui_oauth_twitter/forui_firebase_ui_oauth_twitter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'config.dart';
 import 'decorations.dart';
@@ -90,41 +90,29 @@ class FirebaseAuthUIExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = ButtonStyle(
-      padding: WidgetStateProperty.all(const EdgeInsets.all(12)),
-      shape: WidgetStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
-
     final mfaAction = AuthStateChangeAction<MFARequired>((
       context,
       state,
     ) async {
       final nav = Navigator.of(context);
 
-      await startMFAVerification(resolver: state.resolver, context: context);
+      try {
+        await startMFAVerification(resolver: state.resolver, context: context);
+      } on Exception {
+        // User cancelled MFA or verification failed after onError handling.
+        return;
+      }
 
-      nav.pushReplacementNamed('/profile');
+      // Clear sign-in + any residual MFA routes so the SMS screen cannot stick.
+      nav.pushNamedAndRemoveUntil('/profile', (route) => false);
     });
 
     return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.light,
-        visualDensity: VisualDensity.standard,
-        useMaterial3: true,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
-        textButtonTheme: TextButtonThemeData(style: buttonStyle),
-        outlinedButtonTheme: OutlinedButtonThemeData(style: buttonStyle),
-      ),
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
       initialRoute: initialRoute,
       routes: {
         '/': (context) {
-          final platform = Theme.of(context).platform;
-
           return SignInScreen(
             actions: [
               ForgotPasswordAction((context, email) {
@@ -189,14 +177,16 @@ class FirebaseAuthUIExample extends StatelessWidget {
 
               return Column(
                 children: [
-                  if (platform == TargetPlatform.iOS)
+                  if (defaultTargetPlatform == TargetPlatform.iOS)
                     const AppTrackingTransparencyCard(),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Text(
                         'By $actionText, you agree to our terms and conditions.',
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: context.theme.colors.mutedForeground,
+                        ),
                       ),
                     ),
                   ),
@@ -207,8 +197,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
         },
         '/verify-email': (context) {
           return EmailVerificationScreen(
-            headerBuilder: headerIcon(Icons.verified),
-            sideBuilder: sideIcon(Icons.verified),
+            headerBuilder: headerIcon(FLucideIcons.badgeCheck),
+            sideBuilder: sideIcon(FLucideIcons.badgeCheck),
             actionCodeSettings: actionCodeSettings,
             actions: [
               EmailVerifiedAction(() {
@@ -235,8 +225,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
                 );
               }),
             ],
-            headerBuilder: headerIcon(Icons.phone),
-            sideBuilder: sideIcon(Icons.phone),
+            headerBuilder: headerIcon(FLucideIcons.phone),
+            sideBuilder: sideIcon(FLucideIcons.phone),
           );
         },
         '/sms': (context) {
@@ -249,11 +239,15 @@ class FirebaseAuthUIExample extends StatelessWidget {
               AuthStateChangeAction<SignedIn>((context, state) {
                 Navigator.of(context).pushReplacementNamed('/profile');
               }),
+              // A first phone sign-in is UserCreated, not SignedIn.
+              AuthStateChangeAction<UserCreated>((context, state) {
+                Navigator.of(context).pushReplacementNamed('/profile');
+              }),
             ],
             flowKey: arguments?['flowKey'],
             action: arguments?['action'],
-            headerBuilder: headerIcon(Icons.sms_outlined),
-            sideBuilder: sideIcon(Icons.sms_outlined),
+            headerBuilder: headerIcon(FLucideIcons.messageSquare),
+            sideBuilder: sideIcon(FLucideIcons.messageSquare),
           );
         },
         '/forgot-password': (context) {
@@ -264,8 +258,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
           return ForgotPasswordScreen(
             email: arguments?['email'],
             headerMaxExtent: 200,
-            headerBuilder: headerIcon(Icons.lock),
-            sideBuilder: sideIcon(Icons.lock),
+            headerBuilder: headerIcon(FLucideIcons.lock),
+            sideBuilder: sideIcon(FLucideIcons.lock),
           );
         },
         '/email-link-sign-in': (context) {
@@ -281,13 +275,11 @@ class FirebaseAuthUIExample extends StatelessWidget {
             ],
             provider: emailLinkProviderConfig,
             headerMaxExtent: 200,
-            headerBuilder: headerIcon(Icons.link),
-            sideBuilder: sideIcon(Icons.link),
+            headerBuilder: headerIcon(FLucideIcons.link),
+            sideBuilder: sideIcon(FLucideIcons.link),
           );
         },
         '/profile': (context) {
-          final platform = Theme.of(context).platform;
-
           return ProfileScreen(
             actions: [
               SignedOutAction((context) {
@@ -298,8 +290,8 @@ class FirebaseAuthUIExample extends StatelessWidget {
             actionCodeSettings: actionCodeSettings,
             showMFATile:
                 kIsWeb ||
-                platform == TargetPlatform.iOS ||
-                platform == TargetPlatform.android,
+                defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.android,
             showUnlinkConfirmationDialog: true,
             showDeleteConfirmationDialog: true,
           );
@@ -310,8 +302,7 @@ class FirebaseAuthUIExample extends StatelessWidget {
       supportedLocales: const [Locale('en')],
       localizationsDelegates: [
         FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         FirebaseUILocalizations.delegate,
       ],
     );

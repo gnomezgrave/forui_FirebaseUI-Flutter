@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:flutter/widgets.dart';
 
 import 'internal/login_screen.dart';
 import 'internal/multi_provider_screen.dart';
@@ -31,7 +31,10 @@ class SignInScreen extends MultiProviderScreen {
   /// A email that [EmailForm] would be pre-filled with.
   final String? email;
 
-  /// See [Scaffold.resizeToAvoidBottomInset]
+  /// {@macro ui.auth.views.login_view.title_style}
+  final TextStyle? titleStyle;
+
+  /// See [FScaffold.resizeToAvoidBottomInset]
   final bool? resizeToAvoidBottomInset;
 
   /// Whether the "Login/Register" link should be displayed. The link changes
@@ -114,6 +117,7 @@ class SignInScreen extends MultiProviderScreen {
     this.resizeToAvoidBottomInset = true,
     this.showAuthActionSwitch,
     this.email,
+    this.titleStyle,
     this.subtitleBuilder,
     this.footerBuilder,
     this.loginViewKey,
@@ -142,6 +146,7 @@ class SignInScreen extends MultiProviderScreen {
         desktopLayoutDirection: desktopLayoutDirection,
         oauthButtonVariant: oauthButtonVariant,
         email: email,
+        titleStyle: titleStyle,
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         showAuthActionSwitch: showAuthActionSwitch,
         subtitleBuilder: subtitleBuilder,

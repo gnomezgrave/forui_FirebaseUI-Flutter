@@ -3,33 +3,18 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 import '../actions.dart';
 import 'internal/subtitle.dart';
+import 'internal/universal_icon_button.dart';
+import 'internal/universal_text_form_field.dart';
 
 /// {@template ui.auth.widgets.editable_user_display_name}
 /// A widget that displays user name and allows to edit it.
-/// If the user name is not provided by neither of the providers,
-/// a text field is being shown. Otherwise, a user name is rendered with the
-/// edit icon.
-///
-/// If you want to perform an action after display name is changed, you can
-/// use [DisplayNameChangedAction].
-///
-/// Example usage:
-/// ```dart
-/// ProfileScreen(
-///   actions: [
-///     DisplayNameChangedAction((context, oldName, newName) {
-///       // Do something with the new name.
-///    }),
-///  ],
-/// );
-/// ```
 /// {@endtemplate}
 class EditableUserDisplayName extends StatefulWidget {
   /// {@macro ui.auth.auth_controller.auth}
@@ -73,9 +58,8 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
 
       if (!mounted) return;
 
-      FirebaseUIAction.ofType<DisplayNameChangedAction>(
-        context,
-      )?.callback(context, previousDisplayName, ctrl.text);
+      FirebaseUIAction.ofType<DisplayNameChangedAction>(context)
+          ?.callback(context, previousDisplayName, ctrl.text);
     } finally {
       setState(() {
         _editing = false;
@@ -86,29 +70,14 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final l = FirebaseUILocalizations.labelsOf(context);
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
 
-    late Widget iconButton;
-
-    if (isCupertino) {
-      iconButton = Transform.translate(
-        offset: Offset(0, _editing ? -12 : 0),
-        child: CupertinoButton(
-          onPressed: _editing ? _finishEditing : _onEdit,
-          child: Icon(
-            _editing ? CupertinoIcons.check_mark_circled : CupertinoIcons.pen,
-          ),
-        ),
-      );
-    } else {
-      iconButton = IconButton(
-        icon: Icon(_editing ? Icons.check : Icons.edit),
-        color: theme.colorScheme.secondary,
-        onPressed: _editing ? _finishEditing : _onEdit,
-      );
-    }
+    final iconButton = UniversalIconButton(
+      icon: _editing ? FLucideIcons.check : FLucideIcons.pencil,
+      color: theme.colors.primary,
+      onPressed: _editing ? _finishEditing : _onEdit,
+    );
 
     if (!_editing) {
       return Padding(
@@ -124,33 +93,16 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
       );
     }
 
-    late Widget textField;
-
-    if (isCupertino) {
-      textField = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 17.5),
-        child: CupertinoTextField(
-          autofocus: true,
-          controller: ctrl,
-          placeholder: l.name,
-          onSubmitted: (_) => _finishEditing(),
-        ),
-      );
-    } else {
-      textField = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.5),
-        child: TextField(
-          autofocus: true,
-          controller: ctrl,
-          decoration: InputDecoration(hintText: l.name, labelText: l.name),
-          onSubmitted: (_) => _finishEditing(),
-        ),
-      );
-    }
-
     return Row(
       children: [
-        Expanded(child: textField),
+        Expanded(
+          child: UniversalTextFormField(
+            autofocus: true,
+            controller: ctrl,
+            placeholder: l.name,
+            onSubmitted: (_) => _finishEditing(),
+          ),
+        ),
         const SizedBox(width: 8),
         SizedBox(
           width: 50,
@@ -160,7 +112,7 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
               if (_isLoading)
                 const LoadingIndicator(size: 24, borderWidth: 1)
               else
-                Align(alignment: Alignment.topLeft, child: iconButton),
+                Align(alignment: .topLeft, child: iconButton),
             ],
           ),
         ),

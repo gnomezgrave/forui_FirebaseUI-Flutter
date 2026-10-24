@@ -3,20 +3,16 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui/forui.dart';
 
 import 'internal/universal_page_route.dart';
 
 /// {@template ui.auth.widget.email_link_sign_in_button}
 /// A button that starts an email link sign in flow.
-///
-/// Triggers an [EmailLinkSignInAction] if provided, otherwise
-/// opens an [EmailLinkSignInScreen].
-///
 /// {@endtemplate}
 class EmailLinkSignInButton extends StatelessWidget {
   /// {@macro ui.auth.auth_controller.auth}
@@ -35,8 +31,7 @@ class EmailLinkSignInButton extends StatelessWidget {
 
     return UniversalButton(
       text: l.emailLinkSignInButtonLabel,
-      cupertinoIcon: CupertinoIcons.link,
-      materialIcon: Icons.link,
+      icon: FLucideIcons.link,
       onPressed: () {
         final action = FirebaseUIAction.ofType<EmailLinkSignInAction>(context);
         if (action != null) {

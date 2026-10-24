@@ -2,24 +2,23 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
-/// A loading indicator that uses [CupertinoActivityIndicator] under
-/// [CupertinoApp] and [CircularProgressIndicator] under [MaterialApp].
+/// A loading indicator backed by Forui [FCircularProgress].
 ///
-/// Centered by default.
-class LoadingIndicator extends PlatformWidget {
+/// Centered by default when placed in an unbounded parent via [SizedBox].
+class LoadingIndicator extends StatelessWidget {
   /// The size of the loading indicator.
+  ///
+  /// Mapped to the nearest Forui circular progress size variant.
   final double size;
 
-  /// The width of the loading indicator's border.
-  /// This is only used for [CircularProgressIndicator] under [MaterialApp].
+  /// Previously the Material progress border width. Unused with Forui; kept for
+  /// API compatibility.
   final double borderWidth;
 
   /// The color of the loading indicator.
-  /// This is only used for [CircularProgressIndicator] under [MaterialApp].
   final Color? color;
 
   const LoadingIndicator({
@@ -29,23 +28,27 @@ class LoadingIndicator extends PlatformWidget {
     this.color,
   });
 
-  @override
-  Widget? buildWrapper(BuildContext context, Widget child) {
-    return SizedBox(width: size, height: size, child: child);
+  FCircularProgressSizeVariant get _sizeVariant {
+    if (size <= 14) return .xs;
+    if (size <= 16) return .sm;
+    if (size <= 20) return .md;
+    if (size <= 24) return .lg;
+    return .xl;
   }
 
   @override
-  Widget buildCupertino(BuildContext context) {
-    return CupertinoActivityIndicator(radius: size / 2, color: color);
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    final valueColor = color ?? Theme.of(context).colorScheme.secondary;
-
-    return CircularProgressIndicator(
-      strokeWidth: borderWidth * 2,
-      valueColor: AlwaysStoppedAnimation<Color>(valueColor),
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Center(
+        child: FCircularProgress(
+          size: _sizeVariant,
+          style: color == null
+              ? const .context()
+              : .delta(iconStyle: .delta(color: color)),
+        ),
+      ),
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 /// An exception that is being thrown when user cancels the authentication
 /// process.
@@ -93,16 +93,13 @@ class AuthFlow<T extends AuthProvider> extends ValueNotifier<AuthState>
     /// {@template ui.auth.auth_flow.ctor.provider}
     /// An [AuthProvider] that is used to authenticate the user.
     /// {@endtemplate}
-    required T provider,
+    required this._provider,
 
     /// {@macro ui.auth.auth_controller.auth}
     fba.FirebaseAuth? auth,
 
-    /// {@macro ui.auth.auth_action}
-    AuthAction? action,
+    this._action,
   }) : auth = auth ?? fba.FirebaseAuth.instance,
-       _action = action,
-       _provider = provider,
        super(initialState) {
     _provider.authListener = this;
     _provider.auth = auth ?? fba.FirebaseAuth.instance;

@@ -9,10 +9,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:http/http.dart' as http;
 import 'package:integration_test/integration_test.dart';
 import 'package:tests/firebase_options.dart';
@@ -33,6 +34,11 @@ bool get isMobile {
           defaultTargetPlatform == TargetPlatform.android);
 }
 
+/// Firebase Auth persistence needs keychain access. Unsigned macOS debug apps
+/// (`CODE_SIGN_IDENTITY=-`) hit SecItemAdd (-34018); same skip as CI.
+bool get skipMacOSAuthKeychain =>
+    !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS;
+
 late FirebaseFirestore db;
 late fba.FirebaseAuth auth;
 late FirebaseDatabase rtdb;
@@ -48,13 +54,14 @@ Future<void> prepare() async {
   }
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await fba.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  // Android emulator → host machine is 10.0.2.2, not localhost.
+  await fba.FirebaseAuth.instance.useAuthEmulator(testEmulatorHost, 9099);
   auth = fba.FirebaseAuth.instance;
 
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  FirebaseFirestore.instance.useFirestoreEmulator(testEmulatorHost, 8080);
   db = FirebaseFirestore.instance;
 
-  FirebaseDatabase.instance.useDatabaseEmulator('localhost', 9000);
+  FirebaseDatabase.instance.useDatabaseEmulator(testEmulatorHost, 9000);
 
   rtdb = FirebaseDatabase.instance;
 
@@ -76,16 +83,44 @@ void setUpTests() {
   _testsSetUp = true;
 }
 
+/// [MaterialApp] + [FTheme] for e2e widgets that need Forui (e.g. [LoadingIndicator]).
+Widget foruiApp({required Widget home}) {
+  return MaterialApp(
+    builder: (context, child) =>
+        FTheme(data: FTheme.neutral.light.touch, child: child!),
+    home: home,
+  );
+}
+
 Future<void> render(WidgetTester tester, Widget widget) async {
   await tester.pumpWidget(
-    MaterialApp(
+    foruiApp(
       home: SafeArea(
-        child: Scaffold(
-          body: Padding(padding: const EdgeInsets.all(8), child: widget),
+        child: FScaffold(
+          child: Padding(padding: const EdgeInsets.all(8), child: widget),
         ),
       ),
     ),
   );
+}
+
+/// Pumps until [condition] is true or [timeout] elapses.
+///
+/// Prefer this over a bare [WidgetTester.pumpAndSettle] when waiting on a
+/// [Future] that does not schedule frames (e.g. [Future.delayed] in mocks).
+Future<void> pumpUntil(
+  WidgetTester tester,
+  bool Function() condition, {
+  Duration timeout = const Duration(seconds: 15),
+  Duration step = const Duration(milliseconds: 50),
+}) async {
+  final end = DateTime.now().add(timeout);
+  while (!condition()) {
+    if (DateTime.now().isAfter(end)) {
+      throw TestFailure('pumpUntil timed out after $timeout');
+    }
+    await tester.pump(step);
+  }
 }
 
 Future<T> retry<T>(Future<T> Function() fn, [int maxAttempts = 5]) async {

@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import 'theme.dart';
 
@@ -15,7 +15,7 @@ import 'theme.dart';
 /// This could be achieved with `device_info_plus` package.
 ///
 /// ```dart
-/// import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+/// import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 /// import 'package:device_info_plus/device_info_plus.dart';
 ///
 /// Future<void> main() async {

@@ -14,12 +14,12 @@ Configure phone provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 // If you need to use FirebaseAuth directly, make sure to hide PhoneAuthProvider:
 // import 'package:firebase_auth/firebase_auth.dart' hide PhoneAuthProvider;
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -47,12 +47,18 @@ SignInScreen(
 > Notes:
 >
 > - see [navigation guide](../navigation.md) to learn how navigation works with Firebase UI.
-> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIAction-class.html).
+> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIAction-class.html).
 
-Configure a `'/phone'` route to render `PhoneInputScreen`:
+Configure a `'/phone'` route to render `PhoneInputScreen`. Apps must wrap Firebase UI in [`FTheme`](../theming.md) (typically via `MaterialApp.builder`):
 
 ```dart
+import 'package:forui/forui.dart';
+
 MaterialApp(
+  builder: (context, child) => FTheme(
+    data: FTheme.neutral.light.touch,
+    child: child!,
+  ),
   routes: {
     // ...other routes
     '/phone': (context) => PhoneInputScreen(
@@ -66,22 +72,22 @@ MaterialApp(
             ),
           );
         }),
-      ]
+      ],
     ),
-  }
+  },
 )
 ```
 
 ## Using view
 
-If the pre-built screens don't suit the app's needs, you could use a `PhoneInputView` to build your custom screen:
+If the pre-built screens don't suit the app's needs, you could use a `PhoneInputView` to build your custom screen (ensure an `FTheme` ancestor, e.g. from `MaterialApp.builder` above):
 
 ```dart
 final _flowKey = Object();
 
 class MyLoginScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
@@ -100,9 +106,9 @@ class MyLoginScreen extends StatelessWidget {
                   );
                 }),
               ],
-              child: PhoneInputView(flowKey: flowKey),
+              child: PhoneInputView(flowKey: _flowKey),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -112,37 +118,37 @@ class MyLoginScreen extends StatelessWidget {
 
 ## Using widget
 
-If a view is also not flexible enough, there are `PhoneInput` and `SMSCodeInput` widgets:
+If a view is also not flexible enough, use `PhoneInput` and `SMSCodeInput` inside an `AuthFlowBuilder` (unlike `EmailForm`, these widgets do not create a flow themselves):
 
 ```dart
-class MyCustomWidget extends StatefulWidget {
-  @override
-  State<MyCustomWidget> createState() => _MyCustomWidgetState();
-}
-
-class _MyCustomWidgetState extends State<MyCustomWidget> {
-  Widget child = PhoneInput(initialCountryCode: 'US');
-
+class MyCustomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AuthStateListener<PhoneAuthController>(
-      listener: (oldState, newState, controller) {
-        if (newState is SMSCodeSent) {
-          setState(() {
-            child = SMSCodeInput(
-              onSubmit: (code) {
-                controller.verifySMSCode(
-                  code,
-                  verificationId: newState.verificationId,
-                  confirmationResult: newState.confirmationResult,
-                );
-              },
-            );
-          });
+    return AuthFlowBuilder<PhoneAuthController>(
+      builder: (context, state, ctrl, child) {
+        if (state is AwaitingPhoneNumber || state is SMSCodeRequested) {
+          return PhoneInput(
+            initialCountryCode: 'US',
+            onSubmit: ctrl.acceptPhoneNumber,
+          );
+        } else if (state is SMSCodeSent) {
+          return SMSCodeInput(
+            onSubmit: (smsCode) {
+              ctrl.verifySMSCode(
+                smsCode,
+                verificationId: state.verificationId,
+                confirmationResult: state.confirmationResult,
+              );
+            },
+          );
+        } else if (state is SigningIn) {
+          return const LoadingIndicator(size: 32, borderWidth: 2);
+        } else if (state is AuthFailed) {
+          return ErrorText(exception: state.exception);
+        } else {
+          return Text('Unknown state $state');
         }
-        return null;
       },
-      child: child,
     );
   }
 }
@@ -179,7 +185,7 @@ class MyCustomWidget extends StatelessWidget {
             );
           });
         } else if (state is SigningIn) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is AuthFailed) {
           return ErrorText(exception: state.exception);
         } else {
@@ -193,7 +199,7 @@ class MyCustomWidget extends StatelessWidget {
 
 ## Building a custom stateful widget
 
-For full control over every phase of the authentication lifecycle you could build a stateful widget, which implements `PhoneAuthController`:
+For full control over every phase of the authentication lifecycle you could build a stateful widget that implements `PhoneAuthListener`. Ensure an [`FTheme`](../theming.md) ancestor.
 
 ```dart
 class CustomPhoneVerification extends StatefulWidget {
@@ -206,9 +212,15 @@ class CustomPhoneVerification extends StatefulWidget {
 
 class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
     implements PhoneAuthListener {
+  @override
   final auth = FirebaseAuth.instance;
-  late final PhoneAuthProvider provider = PhoneAuthProvider()
+
+  late final PhoneAuthProvider _provider = PhoneAuthProvider()
+    ..auth = auth
     ..authListener = this;
+
+  @override
+  AuthProvider get provider => _provider;
 
   String? verificationId;
   ConfirmationResult? confirmationResult;
@@ -216,7 +228,10 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
   late Widget child = PhoneInput(
     initialCountryCode: 'US',
     onSubmit: (phoneNumber) {
-      provider.sendVerificationCode(phoneNumber, AuthAction.signIn);
+      _provider.sendVerificationCode(
+        phoneNumber: phoneNumber,
+        action: AuthAction.signIn,
+      );
     },
   );
 
@@ -227,7 +242,7 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
 
   @override
   void onConfirmationRequested(ConfirmationResult result) {
-    this.confirmationResult = result;
+    confirmationResult = result;
   }
 
   @override
@@ -235,7 +250,12 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
     setState(() {
       child = SMSCodeInput(
         onSubmit: (smsCode) {
-          provider.verifySMSCode(action: AuthAction.signIn, code: smsCode);
+          _provider.verifySMSCode(
+            action: AuthAction.signIn,
+            code: smsCode,
+            verificationId: verificationId,
+            confirmationResult: confirmationResult,
+          );
         },
       );
     });
@@ -243,7 +263,7 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
 
   @override
   void onVerificationCompleted(PhoneAuthCredential credential) {
-    provider.onCredentialReceived(credential, AuthAction.signIn);
+    _provider.onCredentialReceived(credential, AuthAction.signIn);
   }
 
   @override
@@ -252,30 +272,23 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
   }
 
   @override
-  void onBeforeCredentialLinked(AuthCredential credential) {
+  void onCredentialReceived(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
-    });
-  }
-
-  @override
-  void onBeforeProvidersForEmailFetch() {
-    setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onCanceled() {
     setState(() {
-      child = Text("Phone verification cancelled");
+      child = const Text('Phone verification cancelled');
     });
   }
 
@@ -285,23 +298,12 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
   }
 
   @override
-  void onDifferentProvidersFound(
-      String email, List<String> providers, AuthCredential? credential) {
-    showDifferentMethodSignInDialog(
-      context: context,
-      availableProviders: providers,
-      providers: FirebaseUIAuth.providersFor(FirebaseAuth.instance.app),
-    );
-  }
-
-  @override
   void onError(Object error) {
     try {
-      // tries default recovery strategy
-      defaultOnAuthError(provider, error);
-    } catch (err) {
+      defaultOnAuthError(_provider, error);
+    } on Exception catch (err) {
       setState(() {
-        defaultOnAuthError(provider, error);
+        child = ErrorText(exception: err);
       });
     }
   }
@@ -309,6 +311,11 @@ class _CustomPhoneVerificationState extends State<CustomPhoneVerification>
   @override
   void onSignedIn(UserCredential credential) {
     Navigator.of(context).pushReplacementNamed('/profile');
+  }
+
+  @override
+  void onMFARequired(MultiFactorResolver resolver) {
+    startMFAVerification(context: context, resolver: resolver, auth: auth);
   }
 }
 ```

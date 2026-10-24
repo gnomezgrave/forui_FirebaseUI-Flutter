@@ -2,12 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_localizations_example/firebase_options.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations_example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,12 +26,12 @@ class MyApp extends StatelessWidget {
       builder: (context, setState) {
         return MaterialApp(
           title: 'Firebase UI Localizations Demo',
+          builder: (context, child) =>
+              FTheme(data: FTheme.neutral.light.touch, child: child!),
           supportedLocales: const [Locale('en'), Locale('fr')],
           locale: locale,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+          localizationsDelegates: [
+            ...GlobalMaterialLocalizations.delegates,
             FirebaseUILocalizations.delegate,
           ],
           home: Column(

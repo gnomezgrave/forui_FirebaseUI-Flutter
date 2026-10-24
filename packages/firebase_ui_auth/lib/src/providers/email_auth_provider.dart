@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 /// A listener of the [EmailAuthFlow] flow lifecycle.
 abstract class EmailAuthListener extends AuthListener {}
@@ -42,9 +42,10 @@ class EmailAuthProvider
     String password, [
     AuthAction action = AuthAction.signIn,
   ]) {
-    final credential =
-        fba.EmailAuthProvider.credential(email: email, password: password)
-            as fba.EmailAuthCredential;
+    final credential = fba.EmailAuthProvider.credential(
+      email: email,
+      password: password,
+    ) as fba.EmailAuthCredential;
 
     onCredentialReceived(credential, action);
   }

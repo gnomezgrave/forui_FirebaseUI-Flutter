@@ -1,6 +1,6 @@
 {
-    "name": "firebase_ui_example",
-    "short_name": "firebase_ui_example",
+    "name": "forui_firebase_ui_example",
+    "short_name": "forui_firebase_ui_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

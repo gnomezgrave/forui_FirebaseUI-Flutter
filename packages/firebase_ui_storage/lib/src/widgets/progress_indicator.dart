@@ -3,13 +3,14 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 /// A builder that is invoked for each progress event.
-typedef TaskProgressBuilder =
-    Widget Function(BuildContext context, double progress);
+typedef TaskProgressBuilder = Widget Function(
+  BuildContext context,
+  double progress,
+);
 
 /// A builder that is invoked when an error occurs.
 typedef ErrorBuilder = Widget Function(BuildContext context, Object? error);
@@ -92,11 +93,8 @@ abstract class TaskProgressWidget extends StatelessWidget {
   }
 }
 
-/// Material/Cupertino app aware task progress indicator widget.
-///
-/// Uses [LinearProgressIndicator] under MaterialApp and a custom
-/// iOS-style progress bar under [CupertinoApp].
-class TaskProgressIndicator extends PlatformWidget {
+/// Task progress indicator backed by Forui [FDeterminateProgress].
+class TaskProgressIndicator extends StatelessWidget {
   /// The task to track.
   final Task task;
 
@@ -110,77 +108,13 @@ class TaskProgressIndicator extends PlatformWidget {
   });
 
   @override
-  Widget buildCupertino(BuildContext context) {
+  Widget build(BuildContext context) {
     return _BindTaskWidget(
       task: task,
       errorBuilder: errorBuilder,
       builder: (context, progress) {
-        return _CupertinoProgressBar(progress: progress);
+        return FDeterminateProgress(value: progress.clamp(0.0, 1.0));
       },
-    );
-  }
-
-  @override
-  Widget buildMaterial(BuildContext context) {
-    return _BindTaskWidget(
-      task: task,
-      errorBuilder: errorBuilder,
-      builder: (context, progress) {
-        return LinearProgressIndicator(value: progress);
-      },
-    );
-  }
-}
-
-class _CupertinoProgressBar extends StatelessWidget {
-  final double progress;
-
-  const _CupertinoProgressBar({required this.progress});
-
-  @override
-  Widget build(BuildContext context) {
-    final cupertinoTheme = CupertinoTheme.of(context);
-
-    return _CupertinoProgressBarBackground(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            children: [
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 100),
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: constraints.maxWidth * progress,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: cupertinoTheme.primaryColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _CupertinoProgressBarBackground extends StatelessWidget {
-  final Widget child;
-
-  const _CupertinoProgressBarBackground({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 8, maxHeight: 8),
-      decoration: BoxDecoration(
-        color: CupertinoColors.secondarySystemFill,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: child,
     );
   }
 }

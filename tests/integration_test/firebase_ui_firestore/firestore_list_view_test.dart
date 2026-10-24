@@ -3,9 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:mockito/mockito.dart';
 
 import '../utils.dart';
@@ -23,9 +25,9 @@ void main() {
       final collection = db.collection('unknown');
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+        foruiApp(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection,
               errorBuilder: (context, error, stack) {
                 return Text('error: $error');
@@ -36,7 +38,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
 
       await collection.snapshots().first.then((_) {}, onError: (_) {});
@@ -55,9 +57,9 @@ void main() {
       final collection = db.collection('flutter-tests/list-view-builder/works');
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+        foruiApp(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
               loadingBuilder: (context) => const Text('loading...'),
               itemBuilder: (context, snapshot, index) =>
@@ -68,7 +70,7 @@ void main() {
       );
 
       expect(find.text('loading...'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(LoadingIndicator), findsNothing);
       expect(find.byType(ListView), findsNothing);
     });
 
@@ -78,9 +80,9 @@ void main() {
       final collection = db.collection('flutter-tests/list-view-builder/works');
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+        foruiApp(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection.orderBy('value'),
               itemBuilder: (context, snapshot, index) =>
                   throw UnimplementedError(),
@@ -89,7 +91,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
     });
 
@@ -98,9 +100,9 @@ void main() {
       final collection = db.collection('unknown');
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: FirestoreListView<Map>(
+        foruiApp(
+          home: FScaffold(
+            child: FirestoreListView<Map>(
               query: collection,
               cacheExtent: 0,
               itemBuilder: (context, snapshot, index) =>
@@ -112,7 +114,7 @@ void main() {
 
       verifyZeroInteractions(builderSpy);
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
       expect(find.byType(ListView), findsNothing);
 
       await collection.snapshots().first.then((value) {}, onError: (_) {});
@@ -130,7 +132,7 @@ void main() {
         late double size;
 
         await tester.pumpWidget(
-          MaterialApp(
+          foruiApp(
             home: Material(
               child: Builder(
                 builder: (context) {

@@ -27,11 +27,11 @@ class MyUploadButton extends StatelessWidget {
 }
 ```
 
-`UploadButton` uses `uploadRoot` and `namingPolicy` from [`FirebaseUIStorageConfiguration`](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/FirebaseUIStorageConfiguration-class.html) to determine the location and file name of the uploaded file.
+`UploadButton` uses `uploadRoot` and `namingPolicy` from [`FirebaseUIStorageConfiguration`](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/FirebaseUIStorageConfiguration-class.html) to determine the location and file name of the uploaded file.
 
 ## Showing upload progress
 
-`UploadButton` shows `CircularProgressIndicator` under `MaterialApp`, and `CupertinoActivityIndicator` under `CupertinoApp` while the upload is in progress. For large uploads, you might want to show upload progress, so you could replace the button with a [`TaskProgressIndicator`](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/task-progress-indicator.md) in a stateful widget using `onUploadStarted`:
+`UploadButton` shows a Forui-backed [`LoadingIndicator`](https://pub.dev/documentation/forui_firebase_ui_shared/latest/forui_firebase_ui_shared/LoadingIndicator-class.html) while the upload is in progress. For large uploads, you might want to show upload progress, so you could replace the button with a [`TaskProgressIndicator`](./task-progress-indicator.md) in a stateful widget using `onUploadStarted`:
 
 ```dart
 class MyUploadWidget extends StatelessWidget {
@@ -62,9 +62,11 @@ By default, `UploadButton` will show all files in the file picker. You can filte
 UploadButton(
   extensions: ['jpg', 'png'],
   mimeTypes: ['image/jpeg', 'image/png'],
+  onUploadComplete: (ref) {/* handle successful upload */},
+  onError: (e, stackTrace) {/* handle error */},
 );
 ```
 
 ---
 
-See [API reference](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/UploadButton-class.html) for more details.
+See [API reference](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/UploadButton-class.html) for more details.

@@ -15,12 +15,18 @@ override the default actions (e.g. signing in or signing out) the UI performs to
 First, we define the root route that checks for authentication state and renders a `SignInScreen` or `ProfileScreen`:
 
 ```dart
+import 'package:forui/forui.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const providers = [EmailAuthProvider()];
 
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) => SignInScreen(providers: providers),
@@ -52,7 +58,7 @@ You could also react to the user signing out in a similar manner:
 ```dart
 ProfileScreen(
   actions: [
-    SignedOutAction((context, _) {
+    SignedOutAction((context) {
       Navigator.of(context).pushReplacementNamed('/sign-in');
     }),
   ],
@@ -65,12 +71,18 @@ reset their password by pressing the "Forgot Password" button, which internally 
 navigate to a named route, provide the `actions` list with a `ForgotPasswordAction`:
 
 ```dart
+import 'package:forui/forui.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const providers = [EmailAuthProvider()];
 
     return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) {
@@ -94,4 +106,4 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-To learn more about the available actions, check out the [FirebaseUIActions API reference](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIActions-class.html).
+To learn more about the available actions, check out the [FirebaseUIActions API reference](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIActions-class.html).
