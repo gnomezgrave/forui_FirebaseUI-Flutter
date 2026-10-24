@@ -145,13 +145,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
+      # Drop unused SDKs only — do not wipe ~/Library/Caches (slow + kills brew/npm).
+      # Skip ccache: Xcode 26 does not compile via CC/CXX, so hits stay ~0.
       - name: 'Free up space'
         run: |
           sudo rm -rf \
-            /usr/local/share/.cache \
-            /Users/runner/Library/Caches \
-            /Users/runner/Library/Developer/Xcode/DerivedData \
-            /Users/runner/Library/Developer/CoreSimulator/Caches \
             /opt/microsoft/msedge \
             /opt/microsoft/powershell \
             /opt/pipx \
@@ -162,18 +160,16 @@ jobs:
             /usr/local/share/powershell \
             /usr/share/dotnet
           df -h /
-      - uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
-        name: Xcode Compile Cache
-        with:
-          key: ${{ runner.os }}-ios-macos26-v1
-          max-size: 700M
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        name: Swift Packages Cache
-        id: spm-cache
+        name: iOS Pods and Swift Packages Cache
+        id: ios-deps-cache
         with:
-          path: tests/build/ios/SourcePackages
-          key: ${{ runner.os }}-ios-spm-macos26-v1-${{ hashFiles('tests/pubspec.yaml') }}
-          restore-keys: ${{ runner.os }}-ios-spm-macos26-v1-
+          path: |
+            tests/ios/Pods
+            tests/build/ios/SourcePackages
+            ~/Library/Caches/CocoaPods
+          key: ${{ runner.os }}-ios-deps-macos26-v3-${{ hashFiles('tests/ios/Podfile.lock', 'tests/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-ios-deps-macos26-v3-
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
@@ -201,21 +197,9 @@ jobs:
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
         run: dart run melos bootstrap --scope tests
-      - name: Clean up previous build artifacts
-        run: |
-          rm -rf build
-          rm -rf .dart_tool
       - name: "Build Application"
         working-directory: tests
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          export CCACHE_SLOPPINESS=clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros
-          export CCACHE_FILECLONE=true
-          export CCACHE_DEPEND=true
-          export CCACHE_INODECACHE=true
-          ccache -s
-          flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
-          ccache -s
+        run: flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
       - name: Start Firebase Emulator and proxy
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
@@ -266,8 +250,9 @@ jobs:
           path: |
             tests/build/macos/SourcePackages
             tests/macos/Pods
-          key: ${{ runner.os }}-macos26-deps-v1-${{ hashFiles('tests/pubspec.yaml') }}
-          restore-keys: ${{ runner.os }}-macos26-deps-v1-
+            ~/Library/Caches/CocoaPods
+          key: ${{ runner.os }}-macos26-deps-v2-${{ hashFiles('tests/macos/Podfile.lock', 'tests/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-macos26-deps-v2-
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
