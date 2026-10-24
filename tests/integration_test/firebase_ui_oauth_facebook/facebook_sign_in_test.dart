@@ -17,8 +17,14 @@ void main() async {
   late FacebookProvider provider = FacebookProvider(clientId: 'clientId');
 
   setUp(() {
+    // Force classic login in tests — ATT status can hang on iOS simulator CI.
+    FacebookProvider.debugHasTrackingPermission = () async => true;
     provider.provider = MockFacebookAuth();
     setMockFacebookProvider(provider);
+  });
+
+  tearDown(() {
+    FacebookProvider.debugHasTrackingPermission = null;
   });
 
   const labels = DefaultLocalizations();
@@ -134,14 +140,14 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
     String? nonce,
   }) async {
     return super.noSuchMethod(
-      Invocation.method(#signIn, [], {
+      Invocation.method(#login, null, {
         #permissions: permissions ?? ['email', 'public_profile'],
         #loginBehavior: loginBehavior ?? LoginBehavior.dialogOnly,
         #loginTracking: loginTracking ?? LoginTracking.enabled,
         #nonce: nonce,
       }),
-      returnValue: MockLoginResult(),
-      returnValueForMissingStub: MockLoginResult(),
+      returnValue: Future<LoginResult>.value(MockLoginResult()),
+      returnValueForMissingStub: Future<LoginResult>.value(MockLoginResult()),
     );
   }
 }

@@ -230,21 +230,28 @@ jobs:
         env:
           SIMULATOR: ${{ steps.simulator.outputs.udid }}
         run: |
-          run_e2e() {
-            # --no-dds: avoid DDS URL swap races; connectToVmService is only 5s.
-            flutter test ./integration_test/firebase_ui_test.dart \
-              -d "$SIMULATOR" \
-              --dart-define=CI=true \
-              --no-dds
-          }
-          if ! run_e2e; then
-            echo "::warning::iOS e2e failed (often VM Service connect); resetting simulator and retrying once"
-            xcrun simctl terminate "$SIMULATOR" io.flutter.plugins.firebase.tests || true
-            xcrun simctl shutdown "$SIMULATOR" || true
-            xcrun simctl boot "$SIMULATOR"
-            xcrun simctl bootstatus "$SIMULATOR" -b
-            run_e2e
+          # Do not use --no-dds: integration_test goldens need DDS
+          # (VmServiceProxyGoldenFileComparator streamListen fails without it).
+          set +e
+          flutter test ./integration_test/firebase_ui_test.dart \
+            -d "$SIMULATOR" \
+            --dart-define=CI=true 2>&1 | tee /tmp/ios-e2e.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            exit 0
           fi
+          if ! grep -q "Connecting to the VM Service timed out" /tmp/ios-e2e.log; then
+            exit "$status"
+          fi
+          echo "::warning::VM Service connect timed out; resetting simulator and retrying once"
+          xcrun simctl terminate "$SIMULATOR" io.flutter.plugins.firebase.tests || true
+          xcrun simctl shutdown "$SIMULATOR" || true
+          xcrun simctl boot "$SIMULATOR"
+          xcrun simctl bootstatus "$SIMULATOR" -b
+          flutter test ./integration_test/firebase_ui_test.dart \
+            -d "$SIMULATOR" \
+            --dart-define=CI=true
 
   macos:
     runs-on: macos-26

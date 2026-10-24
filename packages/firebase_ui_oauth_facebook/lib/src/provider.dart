@@ -22,6 +22,11 @@ class FacebookProvider extends OAuthProvider {
   final String? redirectUri;
   String? _rawNonce;
 
+  /// When set (tests), skips [AppTrackingTransparency] which can hang on
+  /// simulator CI and never emit SignedIn/AuthFailed.
+  @visibleForTesting
+  static Future<bool> Function()? debugHasTrackingPermission;
+
   @override
   final style = const FacebookProviderButtonStyle();
 
@@ -53,6 +58,9 @@ class FacebookProvider extends OAuthProvider {
 
   /// Checks if tracking permission has been granted on iOS
   Future<bool> _hasTrackingPermission() async {
+    final override = debugHasTrackingPermission;
+    if (override != null) return override();
+
     // Only check on iOS
     if (defaultTargetPlatform != TargetPlatform.iOS) {
       return true; // Classic login available on Android

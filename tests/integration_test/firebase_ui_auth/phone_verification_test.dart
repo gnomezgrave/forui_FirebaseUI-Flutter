@@ -10,6 +10,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 
 import '../utils.dart';
 
@@ -65,14 +66,16 @@ Future<void> submitSmsCode(WidgetTester tester, String code) async {
 }
 
 Future<void> tapVerifyPhoneNumber(WidgetTester tester) async {
-  // Soft keyboard / focus often covers the Forui FButton; hit-testing the
+  // Soft keyboard / focus often covers the Forui button; hit-testing the
   // label Text then misses and validation never runs.
   FocusManager.instance.primaryFocus?.unfocus();
   await tester.pump();
-  final next = find.text(
-    const DefaultLocalizations().verifyPhoneNumberButtonText,
-  );
+  // iOS keyboard inset animates after unfocus; wait before hit-testing.
+  await tester.pump(const Duration(milliseconds: 400));
+  final label = const DefaultLocalizations().verifyPhoneNumberButtonText;
+  final next = find.widgetWithText(UniversalButton, label);
   await tester.ensureVisible(next);
+  await tester.pump();
   await tester.tap(next);
   await settle(tester);
 }
