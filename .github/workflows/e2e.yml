@@ -131,7 +131,8 @@ jobs:
 
   ios:
     runs-on: macos-26
-    timeout-minutes: 45
+    # Cold Xcode of Firebase/Firestore/abseil is ~25–30m; warm DerivedData is much less.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -161,15 +162,25 @@ jobs:
             /usr/share/dotnet
           df -h /
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        name: iOS Pods and Swift Packages Cache
+        name: iOS Pods and CocoaPods Cache
         id: ios-deps-cache
         with:
           path: |
             tests/ios/Pods
-            tests/build/ios/SourcePackages
             ~/Library/Caches/CocoaPods
           key: ${{ runner.os }}-ios-deps-macos26-v3-${{ hashFiles('tests/ios/Podfile.lock', 'tests/pubspec.yaml') }}
           restore-keys: ${{ runner.os }}-ios-deps-macos26-v3-
+      # Dominates warm-run time: object files for Firebase/gRPC/abseil. Key includes
+      # Flutter pin so a bridging-header .pch from another engine is never restored.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        name: iOS Xcode DerivedData Cache
+        id: ios-dd-cache
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            tests/build/ios
+          key: ios-dd-macos26-flutter3.47.7-${{ hashFiles('tests/ios/Podfile.lock') }}
+          restore-keys: ios-dd-macos26-flutter3.47.7-
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
@@ -197,9 +208,6 @@ jobs:
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
         run: dart run melos bootstrap --scope tests
-      - name: "Build Application"
-        working-directory: tests
-        run: flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
       - name: Start Firebase Emulator and proxy
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
@@ -212,6 +220,8 @@ jobs:
         with:
           # List of available simulators: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
           model: "iPhone 17"
+      # No separate `flutter build ios`: it was a full cold Xcode (~25–30m) and
+      # `flutter test` still recompiled. One compile path + DerivedData cache.
       - name: "E2E Tests"
         working-directory: tests
         env:

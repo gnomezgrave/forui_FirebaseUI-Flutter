@@ -14,6 +14,14 @@ Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_
 | `packages/firebase_ui_auth/lib/src/widgets/internal/universal_page_route.dart` | Navigation routes — keep `CupertinoPageRoute` / `MaterialPageRoute` (iOS swipe-back) |
 | [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) | Android/iOS/macOS/web e2e; NDK, AVD, emulator, Flutter pin |
 
+## Tooling (FVM)
+
+Local Flutter/Dart is managed with [FVM](https://fvm.app/). Do **not** search for, download, or switch Flutter SDKs yourself.
+
+- Prefer `fvm flutter` / `fvm dart` (shell may already alias `flutter`/`dart` to these).
+- Match the version in Constraints / CI pins via `fvm use <version>` or the global FVM default — do not invent alternate install paths.
+- Melos bootstrap against FVM if needed: `dart run melos bs --sdk-path=<fvm sdk path>` (often `~/fvm/default` or `~/fvm/versions/<version>`).
+
 ## Constraints
 
 - Dart `^3.13`, Flutter **3.47+**, Forui **0.27.x**
@@ -27,6 +35,7 @@ Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_
 - Android e2e runs on host `ubuntu-latest` + `reactivecircus/android-emulator-runner` (KVM). Do **not** switch that job to a `flutter-android` container — nested virt breaks the emulator path. (`ghcr.io/gmeligio/flutter-web` is fine for the web job only.)
 - Flutter pins `ndkVersion` to **28.2.13676358** (r28c). Install with `sdkmanager "ndk;28.2.13676358"` + `actions/cache` on that path (do **not** use `nttld/setup-ndk` — its SDK link can omit `clang` and break `jni` CMake).
 - iOS/macOS e2e runners: **`macos-26`**. Simulator model must exist on that image (currently `iPhone 17`).
+- iOS e2e `tests/ios/Podfile` pins Invertase `FirebaseFirestore` binaries (`firestore-ios-sdk-frameworks` tag = `firebase_core` Firebase iOS SDK). Bump that tag when the locked Firebase version changes — otherwise CI compiles abseil/gRPC from source (~25m+).
 
 ### When upgrading Flutter
 
@@ -39,4 +48,5 @@ Update these together (same version string unless noted):
 | [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) Android | NDK cache path/`sdkmanager` package id if `flutter.ndkVersion` changed |
 | [`unit_tests.yml`](.github/workflows/unit_tests.yml) / [`code_health.yml`](.github/workflows/code_health.yml) | usually `channel: stable` only; pin `flutter-version` if e2e is pinned and analyze must match |
 | [AGENTS.md](AGENTS.md) Constraints | Flutter **x.y+** line |
+| FVM | `fvm install` / `fvm use` (or global default) so local tooling matches the pin |
 | Runner OS / simulators | only if the image or Xcode set forces it (e.g. `macos-*`, simulator model) |

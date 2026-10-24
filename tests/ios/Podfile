@@ -30,6 +30,13 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
 
+  # Precompiled Firestore XCFramework (Invertase). Without this, CocoaPods
+  # builds FirestoreInternal + abseil + gRPC from source (~25m on GHA).
+  # Tag must match firebase_core's Firebase iOS SDK (see Podfile.lock).
+  pod 'FirebaseFirestore',
+      :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git',
+      :tag => '12.19.3'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
     inherit! :search_paths
