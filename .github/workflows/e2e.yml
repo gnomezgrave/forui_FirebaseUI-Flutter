@@ -31,14 +31,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         name: Install Node.js
         with:
           node-version: "22"
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: "temurin"
           java-version: "21"
@@ -48,9 +48,17 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Gradle cache
-        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Flutter pins ndkVersion to r28c (28.2.13676358). link-to-sdk exposes it
+      # under $ANDROID_HOME/ndk/<Pkg.Revision>; local-cache skips the ~1GB download.
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779 # v1.6.0
+        with:
+          ndk-version: r28c
+          link-to-sdk: true
+          local-cache: true
       - name: AVD cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: avd-cache
         with:
           path: |
@@ -59,7 +67,7 @@ jobs:
           key: avd-ubuntu-31-google_apis-x86_64
       - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 31
           target: google_apis
@@ -69,7 +77,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: "stable"
           flutter-version: "3.47.7"
@@ -79,18 +87,18 @@ jobs:
           sudo npm i -g firebase-tools
           echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Firebase Emulator Cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/firebase/emulators
           key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
           restore-keys: firebase-emulators-v3-
       - name: Cache functions node_modules
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: functions/node_modules
           key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
           restore-keys: functions-npm-
-      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
+      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3.10.0
         with:
           run-bootstrap: false
           melos-version: "^7.5.0"
@@ -103,7 +111,7 @@ jobs:
           npm run build
           ../scripts/start-firebase-emulator.sh
       - name: E2E Tests
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           working-directory: tests
           api-level: 31
@@ -116,18 +124,18 @@ jobs:
           script: flutter test integration_test/firebase_ui_test.dart --dart-define=CI=true -d emulator-5554
 
   ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Required for some `pod` commands
           persist-credentials: true # zizmor: ignore[artipacked]
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         name: Install Node.js
         with:
           node-version: "22"
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: "temurin"
           java-version: "21"
@@ -148,40 +156,40 @@ jobs:
             /usr/local/share/powershell \
             /usr/share/dotnet
           df -h /
-      - uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d
+      - uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
         name: Xcode Compile Cache
         with:
-          key: ${{ runner.os }}-ios-v3
+          key: ${{ runner.os }}-ios-macos26-v1
           max-size: 700M
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Swift Packages Cache
         id: spm-cache
         with:
           path: tests/build/ios/SourcePackages
-          key: ${{ runner.os }}-ios-spm-v1-${{ hashFiles('tests/pubspec.yaml') }}
-          restore-keys: ${{ runner.os }}-ios-spm-v1-
+          key: ${{ runner.os }}-ios-spm-macos26-v1-${{ hashFiles('tests/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-ios-spm-macos26-v1-
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
           echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Firebase Emulator Cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/firebase/emulators
           key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
           restore-keys: firebase-emulators-v3-
       - name: Cache functions node_modules
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: functions/node_modules
           key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
           restore-keys: functions-npm-
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: "stable"
           flutter-version: "3.47.7"
           cache: true
-      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
+      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3.10.0
         with:
           run-bootstrap: false
           melos-version: "^7.5.0"
@@ -209,11 +217,11 @@ jobs:
           npm i
           npm run build
           ../scripts/start-firebase-emulator.sh
-      - uses: futureware-tech/simulator-action@82fbf87feb764ca7f516260ebfb464b83638a068
+      - uses: futureware-tech/simulator-action@c768f52966d5f70335ec77881f9806b24a52f80e # v6
         id: simulator
         with:
-          # List of available simulators: https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md#installed-simulators
-          model: "iPhone 16"
+          # List of available simulators: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
+          model: "iPhone 17"
       - name: "E2E Tests"
         working-directory: tests
         env:
@@ -224,27 +232,27 @@ jobs:
           flutter test ./integration_test/firebase_ui_test.dart -d "$SIMULATOR" --dart-define=CI=true
 
   macos:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Required for some `pod` commands
           persist-credentials: true # zizmor: ignore[artipacked]
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         name: Install Node.js
         with:
           node-version: "22"
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: "temurin"
           java-version: "21"
-      - uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d
+      - uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
         name: Xcode Compile Cache
         with:
-          key: ${{ runner.os }}-macos-v2
+          key: ${{ runner.os }}-macos26-v1
           max-size: 700M
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Swift Packages and Pods Cache
         id: spm-cache
         with:
@@ -252,30 +260,30 @@ jobs:
           path: |
             tests/build/macos/SourcePackages
             tests/macos/Pods
-          key: ${{ runner.os }}-macos-deps-v1-${{ hashFiles('tests/pubspec.yaml') }}
-          restore-keys: ${{ runner.os }}-macos-deps-v1-
+          key: ${{ runner.os }}-macos26-deps-v1-${{ hashFiles('tests/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-macos26-deps-v1-
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
           echo "FIREBASE_TOOLS_VERSION=$(firebase --version)" >> "$GITHUB_ENV"
       - name: Cache Firebase Emulator
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/firebase/emulators
           key: firebase-emulators-v3-${{ env.FIREBASE_TOOLS_VERSION }}
           restore-keys: firebase-emulators-v3-
       - name: Cache functions node_modules
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: functions/node_modules
           key: functions-npm-${{ hashFiles('functions/package-lock.json') }}
           restore-keys: functions-npm-
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: "stable"
           flutter-version: "3.47.7"
           cache: true
-      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
+      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3.10.0
         with:
           run-bootstrap: false
           melos-version: "^7.5.0"
@@ -309,10 +317,10 @@ jobs:
     container:
       image: ghcr.io/gmeligio/flutter-web:3.47.7
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8
+      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3.10.0
         with:
           melos-version: "^7.5.0"
       - name: 'Build Test Applications'

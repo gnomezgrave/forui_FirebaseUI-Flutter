@@ -50,11 +50,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: "stable"
           cache: true
-      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3
+      - uses: bluefireteam/melos-action@b79b63bcd183f823740a7976cbdb4b0fc95a0eb8 # v3.10.0
         with:
           melos-version: "^7.5.0"
 
