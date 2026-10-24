@@ -199,27 +199,33 @@ void main() async {
       'reports an error rather than hanging when desktop keys are missing',
       (tester) async {
         // OAuth uses [defaultTargetPlatform], not Theme.platform.
+        // Clear in [finally]: IntegrationTestWidgetsFlutterBinding verifies
+        // foundation invariants before package:test tearDowns run.
         debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
         addTearDown(() => debugDefaultTargetPlatformOverride = null);
 
-        final states = <AuthState>[];
+        try {
+          final states = <AuthState>[];
 
-        await render(
-          tester,
-          AuthStateListener<OAuthController>(
-            listener: (oldState, state, controller) {
-              states.add(state);
-              return null;
-            },
-            child: OAuthProviderButton(provider: provider, auth: auth),
-          ),
-        );
+          await render(
+            tester,
+            AuthStateListener<OAuthController>(
+              listener: (oldState, state, controller) {
+                states.add(state);
+                return null;
+              },
+              child: OAuthProviderButton(provider: provider, auth: auth),
+            ),
+          );
 
-        final button = find.byType(OAuthProviderButtonBase);
-        await tester.tap(button);
-        await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
+          final button = find.byType(OAuthProviderButtonBase);
+          await tester.tap(button);
+          await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-        expect(states.last, isA<AuthFailed>());
+          expect(states.last, isA<AuthFailed>());
+        } finally {
+          debugDefaultTargetPlatformOverride = null;
+        }
       },
     );
   }, skip: !provider.supportsPlatform(defaultTargetPlatform));

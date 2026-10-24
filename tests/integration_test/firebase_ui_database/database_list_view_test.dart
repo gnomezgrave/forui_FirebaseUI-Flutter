@@ -44,7 +44,13 @@ void main() {
         expect(find.byType(LoadingIndicator), findsOneWidget);
         expect(find.byType(ListView), findsNothing);
 
-        await tester.pumpAndSettle();
+        // Wait for the denied read (same pattern as FirestoreListView e2e);
+        // LoadingIndicator animation alone is not a reliable settle signal.
+        await ref.onValue.first.then((_) {}, onError: (_) {});
+        await pumpUntil(
+          tester,
+          () => find.textContaining('permission-denied').evaluate().isNotEmpty,
+        );
 
         verifyZeroInteractions(builderSpy);
 
