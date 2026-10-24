@@ -62,16 +62,61 @@ class _SMSCodeInputViewState extends State<SMSCodeInputView> {
 
   SMSCodeSent? _codeSentState;
 
+  /// Code entered before [SMSCodeSent]. The screen is shown as soon as the
+  /// SMS is requested, which is before Android delivers `codeSent`.
+  String? _pendingCode;
+
+  SMSCodeSent? _verificationState() {
+    final cached = _codeSentState;
+    if (cached != null) return cached;
+
+    final state = AuthFlowBuilder.getState(widget.flowKey);
+    if (state is SMSCodeSent) {
+      _codeSentState = state;
+      return state;
+    }
+    return null;
+  }
+
+  void _verify(String code, PhoneAuthController ctrl, SMSCodeSent sent) {
+    ctrl.verifySMSCode(
+      code,
+      confirmationResult: sent.confirmationResult,
+      verificationId: sent.verificationId,
+    );
+  }
+
+  void _schedulePending(PhoneAuthController ctrl) {
+    final pending = _pendingCode;
+    if (pending == null) return;
+    _pendingCode = null;
+    // Microtask, not post-frame: integration tests can sit on a Future while
+    // no frame is pumped, and verifySMSCode must not run inside notifyListeners.
+    Future.microtask(() {
+      if (!mounted) return;
+      final sent = _verificationState();
+      if (sent == null) {
+        _pendingCode = pending;
+        return;
+      }
+      _verify(pending, ctrl, sent);
+    });
+  }
+
   void submit(String code, PhoneAuthController ctrl) {
     if (widget.onSubmit != null) {
       widget.onSubmit!(code);
-    } else if (_codeSentState != null) {
-      ctrl.verifySMSCode(
-        code,
-        confirmationResult: _codeSentState!.confirmationResult,
-        verificationId: _codeSentState!.verificationId,
-      );
+      return;
     }
+
+    final sent = _verificationState();
+    if (sent == null) {
+      _pendingCode = code;
+      return;
+    }
+
+    _pendingCode = null;
+    _verify(code, ctrl, sent);
   }
 
   @override
@@ -97,6 +142,7 @@ class _SMSCodeInputViewState extends State<SMSCodeInputView> {
 
         if (newState is SMSCodeSent) {
           _codeSentState = newState;
+          _schedulePending(controller);
         }
       },
       builder: (context, state, ctrl, child) {

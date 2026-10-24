@@ -328,6 +328,25 @@ void main() {
         });
       });
 
+      test('ignores a duplicate codeSent for the same verification id', () {
+        final provider = MockProvider();
+        final ctrl = PhoneAuthFlow(provider: provider, auth: MockAuth());
+        var notifications = 0;
+        ctrl.addListener(() => notifications++);
+
+        ctrl.onCodeSent('verification-id', 7);
+        ctrl.onCodeSent('verification-id', 7);
+
+        expect(notifications, 1);
+        final state = ctrl.value as SMSCodeSent;
+        expect(state.verificationId, 'verification-id');
+        expect(state.resendToken, 7);
+
+        ctrl.onCodeSent('another-id', 8);
+        expect(notifications, 2);
+        expect((ctrl.value as SMSCodeSent).verificationId, 'another-id');
+      });
+
       group('#verifySMSCode', () {
         test('calls PhoneAuthProvider#verifySMSCode', () {
           final provider = MockProvider();

@@ -41,4 +41,17 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_macos_build_settings(target)
   end
+
+  # Xcode 16.3+ / Xcode-beta: Swift requires explicit `.init` when calling
+  # Decodable via a metatype. FirebaseSharedSwift 12.19 CocoaPods zip still
+  # ships `_type(from:)` (firebase-ios-sdk#14678). Keep Firebase at 12.19 for
+  # google_sign_in_ios / GTMSessionFetcher (see tests/pubspec.yaml).
+  Dir.glob(File.join(installer.sandbox.root, '**/FirebaseDataEncoder.swift')).each do |path|
+    contents = File.read(path)
+    patched = contents.gsub('return try _type(from: self)', 'return try _type.init(from: self)')
+    next if patched == contents
+
+    File.chmod(File.stat(path).mode | 0o200, path)
+    File.write(path, patched)
+  end
 end

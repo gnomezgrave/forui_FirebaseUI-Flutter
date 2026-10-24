@@ -139,6 +139,14 @@ class PhoneAuthFlow extends AuthFlow<PhoneAuthProvider>
 
   @override
   void onCodeSent(String verificationId, [int? forceResendToken]) {
+    // Android (and the Auth emulator) can emit phoneCodeSent twice for one
+    // send. A second identical state re-fires actions, which double-completes
+    // listeners and can push the SMS screen twice.
+    final current = value;
+    if (current is SMSCodeSent && current.verificationId == verificationId) {
+      return;
+    }
+
     value = SMSCodeSent(
       verificationId: verificationId,
       resendToken: forceResendToken,
