@@ -7,6 +7,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore: depend_on_referenced_packages
+import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,6 +72,10 @@ Future<void> main() async {
   testWidgets(
     'FirestoreDataTable with default dell dialog editor is render as expected',
     (WidgetTester tester) async {
+      // Avoid dialog RenderFlex overflow in the default test viewport.
+      tester.view.physicalSize = const Size(1000, 2000);
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(
         _dataTableBuilder(query: collection, cellBuilder: _defaultCellBuilder),
       );
@@ -230,7 +236,10 @@ Widget _dataTableBuilder({
   OnTapCell? onTapCell,
   OnSelectedRows? onSelectedRows,
 }) {
+  // Edit-modal buttons use UniversalButton (FButton), which requires FTheme.
   return MaterialApp(
+    builder: (context, child) =>
+        FTheme(data: FTheme.neutral.light.touch, child: child!),
     home: FirestoreDataTable(
       query: query,
       columnLabels: {
