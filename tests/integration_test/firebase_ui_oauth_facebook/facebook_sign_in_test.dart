@@ -67,16 +67,35 @@ void main() async {
     });
 
     testWidgets('signs the user in', (tester) async {
-      await render(tester, OAuthProviderButton(provider: provider));
+      final states = <AuthState>[];
+
+      await render(
+        tester,
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          child: OAuthProviderButton(provider: provider),
+        ),
+      );
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      // Auth emulator sign-in is async and may not schedule frames.
+      await pumpUntil(
+        tester,
+        () => states.any((s) => s is SignedIn || s is AuthFailed),
+      );
 
-      final user = auth.currentUser!;
-
-      expect(user.displayName, 'Test User');
-      expect(user.email, 'test@test.com');
+      expect(
+        states.whereType<AuthFailed>(),
+        isEmpty,
+        reason: states.whereType<AuthFailed>().map((e) => e.exception).join(),
+      );
+      expect(auth.currentUser, isNotNull);
+      expect(auth.currentUser!.displayName, 'Test User');
+      expect(auth.currentUser!.email, 'test@test.com');
     });
   }, skip: !provider.supportsPlatform(defaultTargetPlatform));
 }

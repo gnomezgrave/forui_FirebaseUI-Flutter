@@ -30,7 +30,8 @@ void main() {
       await tester.enterText(inputs.at(0), 'test@test.com');
       await tester.enterText(inputs.at(1), '123456');
       await tester.tap(find.text(labels.signInActionText));
-      await tester.pumpAndSettle();
+      // Completers below wait for AuthState; just advance a frame here.
+      await tester.pump();
     }
 
     testWidgets('getControllerForState returns correct controller type', (

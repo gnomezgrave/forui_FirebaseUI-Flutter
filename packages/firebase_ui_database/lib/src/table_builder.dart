@@ -7,6 +7,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -392,15 +393,16 @@ class _EditModalButtonBar extends StatelessWidget {
     return OverflowBar(
       alignment: MainAxisAlignment.end,
       children: [
-        TextButton(
+        UniversalButton(
+          variant: ButtonVariant.text,
+          text: localizations.cancelLabel,
           onPressed: () => Navigator.pop(context),
-          child: Text(localizations.cancelLabel),
         ),
-        ElevatedButton(
+        UniversalButton(
+          text: localizations.updateLabel,
           onPressed: () {
             Navigator.pop(context, formState.submit(ref));
           },
-          child: Text(localizations.updateLabel),
         ),
       ],
     );

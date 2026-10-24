@@ -30,7 +30,7 @@ void main() {
         await tester.pump();
 
         expect(find.byType(LoadingIndicator), findsOneWidget);
-        await tester.pumpAndSettle();
+        await pumpUntil(tester, () => auth.currentUser != null);
 
         expect(auth.currentUser, isNotNull);
       },

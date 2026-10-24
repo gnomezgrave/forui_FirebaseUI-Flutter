@@ -100,7 +100,7 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       verify(anonymousUser.linkWithProvider(fbProvider)).called(1);
       verifyNever(auth.signInWithProvider(fbProvider));
@@ -109,13 +109,13 @@ void main() async {
     testWidgets('reports an error when linking with no signed in user', (
       tester,
     ) async {
-      final listener = MockListener();
+      final states = <AuthState>[];
 
       await render(
         tester,
         AuthStateListener<OAuthController>(
           listener: (oldState, state, controller) {
-            listener(state);
+            states.add(state);
             return null;
           },
           child: OAuthProviderButton(
@@ -128,23 +128,22 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-      final result = verify(listener.call(captureAny));
-      expect(result.captured.last, isA<AuthFailed>());
+      expect(states.last, isA<AuthFailed>());
       verifyNever(auth.signInWithProvider(fbProvider));
     });
 
     testWidgets('reports an error rather than hanging for AuthAction.none', (
       tester,
     ) async {
-      final listener = MockListener();
+      final states = <AuthState>[];
 
       await render(
         tester,
         AuthStateListener<OAuthController>(
           listener: (oldState, state, controller) {
-            listener(state);
+            states.add(state);
             return null;
           },
           child: OAuthProviderButton(
@@ -157,10 +156,9 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      await pumpUntil(tester, () => states.any((s) => s is AuthFailed));
 
-      final result = verify(listener.call(captureAny));
-      expect(result.captured.last, isA<AuthFailed>());
+      expect(states.last, isA<AuthFailed>());
       expect(find.byType(LoadingIndicator), findsNothing);
       verifyNever(auth.signInWithProvider(fbProvider));
     });
@@ -170,13 +168,13 @@ void main() async {
         code: 'web-context-cancelled',
       );
 
-      final listener = MockListener();
+      final states = <AuthState>[];
 
       await render(
         tester,
         AuthStateListener<OAuthController>(
           listener: (oldState, state, controller) {
-            listener(state);
+            states.add(state);
             return null;
           },
           child: OAuthProviderButton(provider: provider, auth: auth),
@@ -185,10 +183,15 @@ void main() async {
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      // Cancel path delays 50ms then resets; wait until loading is cleared.
+      await pumpUntil(
+        tester,
+        () =>
+            states.isNotEmpty &&
+            find.byType(LoadingIndicator).evaluate().isEmpty,
+      );
 
-      final result = verify(listener.call(captureAny));
-      expect(result.captured.last, isNot(isA<AuthFailed>()));
+      expect(states.last, isNot(isA<AuthFailed>()));
       expect(find.byType(LoadingIndicator), findsNothing);
     });
 
@@ -226,12 +229,6 @@ void main() async {
       expect(() => TwitterProvider().desktopSignInArgs, throwsArgumentError);
     });
   });
-}
-
-class MockListener<T> extends Mock {
-  void call(AuthState? state) {
-    super.noSuchMethod(Invocation.method(#call, [state]));
-  }
 }
 
 class MockUser extends Mock implements fba.User {
