@@ -2,6 +2,9 @@
 
 Firebase UI widgets for Cloud Firestore, ported to [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**. `FirestoreDataTable` remains Material-based.
 
+## Platform support
+
+Follows [FlutterFire Cloud Firestore](https://github.com/firebase/flutterfire#stable-plugins) (macOS beta; Windows development-only). Linux is not supported.
 
 ## Migrating from `firebase_ui_firestore`
 

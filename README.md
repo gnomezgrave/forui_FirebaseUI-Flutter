@@ -28,6 +28,10 @@ This fork exists so Firebase UI flows (sign-in, OAuth, storage browsers, and so 
 | [`forui_firebase_ui_shared`](./packages/firebase_ui_shared/)                 | [![pub package](https://img.shields.io/pub/v/forui_firebase_ui_shared.svg)](https://pub.dev/packages/forui_firebase_ui_shared)                 |
 | [`forui_firebase_ui_storage`](./packages/firebase_ui_storage/)               | [![pub package](https://img.shields.io/pub/v/forui_firebase_ui_storage.svg)](https://pub.dev/packages/forui_firebase_ui_storage)               |
 
+## Platform support
+
+UI widgets work wherever [Forui](https://forui.dev) runs. Firebase feature availability follows [FlutterFire](https://github.com/firebase/flutterfire#stable-plugins): no Linux; Windows is development-only for Auth, Firestore, and Storage. Auth provider details are in [`forui_firebase_ui_auth`](./packages/firebase_ui_auth/README.md#platform-support).
+
 ## Quick start
 
 ```sh

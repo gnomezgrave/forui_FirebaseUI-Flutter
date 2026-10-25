@@ -2,6 +2,9 @@
 
 Firebase UI widgets for Realtime Database, ported to [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**. `FirebaseDatabaseDataTable` remains Material-based.
 
+## Platform support
+
+Follows [FlutterFire Realtime Database](https://github.com/firebase/flutterfire#stable-plugins) (Android, iOS, Web, macOS beta). Windows and Linux are not supported.
 
 ## Migrating from `firebase_ui_database`
 

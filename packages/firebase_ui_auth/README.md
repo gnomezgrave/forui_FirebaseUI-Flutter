@@ -13,18 +13,20 @@ See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_F
 
 ## Platform support
 
-| Feature/platform   | Android | iOS | Web              | macOS            | Windows          | Linux            |
-| ------------------ | ------- | --- | ---------------- | ---------------- | ---------------- | ---------------- |
-| Email              | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Phone              | ✓       | ✓   | ✓                | ╳                | ╳                | ╳                |
-| Email link         | ✓       | ✓   | ╳                | ╳                | ╳                | ╳                |
-| Email verification | ✓       | ✓   | ✓ <sup>(2)</sup> | ✓ <sup>(2)</sup> | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Sign in with Apple | ✓       | ✓   | ✓                | ✓                | ╳                | ╳                |
-| Google Sign in     | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Twitter Login      | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Facebook Sign in   | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
+Auth UI support follows [FlutterFire Authentication](https://github.com/firebase/flutterfire#stable-plugins) (macOS beta; Windows development-only). Linux is not supported by FlutterFire.
 
-1. Available with [flutterfire_desktop](https://github.com/invertase/flutterfire_desktop)
+| Feature/platform   | Android | iOS | Web              | macOS            | Windows          |
+| ------------------ | ------- | --- | ---------------- | ---------------- | ---------------- |
+| Email              | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Phone              | ✓       | ✓   | ✓                | ╳                | ╳                |
+| Email link         | ✓       | ✓   | ╳                | ╳                | ╳                |
+| Email verification | ✓       | ✓   | ✓ <sup>(2)</sup> | ✓ <sup>(2)</sup> | ✓ <sup>(1)</sup> |
+| Sign in with Apple | ✓       | ✓   | ✓                | ✓                | ╳                |
+| Google Sign in     | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Twitter Login      | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Facebook Sign in   | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+
+1. Windows via FlutterFire is **development-only**; production is not supported
 2. No deep-linking into app, so email verification link opens a web page
 
 ## Installation
@@ -93,7 +95,7 @@ If you're using `ProfileScreen`, add:
 fonts:
   - family: SocialIcons
     fonts:
-      - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf
+      - asset: packages/forui_firebase_ui_auth/fonts/SocialIcons.ttf
 ```
 
 ## Docs
