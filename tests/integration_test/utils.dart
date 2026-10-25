@@ -98,19 +98,28 @@ Widget foruiApp({required Widget home}) {
 }
 
 Future<void> render(WidgetTester tester, Widget widget) async {
-  // Align loosens FScaffold's tight height (avoids Column overflow).
-  // resizeToAvoidBottomInset: false keeps height stable when enterText
-  // opens the IME — production screens scroll via ResponsivePage instead.
+  // Align loosens FScaffold's tight height. Zero viewInsets +
+  // resizeToAvoidBottomInset: false keep height stable when enterText
+  // opens the CI software keyboard (local sims often use hardware keyboard).
+  // Production screens scroll via ResponsivePage instead.
   await tester.pumpWidget(
     foruiApp(
-      home: SafeArea(
-        child: FScaffold(
-          resizeToAvoidBottomInset: false,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Align(alignment: Alignment.topCenter, child: widget),
-          ),
-        ),
+      home: Builder(
+        builder: (context) {
+          final mq = MediaQuery.of(context);
+          return MediaQuery(
+            data: mq.copyWith(viewInsets: EdgeInsets.zero),
+            child: SafeArea(
+              child: FScaffold(
+                resizeToAvoidBottomInset: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Align(alignment: Alignment.topCenter, child: widget),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     ),
   );

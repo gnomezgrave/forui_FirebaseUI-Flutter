@@ -286,6 +286,10 @@ jobs:
         env:
           SIMULATOR: ${{ steps.simulator.outputs.udid }}
         run: |
+          # Prefer hardware keyboard so enterText does not raise a software
+          # IME that shrinks FScaffold and overflows EmailForm (~225px on CI).
+          defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
+          xcrun simctl spawn "$SIMULATOR" defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true || true
           # Do not use --no-dds: integration_test goldens need DDS
           # (VmServiceProxyGoldenFileComparator streamListen fails without it).
           set +e
@@ -305,6 +309,7 @@ jobs:
           xcrun simctl shutdown "$SIMULATOR" || true
           xcrun simctl boot "$SIMULATOR"
           xcrun simctl bootstatus "$SIMULATOR" -b
+          defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
           flutter test ./integration_test/firebase_ui_test.dart \
             -d "$SIMULATOR" \
             --dart-define=CI=true
