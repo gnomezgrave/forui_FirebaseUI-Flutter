@@ -113,15 +113,51 @@ melos:
 
     test:e2e:
       description: |
-        Run e2e tests (Firebase Emulator must already be running).
-        Default device: macos. Override with FLUTTER_TEST_DEVICE, e.g.:
-          FLUTTER_TEST_DEVICE=chrome dart run melos run test:e2e
-          FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 dart run melos run test:e2e
+        Run e2e on macOS. Auto-starts Firebase emulators if needed.
+        Prefer platform scripts: test:e2e:macos|ios|android|web.
+        Override device with FLUTTER_TEST_DEVICE. Match CI skips with E2E_CI=1.
         If macOS pod install fails on a missing Firebase version, refresh once:
           (cd tests/macos && pod install --repo-update)
+      run: bash scripts/run_e2e.sh macos
+
+    test:e2e:macos:
+      description: |
+        e2e on macOS (same as test:e2e). Auto-starts Firebase emulators if needed.
+        Auth persistence tests are skipped without a signed macOS Runner.
+      run: bash scripts/run_e2e.sh macos
+
+    test:e2e:ios:
+      description: |
+        e2e on a connected iOS Simulator/device (auto-picks first simulator).
+        Auto-starts Firebase emulators if needed. Boot a simulator first (`open -a Simulator`).
+        Override: FLUTTER_TEST_DEVICE=<id>. CI parity: E2E_CI=1 dart run melos run test:e2e:ios
+      run: bash scripts/run_e2e.sh ios
+
+    test:e2e:android:
+      description: |
+        e2e on a connected Android emulator/device (auto-picks first Android device).
+        Auto-starts Firebase emulators if needed. Start an AVD first.
+        Override: FLUTTER_TEST_DEVICE=emulator-5554.
+        Use JDK 21 if Android Studio ships JDK 25 (flutter config --jdk-dir=...).
+        CI parity: E2E_CI=1 dart run melos run test:e2e:android
+      run: bash scripts/run_e2e.sh android
+
+    test:e2e:web:
+      description: |
+        Mirror CI web job: build example apps for web (no integration_test web driver).
+        Same as test:build:web.
+      run: dart run melos run test:build:web
+
+    test:e2e:all:
+      description: |
+        Run local CI-parity suite: macos → ios → android e2e, then web example builds.
+        Auto-starts Firebase emulators if needed; requires iOS Simulator + Android AVD.
+        Stops on first failure. Set E2E_CI=1 to match CI dart-defines.
       run: |
-        cd tests && flutter test integration_test/firebase_ui_test.dart -r github \
-          -d "${FLUTTER_TEST_DEVICE:-macos}"
+        dart run melos run test:e2e:macos &&
+        dart run melos run test:e2e:ios &&
+        dart run melos run test:e2e:android &&
+        dart run melos run test:e2e:web
 
     # Additional cleanup lifecycle script, executed when `melos clean` is run.
     postclean: >

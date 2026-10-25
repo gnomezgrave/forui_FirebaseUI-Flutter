@@ -71,6 +71,11 @@ Future<void> prepare() async {
 Future<void> authCleanup() async {
   await auth.signOut();
   await deleteAllAccounts();
+  // Persistence can leave a stale currentUser after emulator account delete;
+  // clear again so the next OAuth test does not autoresolve to AuthAction.link.
+  if (auth.currentUser != null) {
+    await auth.signOut();
+  }
 }
 
 bool _testsSetUp = false;

@@ -76,7 +76,13 @@ void main() async {
             states.add(state);
             return null;
           },
-          child: OAuthProviderButton(provider: provider),
+          // Explicit signIn: AuthFlow autoresolves to link when currentUser
+          // is non-null (stale session / prior test), which yields
+          // firebase_auth/no-current-user after emulator account deletion.
+          child: OAuthProviderButton(
+            provider: provider,
+            action: AuthAction.signIn,
+          ),
         ),
       );
 

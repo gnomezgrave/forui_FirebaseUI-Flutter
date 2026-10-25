@@ -322,14 +322,14 @@ void main() {
 
         await submitSmsCode(tester, code);
 
-        final future = reauthenticationCompleter.future.timeout(
-          const Duration(seconds: 5),
+        // expect(future, completes) does not await — onPhoneVerified would be
+        // checked before the reauth callbacks run (especially on Android).
+        await reauthenticationCompleter.future.timeout(
+          const Duration(seconds: 15),
         );
-
-        expect(future, completes);
         expect(onPhoneVerifiedCalled, isTrue);
       },
-      // passes locally but fails in CI
+      // Emulator SMS reuse / timing still flakes under CI KVM.
       skip:
           isCI &&
           (defaultTargetPlatform == TargetPlatform.android ||

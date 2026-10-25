@@ -76,7 +76,12 @@ void main() async {
             states.add(state);
             return null;
           },
-          child: OAuthProviderButton(provider: provider),
+          // Explicit signIn: AuthFlow autoresolves to link when currentUser
+          // is non-null (stale session), which fails after emulator cleanup.
+          child: OAuthProviderButton(
+            provider: provider,
+            action: AuthAction.signIn,
+          ),
         ),
       );
 

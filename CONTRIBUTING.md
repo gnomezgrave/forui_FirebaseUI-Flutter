@@ -125,25 +125,44 @@ your code contributions, various tests will be run against your updated code aut
 ### End-to-end (e2e) tests
 
 E2e tests are those which directly communicate with Firebase, whose results cannot be mocked. 
-These tests require the Firebase Emulator.
-
-To start the Firebase Emulator, run this command:
+They need the Firebase Emulator Suite. Local `test:e2e:*` scripts reuse it if already up;
+otherwise they build `functions` and start the suite in the background with
+`CI=1 scripts/start-firebase-emulator.sh` (the same script CI uses). To run emulators
+yourself in the foreground (with import/export):
 
 ```bash
 dart run melos run emulator:start
 ```
 
-Once the Firebase Emulator is up and running, execute the following Melos command from the terminal:
+Skip auto-start (fail if offline): `E2E_SKIP_EMULATOR=1 dart run melos run test:e2e:ios`.
+
+Run e2e for the platform you care about (mirrors `.github/workflows/e2e.yml`):
 
 ```bash
-dart run melos run test:e2e
+dart run melos run test:e2e:macos     # default / same as test:e2e
+dart run melos run test:e2e:ios       # needs a booted iOS Simulator
+dart run melos run test:e2e:android   # needs a running Android emulator
+dart run melos run test:e2e:web       # CI web job: build example apps (not a driver)
+dart run melos run test:e2e:all       # macos → ios → android → web (fail-fast)
 ```
 
-That defaults to the `macos` device. To target another device, set `FLUTTER_TEST_DEVICE` (from `flutter devices`):
+iOS/Android auto-pick the first matching device from `flutter devices` (simulators preferred on iOS). Override with `FLUTTER_TEST_DEVICE`:
 
 ```bash
-FLUTTER_TEST_DEVICE=chrome dart run melos run test:e2e
-FLUTTER_TEST_DEVICE=<device-id> dart run melos run test:e2e
+FLUTTER_TEST_DEVICE=01727AEB-07DE-4141-B389-07C267E8C8E2 dart run melos run test:e2e:ios
+FLUTTER_TEST_DEVICE=emulator-5554 dart run melos run test:e2e:android
+```
+
+To apply the same `--dart-define=CI=true` skips as GitHub Actions:
+
+```bash
+E2E_CI=1 dart run melos run test:e2e:android
+```
+
+Android builds need a JDK that Gradle 8.14 supports (Java 21; not Android Studio’s JDK 25). If `assembleDebug` fails with “Unsupported class file major version 69”:
+
+```bash
+flutter config --jdk-dir="$(brew --prefix openjdk@21)/libexec/openjdk.jdk/Contents/Home"
 ```
 
 The `tests` app keeps Swift Package Manager off: FlutterFire SPM pulls Firebase iOS SDK 13, which currently conflicts with `google_sign_in_ios` (GoogleSignIn 9.x). CocoaPods still uses Firebase 12.19.

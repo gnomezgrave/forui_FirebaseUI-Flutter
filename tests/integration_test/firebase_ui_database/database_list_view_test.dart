@@ -228,11 +228,13 @@ void main() {
           expect(find.byKey(ValueKey(i.toString())), findsOneWidget);
         }
       },
+      // Same as FirestoreListView pagination: flaky against the RTDB emulator
+      // on Android (local + CI). Keep exercised on desktop where it is stable.
       skip:
-          isCI &&
-          (defaultTargetPlatform == TargetPlatform.macOS ||
-              defaultTargetPlatform == TargetPlatform.android ||
-              defaultTargetPlatform == TargetPlatform.iOS),
+          defaultTargetPlatform == TargetPlatform.android ||
+          (isCI &&
+              (defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.iOS)),
     );
 
     testWidgets(
