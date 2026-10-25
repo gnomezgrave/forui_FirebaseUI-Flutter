@@ -13,6 +13,20 @@ This guide covers moving from the original Material/Cupertino **Firebase UI for 
 
 Package APIs (`SignInScreen`, providers, actions, etc.) stay largely the same; the main integration change is theming.
 
+## OAuth package layout
+
+Unlike a cyclic auth↔oauth graph, this port keeps a **one-way** dependency chain so packages can publish to pub.dev:
+
+`shared` / `localizations` → **`auth`** → **`oauth`** → `oauth_*`
+
+| Lives in | Types / responsibility |
+| --- | --- |
+| `forui_firebase_ui_auth` | `OAuthProvider`, `OAuthListener`, button styles, `OAuthProviderButton`, `OAuthProviderButtonBase`, `OAuthFlow` |
+| `forui_firebase_ui_oauth` | `PlatformSignInMixin`, desktop/web OAuth helpers; **re-exports** the auth OAuth types |
+| `forui_firebase_ui_oauth_*` | Concrete providers (`GoogleProvider`, …) — `extends OAuthProvider with PlatformSignInMixin` |
+
+App code can keep importing OAuth types from either `forui_firebase_ui_auth` or `forui_firebase_ui_oauth` (re-export). Prefer auth for screens/widgets; use oauth / oauth_* when implementing a custom provider.
+
 ## Dependencies
 
 ```yaml

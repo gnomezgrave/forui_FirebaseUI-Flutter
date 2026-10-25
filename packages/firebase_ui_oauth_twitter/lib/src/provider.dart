@@ -18,7 +18,7 @@ import 'theme.dart';
 /// macOS and Windows still perform the OAuth 1.0a flow in-process and do
 /// require [apiKey] and [apiSecretKey]. `signInWithProvider` rejects every
 /// provider except Apple on macOS, so the desktop flow stays in place there.
-class TwitterProvider extends OAuthProvider {
+class TwitterProvider extends OAuthProvider with PlatformSignInMixin {
   @override
   final providerId = 'twitter.com';
 

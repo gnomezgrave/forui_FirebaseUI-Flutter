@@ -6,12 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
-import 'oauth_provider.dart';
-
 /// {@macro ui.oauth.platform_sign_in_mixin}
-mixin PlatformSignInMixin {
-  fba.FirebaseAuth get auth;
-  OAuthListener get authListener;
+mixin PlatformSignInMixin on OAuthProvider {
   dynamic get firebaseAuthProvider;
 
   void _webOnLinked(fba.UserCredential userCredential) {
@@ -19,6 +15,7 @@ mixin PlatformSignInMixin {
   }
 
   /// {@macro ui.oauth.platform_sign_in_mixin.platform_sign_in}
+  @override
   void platformSignIn(TargetPlatform platform, AuthAction action) {
     if (action == AuthAction.link) {
       auth.currentUser!

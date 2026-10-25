@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_auth/src/providers/oauth_provider.dart';
 
 @immutable
 class ProviderKey {

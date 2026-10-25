@@ -2,6 +2,7 @@
 
 > Note: This release has breaking changes.
 
+ - **BREAKING** **REFACTOR**: host `OAuthProvider`, button styles, and `OAuthProviderButtonBase` in auth so oauth depends only on auth (no publish cycle).
  - **REFACTOR**: upgrade project to remove warnings from Flutter 3.7 ([#10344](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/10344)). ([c9364bb6](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/c9364bb65dd479f00d646a4061673167dd26aa67))
  - **FIX**(ui_auth): allow to pass EmailFormStyle via property ([#98](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/98)). ([88c31a33](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/88c31a332dc490d5500e81d491ba929b0fe4c5f0))
  - **FIX**(firebase_ui_auth): `sendPasswordResetEmail` should not be executed when `isLoading=true` ([#315](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/315)). ([955e5c28](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/955e5c286ea5835defe0bd922428102e98f9e8d7))

@@ -139,8 +139,36 @@ print(chosen.get("id") or chosen.get("name"))
 ' "$machines"
 }
 
+# Xcode 16.3+ / Xcode-beta rejects `_type(from:)` in FirebaseDataEncoder
+# (firebase-ios-sdk#14678). tests/{ios,macos}/Podfile post_install patches it,
+# but Flutter often skips `pod install` when Pods already exist — so re-run when
+# the unpatched string is still present.
+ensure_firebase_data_encoder_patched() {
+  case "$PLATFORM" in
+    ios|macos) ;;
+    *) return 0 ;;
+  esac
+
+  local pods_root="$ROOT/tests/$PLATFORM/Pods"
+  [[ -d "$pods_root" ]] || return 0
+
+  local encoder
+  encoder="$(
+    find "$pods_root" -path '*/FirebaseDataEncoder/FirebaseDataEncoder.swift' \
+      2>/dev/null | head -n 1
+  )"
+  [[ -n "$encoder" ]] || return 0
+
+  if grep -q 'return try _type(from: self)' "$encoder"; then
+    echo "FirebaseDataEncoder still unpatched for Xcode; running pod install in tests/$PLATFORM..."
+    (cd "$ROOT/tests/$PLATFORM" && pod install)
+  fi
+}
+
 DEVICE="$(resolve_device)"
 echo "Running e2e on platform=$PLATFORM device=$DEVICE"
+
+ensure_firebase_data_encoder_patched
 
 EXTRA_ARGS=()
 if [[ "${E2E_CI:-}" == "1" || "${E2E_CI:-}" == "true" ]]; then

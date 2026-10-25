@@ -2,17 +2,29 @@
 
 Forui port of Firebase UI for Flutter. Pub package names are `forui_firebase_ui_*`; directories under `packages/` keep the upstream `firebase_ui_*` names.
 
+## Package graph (auth / oauth)
+
+One-way only — **never** add `forui_firebase_ui_oauth` as a dependency of `forui_firebase_ui_auth`:
+
+`shared` / `localizations` → **auth** → **oauth** → `oauth_*`
+
+- Abstract `OAuthProvider`, styles, and OAuth buttons live in **auth**.
+- **oauth** owns `PlatformSignInMixin` and re-exports auth’s OAuth types.
+- Concrete providers: `extends OAuthProvider with PlatformSignInMixin`.
+- Details: [docs/firebase-ui-auth/migration.md](docs/firebase-ui-auth/migration.md#oauth-package-layout).
+
 ## When to open
 
 | Open | When |
 | --- | --- |
 | [docs/forui-patterns.md](docs/forui-patterns.md) | Editing Forui widgets (theme, typography, OTP, select, prefixes, icons) |
 | [docs/firebase-ui-auth/theming.md](docs/firebase-ui-auth/theming.md) | App must wrap UI in `FTheme` |
-| [docs/firebase-ui-auth/migration.md](docs/firebase-ui-auth/migration.md) | Material/Cupertino → Forui API deltas |
+| [docs/firebase-ui-auth/migration.md](docs/firebase-ui-auth/migration.md) | Material/Cupertino → Forui API deltas; auth/oauth layout |
 | [docs/README.md](docs/README.md) | User-facing docs index |
 | `packages/*/lib/src/table_builder.dart` | DataTables — **Material exception** (`Theme.of` allowed); edit-modal buttons use `UniversalButton` |
 | `packages/firebase_ui_auth/lib/src/widgets/internal/universal_page_route.dart` | Navigation routes — keep `CupertinoPageRoute` / `MaterialPageRoute` (iOS swipe-back) |
 | [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) | Android/iOS/macOS/web e2e; NDK, AVD, emulator, Flutter pin |
+| `tests/{ios,macos}/Podfile` | Xcode 16.3+ / beta: `post_install` patches `FirebaseDataEncoder` (`_type.init`); `scripts/run_e2e.sh` re-runs `pod install` if Pods are still unpatched |
 
 ## Tooling (FVM)
 

@@ -13,6 +13,9 @@ export './src/oauth/twitter_sign_in_args.dart';
 export './src/oauth_provider.dart';
 export './src/oauth_provider_button_base.dart';
 export './src/oauth_provider_button_style.dart';
+export './src/platform_oauth_sign_in.dart'
+    if (dart.library.js_interop) './src/platform_oauth_sign_in_web.dart'
+    show PlatformSignInMixin;
 
 export 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart'
     show AuthAction, AuthCancelledException;

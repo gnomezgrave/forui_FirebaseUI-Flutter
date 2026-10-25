@@ -63,23 +63,12 @@ class GoogleProviderButtonStyle extends ThemedOAuthProviderButtonStyle {
 
 class FakeOAuthProvider extends OAuthProvider {
   @override
-  ProviderArgs get desktopSignInArgs => throw UnimplementedError();
-
-  @override
-  get firebaseAuthProvider => throw UnimplementedError();
-
-  @override
-  OAuthCredential fromDesktopAuthResult(AuthResult result) {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> logOutProvider() {
     throw UnimplementedError();
   }
 
   @override
-  void mobileSignIn(AuthAction action) {}
+  void platformSignIn(TargetPlatform platform, AuthAction action) {}
 
   @override
   String get providerId => 'fake';

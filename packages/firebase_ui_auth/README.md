@@ -98,6 +98,10 @@ fonts:
       - asset: packages/forui_firebase_ui_auth/fonts/SocialIcons.ttf
 ```
 
+## OAuth
+
+This package owns `OAuthProvider`, OAuth button widgets, and styles. Concrete providers come from `forui_firebase_ui_oauth_*` (they depend on `forui_firebase_ui_oauth`, which depends on this package — not the reverse). See [OAuth package layout](../../docs/firebase-ui-auth/migration.md#oauth-package-layout).
+
 ## Docs
 
 - [Getting started](../../docs/firebase-ui-auth/README.md)

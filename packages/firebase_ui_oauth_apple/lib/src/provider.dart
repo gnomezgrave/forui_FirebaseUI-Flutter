@@ -30,7 +30,7 @@ import 'theme.dart';
 ///
 ///   runApp(MyApp());
 /// }
-class AppleProvider extends OAuthProvider {
+class AppleProvider extends OAuthProvider with PlatformSignInMixin {
   @override
   final providerId = 'apple.com';
 

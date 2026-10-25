@@ -13,7 +13,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:forui_firebase_ui_oauth_facebook/forui_firebase_ui_oauth_facebook.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
-class FacebookProvider extends OAuthProvider {
+class FacebookProvider extends OAuthProvider with PlatformSignInMixin {
   @override
   final providerId = 'facebook.com';
 
