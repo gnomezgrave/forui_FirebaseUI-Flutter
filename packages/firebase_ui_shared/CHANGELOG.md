@@ -1,4 +1,4 @@
-## 0.1.1
+## 0.1.0
 
  - **FIX**: compilation errors from invalid/unknown identifiers ([#579](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/579)). ([5d91871c](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/5d91871c15f1ee65509c6badb80be60caf9d6e97))
  - **FIX**: analyser issues from later Flutter version ([#551](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/551)). ([62cc4be7](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/62cc4be752ac729306243111652b2717e5eeba42))
