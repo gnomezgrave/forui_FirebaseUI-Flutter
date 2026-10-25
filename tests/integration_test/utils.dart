@@ -98,11 +98,16 @@ Widget foruiApp({required Widget home}) {
 }
 
 Future<void> render(WidgetTester tester, Widget widget) async {
+  // Match SignInScreen / ResponsivePage: scrollable body so Forui touch
+  // fields + keyboard insets (enterText) do not overflow a tight Column.
   await tester.pumpWidget(
     foruiApp(
       home: SafeArea(
         child: FScaffold(
-          child: Padding(padding: const EdgeInsets.all(8), child: widget),
+          child: ListView(
+            padding: const EdgeInsets.all(8),
+            children: [widget],
+          ),
         ),
       ),
     ),

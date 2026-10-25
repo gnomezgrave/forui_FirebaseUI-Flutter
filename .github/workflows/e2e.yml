@@ -208,11 +208,63 @@ jobs:
           melos-version: "^7.5.0"
       - name: "Bootstrap package"
         run: dart run melos bootstrap --scope tests
+      # Podfile pulls Invertase Firestore binaries via unauthenticated
+      # `git clone https://github.com/...`. GHA macOS runners intermittently
+      # fail that with "Could not resolve host: github.com", and GitHub may
+      # also require auth for some public HTTPS clones under load.
+      # https://github.blog/changelog/2026-10-19-some-git-over-https-may-temporarily-require-authentication/
+      - name: "Authenticate git HTTPS for CocoaPods"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+      - name: "Warm Invertase Firestore frameworks (retry)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Keep in sync with tests/ios/Podfile `:tag => '…'`.
+          TAG="$(ruby -e "puts File.read('tests/ios/Podfile')[/firestore-ios-sdk-frameworks\.git.*?tag\s*=>\s*'([^']+)'/m, 1]")"
+          if [[ -z "$TAG" ]]; then
+            echo "::error::Could not parse Invertase Firestore tag from tests/ios/Podfile"
+            exit 1
+          fi
+          URL="https://github.com/invertase/firestore-ios-sdk-frameworks.git"
+          for i in 1 2 3 4 5 6; do
+            if git ls-remote --exit-code "$URL" "refs/tags/${TAG}" >/dev/null; then
+              echo "Reachable: ${URL} @ ${TAG}"
+              exit 0
+            fi
+            echo "::warning::git ls-remote failed (attempt ${i}/6); sleeping $((i * 10))s"
+            sleep $((i * 10))
+          done
+          echo "::error::Could not reach ${URL} after retries"
+          exit 1
       # Pre-build keeps `flutter test`'s Xcode pass incremental. Cheap now that
       # Firestore ships as Invertase XCFrameworks (see tests/ios/Podfile).
       - name: "Build Application"
         working-directory: tests
-        run: flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Retry once: CocoaPods re-clones the Invertase tag on cache miss and
+          # can still hit transient DNS during that clone.
+          set +e
+          flutter build ios --no-codesign --simulator --debug \
+            --target=./integration_test/firebase_ui_test.dart \
+            --dart-define=CI=true 2>&1 | tee /tmp/ios-build.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            exit 0
+          fi
+          if ! grep -Eqi 'Could not resolve host|Failed to download|Error installing FirebaseFirestore|unable to access' /tmp/ios-build.log; then
+            exit "$status"
+          fi
+          echo "::warning::CocoaPods/git network failure during iOS build; retrying once"
+          sleep 20
+          flutter build ios --no-codesign --simulator --debug \
+            --target=./integration_test/firebase_ui_test.dart \
+            --dart-define=CI=true
       - name: Start Firebase Emulator and proxy
         run: |
           sudo chown -R 501:20 "/Users/runner/.npm"
