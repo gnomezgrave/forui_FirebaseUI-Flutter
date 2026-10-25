@@ -8,13 +8,14 @@ import 'dart:convert';
 import 'package:app_links/app_links.dart';
 import 'package:clock/clock.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:firebase_ui_auth/src/providers/email_link_session.dart';
+import 'package:forui_firebase_ui_auth/src/providers/email_link_session.dart';
 
 import '../test_utils.dart';
 
@@ -596,9 +597,8 @@ void main() {
 
     group('#isLaunchedFromSignInLink', () {
       test('returns true for a sign in launch link', () async {
-        when(
-          appLinks.getInitialLink(),
-        ).thenAnswer((_) async => signInLink(sessionId: 'session-1'));
+        when(appLinks.getInitialLink())
+            .thenAnswer((_) async => signInLink(sessionId: 'session-1'));
 
         expect(await provider.isLaunchedFromSignInLink(auth: auth), true);
       });
@@ -663,9 +663,8 @@ void main() {
       });
 
       test('ignores a launch link that is not a sign in link', () async {
-        when(
-          appLinks.getInitialLink(),
-        ).thenAnswer((_) async => Uri.parse('https://test.com/other'));
+        when(appLinks.getInitialLink())
+            .thenAnswer((_) async => Uri.parse('https://test.com/other'));
         when(auth.isSignInWithEmailLink(any)).thenReturn(false);
         provider = EmailLinkAuthProvider(
           actionCodeSettings: actionCodeSettings,
@@ -932,8 +931,8 @@ void main() {
     testWidgets('emits correct states', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: AuthFlowBuilder<EmailLinkAuthController>(
+          home: FScaffold(
+            child: AuthFlowBuilder<EmailLinkAuthController>(
               auth: auth,
               provider: provider,
               listener: (prevState, state, ctrl) {
@@ -981,8 +980,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: AuthFlowBuilder<EmailLinkAuthController>(
+          home: FScaffold(
+            child: AuthFlowBuilder<EmailLinkAuthController>(
               auth: auth,
               provider: provider,
               listener: (prevState, state, ctrl) {
@@ -1082,7 +1081,7 @@ class AnonymousUser extends MockUser {
 
 void storeSession({required String email, required String sessionId}) {
   SharedPreferences.setMockInitialValues({
-    'firebase_ui_auth.email_link.sessions': [
+    'forui_firebase_ui_auth.email_link.sessions': [
       jsonEncode({'sessionId': sessionId, 'email': email}),
     ],
   });
@@ -1090,7 +1089,9 @@ void storeSession({required String email, required String sessionId}) {
 
 Future<List<Map<String, dynamic>>> storedSessions() async {
   final prefs = await SharedPreferences.getInstance();
-  final stored = prefs.getStringList('firebase_ui_auth.email_link.sessions');
+  final stored = prefs.getStringList(
+    'forui_firebase_ui_auth.email_link.sessions',
+  );
   return [
     for (final entry in stored ?? const <String>[])
       jsonDecode(entry) as Map<String, dynamic>,

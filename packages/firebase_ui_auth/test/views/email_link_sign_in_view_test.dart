@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,8 +56,8 @@ void main() {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  body: EmailLinkSignInView(
+                builder: (context) => FScaffold(
+                  child: EmailLinkSignInView(
                     provider: emailLinkProvider,
                     auth: auth,
                   ),
@@ -90,9 +90,10 @@ void main() {
     expect(find.text(labels.emailLinkConfirmEmailText), findsOneWidget);
     expect(find.text(labels.sendLinkButtonLabel), findsNothing);
 
-    await tester.enterText(find.byType(TextFormField), 'test@test.com');
+    await tester.enterText(find.byType(EditableText), 'test@test.com');
     await tester.tap(find.text(labels.continueText));
-    await tester.pump();
+    // Drain FTappable press timers so the test binding stays clean.
+    await tester.pump(const Duration(milliseconds: 200));
 
     verify(
       auth.signInWithEmailLink(
@@ -168,7 +169,7 @@ void main() {
     );
 
     await tester.tap(find.text(labels.sendLinkButtonLabel));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text(labels.emailIsRequiredErrorText), findsOneWidget);
     verifyNever(
@@ -190,7 +191,7 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.text(labels.continueText));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text(labels.emailIsRequiredErrorText), findsOneWidget);
     verifyNever(

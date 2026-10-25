@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_oauth_apple/firebase_ui_oauth_apple.dart';
-import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_oauth_apple/forui_firebase_ui_oauth_apple.dart';
+import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -17,8 +18,10 @@ void main() {
     ) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ReauthenticateDialog(
+          builder: (context, child) =>
+              FTheme(data: FTheme.neutral.light.touch, child: child!),
+          home: FScaffold(
+            child: ReauthenticateDialog(
               providers: [
                 EmailAuthProvider(),
                 PhoneAuthProvider(),
@@ -31,17 +34,21 @@ void main() {
         ),
       );
 
-      // Triggers keyboard to appear
-      await tester.tap(find.byType(TextFormField).first);
-
-      // Waits for keyboard to appear
+      // Simulate a reduced viewport (keyboard) so the dialog must scroll
+      // instead of overflowing. Integration tests do not always raise a real
+      // IME when tapping a Forui text field.
+      final view = tester.view;
+      view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(view.resetViewInsets);
       await tester.pumpAndSettle();
 
       // No need for an expect.
       // Test will fail if there is an overflow.
       // This is a built-in flutter functionality
 
-      await tester.tap(find.text('Cancel'));
+      final cancel = find.text('Cancel');
+      await tester.ensureVisible(cancel);
+      await tester.tap(cancel);
       await tester.pumpAndSettle();
     });
   });

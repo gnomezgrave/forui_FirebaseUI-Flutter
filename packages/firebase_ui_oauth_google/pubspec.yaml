@@ -1,16 +1,16 @@
-name: firebase_ui_oauth_google
+name: forui_firebase_ui_oauth_google
 description: Firebase UI widgets for authentication & OAuth.
-version: 2.1.1
-homepage: https://github.com/firebase/FirebaseUI-Flutter/tree/master/packages/firebase_ui_oauth_google
+version: 0.1.0
+homepage: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/tree/main/packages/firebase_ui_oauth_google
 
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
 
 dependencies:
-  firebase_auth: ^6.7.0
-  firebase_ui_oauth: ^2.1.1
+  firebase_auth: ^7.0.0
+  forui_firebase_ui_oauth: ^0.1.0
   flutter:
     sdk: flutter
   google_sign_in: ^7.1.0

@@ -3,12 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
-import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
 
@@ -54,38 +53,65 @@ void main() async {
     ) async {
       await render(tester, OAuthProviderButton(provider: provider));
 
-      when(provider.provider.authenticate(scopeHint: _scopes)).thenAnswer((
-        realInvocation,
-      ) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        return MockGoogleSignInAccount();
-      });
+      when(provider.provider.authenticate(scopeHint: _scopes))
+          .thenAnswer((realInvocation) async {
+            await Future.delayed(const Duration(milliseconds: 50));
+            return MockGoogleSignInAccount();
+          });
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
       await tester.pump();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(LoadingIndicator), findsOneWidget);
     });
 
     testWidgets('signs the user in', (tester) async {
-      await render(tester, OAuthProviderButton(provider: provider));
+      final states = <AuthState>[];
+
+      await render(
+        tester,
+        AuthStateListener<OAuthController>(
+          listener: (oldState, state, controller) {
+            states.add(state);
+            return null;
+          },
+          // Explicit signIn: AuthFlow autoresolves to link when currentUser
+          // is non-null (stale session / prior test), which yields
+          // firebase_auth/no-current-user after emulator account deletion.
+          child: OAuthProviderButton(
+            provider: provider,
+            action: AuthAction.signIn,
+          ),
+        ),
+      );
 
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
-      await tester.pumpAndSettle();
+      // Auth emulator sign-in is async and may not schedule frames.
+      // New accounts emit [UserCreated], not [SignedIn].
+      await pumpUntil(
+        tester,
+        () => states.any(
+          (s) => s is SignedIn || s is UserCreated || s is AuthFailed,
+        ),
+      );
 
-      final user = auth.currentUser!;
-
-      expect(user.displayName, 'Test User');
-      expect(user.email, 'test@test.com');
+      expect(
+        states.whereType<AuthFailed>(),
+        isEmpty,
+        reason: states.whereType<AuthFailed>().map((e) => e.exception).join(),
+      );
+      expect(auth.currentUser, isNotNull);
+      expect(auth.currentUser!.displayName, 'Test User');
+      expect(auth.currentUser!.email, 'test@test.com');
     });
 
     testWidgets('works standalone', (tester) async {
       await render(
         tester,
         const GoogleSignInButton(
-          loadingIndicator: CircularProgressIndicator(),
+          loadingIndicator: LoadingIndicator(size: 20, borderWidth: 2),
           clientId: 'test',
         ),
       );
@@ -142,14 +168,11 @@ class MockGoogleSignIn extends Mock implements GoogleSignIn {
     List<String> scopeHint = const <String>[],
   }) {
     return super.noSuchMethod(
-          Invocation.method(#authenticate, [], {#scopeHint: scopeHint}),
-          returnValue: Future<GoogleSignInAccount>.value(
-            MockGoogleSignInAccount(),
-          ),
-          returnValueForMissingStub: Future<GoogleSignInAccount>.value(
-            MockGoogleSignInAccount(),
-          ),
-        )
-        as Future<GoogleSignInAccount>;
+      Invocation.method(#authenticate, [], {#scopeHint: scopeHint}),
+      returnValue: Future<GoogleSignInAccount>.value(MockGoogleSignInAccount()),
+      returnValueForMissingStub: Future<GoogleSignInAccount>.value(
+        MockGoogleSignInAccount(),
+      ),
+    ) as Future<GoogleSignInAccount>;
   }
 }

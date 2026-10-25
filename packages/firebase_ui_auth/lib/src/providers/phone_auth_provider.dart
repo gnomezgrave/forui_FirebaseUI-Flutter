@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 /// A listener of the [PhoneAuthFlow] lifecycle.
 abstract class PhoneAuthListener extends AuthListener {
@@ -62,7 +62,7 @@ class PhoneAuthProvider
     /// {@template ui.auth.providers.phone_auth_provider.mfa_hint}
     /// Multi-factor session info to use for verification
     /// {@endtemplate}
-    final fba.PhoneMultiFactorInfo? hint,
+    fba.PhoneMultiFactorInfo? hint,
   }) {
     final phone = phoneNumber ?? hint!.phoneNumber;
     authListener.onSMSCodeRequested(phone);
@@ -79,9 +79,9 @@ class PhoneAuthProvider
       verificationCompleted: authListener.onVerificationCompleted,
       verificationFailed: authListener.onError,
       codeSent: authListener.onCodeSent,
-      codeAutoRetrievalTimeout: (_) {
-        authListener.onError(AutoresolutionFailedException());
-      },
+      // Autoresolution timeout is expected on iOS (and some Android devices).
+      // It does not mean the SMS failed — do not treat it as an auth error.
+      codeAutoRetrievalTimeout: (_) {},
     );
   }
 

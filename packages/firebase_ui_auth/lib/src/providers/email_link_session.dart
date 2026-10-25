@@ -7,7 +7,7 @@ import 'dart:math';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _sessionsKey = 'firebase_ui_auth.email_link.sessions';
+const _sessionsKey = 'forui_firebase_ui_auth.email_link.sessions';
 
 /// How many requested links are remembered, so an older email still signs in
 /// on this device after the user asked for another link.

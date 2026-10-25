@@ -1,4 +1,4 @@
-name: firebase_ui_auth_example
+name: forui_firebase_ui_auth_example
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -18,29 +18,29 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
 
 resolution: workspace
 
 dependencies:
+  forui: ^0.27.0
   app_tracking_transparency: ^2.0.6
-  cupertino_icons: ^1.0.6
-  firebase_auth: ^6.7.0
-  firebase_core: ^4.15.0
+  cupertino_icons: ^2.0.0
+  firebase_auth: ^7.0.0
+  firebase_core: ^5.0.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  firebase_ui_auth: ^3.1.1
-  firebase_ui_localizations: ^2.1.0
-  firebase_ui_oauth: ^2.1.1
-  firebase_ui_oauth_apple: ^2.1.1
-  firebase_ui_oauth_facebook: ^2.1.1
-  firebase_ui_oauth_google: ^2.1.1
-  firebase_ui_oauth_twitter: ^2.1.1
+  forui_firebase_ui_auth: ^0.1.0
+  forui_firebase_ui_localizations: ^0.1.0
+  forui_firebase_ui_oauth: ^0.1.0
+  forui_firebase_ui_oauth_apple: ^0.1.0
+  forui_firebase_ui_oauth_facebook: ^0.1.0
+  forui_firebase_ui_oauth_google: ^0.1.0
+  forui_firebase_ui_oauth_twitter: ^0.1.0
+  material_ui: ^1.8.0
 dev_dependencies:
   drive: ^1.0.0-1.0.nullsafety.5
-  firebase_ui_shared: ^1.5.0
+  forui_firebase_ui_shared: ^0.1.0
   flutter_facebook_auth: ^7.1.2
   flutter_driver:
     sdk: flutter
@@ -78,7 +78,7 @@ flutter:
   fonts:
     - family: SocialIcons
       fonts:
-        - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf
+        - asset: packages/forui_firebase_ui_auth/fonts/SocialIcons.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

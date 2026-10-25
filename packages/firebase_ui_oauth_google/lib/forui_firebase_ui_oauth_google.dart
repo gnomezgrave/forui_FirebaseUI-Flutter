@@ -7,7 +7,7 @@ export 'src/theme.dart' show GoogleProviderButtonStyle;
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 
 import 'src/provider.dart';
 

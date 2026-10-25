@@ -5,9 +5,10 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'query_builder.dart';
@@ -41,21 +42,20 @@ import 'query_builder.dart';
 /// {@endtemplate}
 ///
 
-typedef CellBuilder =
-    Widget Function(
-      QueryDocumentSnapshot<Map<String, Object?>> snapshot,
-      String colKey,
-    );
+typedef CellBuilder = Widget Function(
+  QueryDocumentSnapshot<Map<String, Object?>> snapshot,
+  String colKey,
+);
 
-typedef OnTapCell =
-    void Function(
-      QueryDocumentSnapshot<Map<String, Object?>> snapshot,
-      Object? value,
-      String propertyName,
-    );
+typedef OnTapCell = void Function(
+  QueryDocumentSnapshot<Map<String, Object?>> snapshot,
+  Object? value,
+  String propertyName,
+);
 
-typedef OnSelectedRows =
-    void Function(List<QueryDocumentSnapshot<Map<String, Object?>>> items);
+typedef OnSelectedRows = void Function(
+  List<QueryDocumentSnapshot<Map<String, Object?>>> items,
+);
 
 class FirestoreDataTable extends StatefulWidget {
   /// {@macro firebase_ui.firestore_table}
@@ -513,15 +513,16 @@ class _EditModalButtonBar extends StatelessWidget {
     return OverflowBar(
       alignment: MainAxisAlignment.end,
       children: [
-        TextButton(
+        UniversalButton(
+          variant: ButtonVariant.text,
+          text: localizations.cancelLabel,
           onPressed: () => Navigator.pop(context),
-          child: Text(localizations.cancelLabel),
         ),
-        ElevatedButton(
+        UniversalButton(
+          text: localizations.updateLabel,
           onPressed: () {
             Navigator.pop(context, formState.submit(reference));
           },
-          child: Text(localizations.updateLabel),
         ),
       ],
     );
@@ -804,14 +805,13 @@ class _Source extends DataTableSource {
   _Source({
     required this.getHeaders,
     required this.getOnError,
-    required bool selectionEnabled,
+    required this._selectionEnabled,
     required int rowsPerPage,
     required this.enableDefaultEditor,
     required this.onTapCell,
     this.builder,
     this.onSelectedRows,
-  }) : _selectionEnabled = selectionEnabled,
-       _rowsPerpage = rowsPerPage;
+  }) : _rowsPerpage = rowsPerPage;
 
   final CellBuilder? builder;
 

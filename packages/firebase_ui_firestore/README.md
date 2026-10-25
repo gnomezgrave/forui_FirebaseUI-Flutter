@@ -1,13 +1,27 @@
 # Firebase UI for Firestore
 
+Firebase UI widgets for Cloud Firestore, ported to [Forui](https://forui.dev). Requires an `FTheme` ancestor and Flutter **3.47+**. `FirestoreDataTable` remains Material-based.
+
+## Platform support
+
+Follows [FlutterFire Cloud Firestore](https://github.com/firebase/flutterfire#stable-plugins) (macOS beta; Windows development-only). Linux is not supported.
+
+## Migrating from `firebase_ui_firestore`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
+
 ## Getting Started
 
-To get started with Firebase UI for Firestore, please [see the documentation](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-firestore.md).
+See the [documentation](../../docs/firebase-ui-firestore.md).
+
+```sh
+flutter pub add cloud_firestore forui_firebase_ui_firestore forui
+```
 
 ## Issues and feedback
 
-Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/firebase/FirebaseUI-Flutter/issues).
+Please file Firebase UI specific issues, bugs, or feature requests in our [issue tracker](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues).
 
 ## Contributing
 
-To contribute a change to this plugin, please review our [contributing guide](https://github.com/firebase/FirebaseUI-Flutter/blob/main/CONTRIBUTING.md).
+To contribute a change to this plugin, please review our [contributing guide](../../CONTRIBUTING.md).

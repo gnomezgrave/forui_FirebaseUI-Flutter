@@ -1,4 +1,6 @@
-platform :osx, '12.0'
+# Firebase iOS SDK 12.19.3+ (via cloud_firestore) needs a modern osx floor;
+# keep in sync with Runner.xcodeproj MACOSX_DEPLOYMENT_TARGET.
+platform :osx, '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -40,5 +42,21 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_macos_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+
+  # Xcode 16.3+ / Xcode-beta: Swift requires explicit `.init` when calling
+  # Decodable via a metatype. FirebaseSharedSwift 12.19 CocoaPods zip still
+  # ships `_type(from:)` (firebase-ios-sdk#14678). Keep Firebase at 12.19.x for
+  # google_sign_in_ios / GTMSessionFetcher (see tests/pubspec.yaml).
+  Dir.glob(File.join(installer.sandbox.root, '**/FirebaseDataEncoder.swift')).each do |path|
+    contents = File.read(path)
+    patched = contents.gsub('return try _type(from: self)', 'return try _type.init(from: self)')
+    next if patched == contents
+
+    File.chmod(File.stat(path).mode | 0o200, path)
+    File.write(path, patched)
   end
 end

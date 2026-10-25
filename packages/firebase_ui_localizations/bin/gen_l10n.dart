@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:path/path.dart' as path;
 
 late String cwd;
@@ -260,7 +261,7 @@ import 'lang/en.dart';
 /// [MaterialApp.localizationsDelegates].
 ///
 /// ```dart
-/// import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+/// import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 ///
 /// class LabelOverrides extends DefaultLocalizations {
 ///   const LabelOverrides();
@@ -273,8 +274,7 @@ import 'lang/en.dart';
 ///   // ...
 ///   localizationsDelegates: [
 ///     FirebaseUILocalizations.withDefaultOverrides(const LabelOverrides()),
-///     GlobalMaterialLocalizations.delegate,
-///     GlobalWidgetsLocalizations.delegate,
+///     ...GlobalMaterialLocalizations.delegates,
 ///     FirebaseUILocalizations.delegate,
 ///   ],
 /// )

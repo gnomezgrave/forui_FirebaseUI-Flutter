@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 
 import '../test_utils.dart';
 
@@ -26,7 +26,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.visibility), findsNothing);
+      expect(find.byIcon(FLucideIcons.eye), findsNothing);
     });
 
     testWidgets('allows to add password visibility toggle', (tester) async {
@@ -40,7 +40,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.visibility), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.eye), findsOneWidget);
     });
   });
 }

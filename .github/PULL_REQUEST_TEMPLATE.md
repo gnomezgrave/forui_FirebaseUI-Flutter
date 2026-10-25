@@ -4,7 +4,7 @@ _Replace this paragraph with a description of what this PR is doing. If you're m
 
 ## Related Issues
 
-_Replace this paragraph with a list of issues related to this PR from the [issue database](https://github.com/firebase/FirebaseUI-Flutter/issues). Indicate, which of these issues are resolved or fixed by this PR._
+_Replace this paragraph with a list of issues related to this PR from the [issue database](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues). Indicate, which of these issues are resolved or fixed by this PR._
 
 ## Checklist
 
@@ -15,8 +15,8 @@ This will ensure a smooth and quick review process. Updating the `pubspec.yaml` 
 - [ ] My PR includes unit or integration tests for _all_ changed/updated/fixed behaviors (See [Contributor Guide]).
 - [ ] All existing and new tests are passing.
 - [ ] I updated/added relevant documentation (doc comments with `///`).
-- [ ] The analyzer (`melos run analyze`) does not report any problems on my PR.
-- [ ] All unit tests pass (`melos run test:unit:all` doesn't fail).
+- [ ] The analyzer (`dart run melos run analyze`) does not report any problems on my PR.
+- [ ] All unit tests pass (`dart run melos run test:unit:all` doesn't fail).
 - [ ] I read and followed the [Flutter Style Guide].
 - [ ] I signed the [CLA].
 - [ ] I am willing to follow-up on review comments in a timely manner.
@@ -29,8 +29,8 @@ Does your PR require plugin users to manually update their apps to accommodate y
 - [ ] No, this is _not_ a breaking change.
 
 <!-- Links -->
-[issue database]: https://github.com/firebase/FirebaseUI-Flutter/issues
-[Contributor Guide]: https://github.com/firebase/FirebaseUI-Flutter/blob/main/CONTRIBUTING.md
+[issue database]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues
+[Contributor Guide]: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/blob/main/CONTRIBUTING.md
 [Flutter Style Guide]: https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo
 [pub versioning philosophy]: https://dart.dev/tools/pub/versioning
 [CLA]: https://cla.developers.google.com/

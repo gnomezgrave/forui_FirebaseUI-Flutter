@@ -1,16 +1,14 @@
 # tests
 
-A new Flutter project.
+Integration / e2e suite for the Forui Firebase UI packages (`tests/integration_test`).
 
-## Getting Started
+Requires the Firebase Emulator Suite. From the repo root:
 
-This project is a starting point for a Flutter application.
+```bash
+dart run melos run test:e2e:macos
+dart run melos run test:e2e:ios
+dart run melos run test:e2e:android
+dart run melos run test:e2e:web       # builds example apps (matches CI web job)
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+See [CONTRIBUTING.md](../CONTRIBUTING.md#end-to-end-e2e-tests) for emulator setup, device overrides, and CI parity notes.

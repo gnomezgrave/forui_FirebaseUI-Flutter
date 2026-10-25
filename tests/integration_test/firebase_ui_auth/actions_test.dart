@@ -2,14 +2,17 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 
 import '../utils.dart';
 
 void main() {
+  const labels = DefaultLocalizations();
   setUpTests();
   group('getControllerForType', () {
     setUp(() async {
@@ -17,65 +20,72 @@ void main() {
         email: 'test@test.com',
         password: '123456',
       );
+      // createUser leaves the session signed in; sign out so EmailForm must auth.
+      await auth.signOut();
     });
 
     Future<void> authenticate(WidgetTester tester) async {
-      final inputs = find.byType(TextFormField);
+      final inputs = find.byType(FTextFormField);
 
       await tester.enterText(inputs.at(0), 'test@test.com');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-
       await tester.enterText(inputs.at(1), '123456');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
+      await tester.tap(find.text(labels.signInActionText));
+      // Completers below wait for AuthState; just advance a frame here.
+      await tester.pump();
     }
 
-    testWidgets(
-      'getControllerForState returns correct controller type',
-      (tester) async {
-        late AuthController controller;
+    testWidgets('getControllerForState returns correct controller type', (
+      tester,
+    ) async {
+      final completer = Completer<AuthController>();
 
-        await render(
-          tester,
-          FirebaseUIActions(
-            actions: [
-              AuthStateChangeAction<SignedIn>((context, state) {
-                controller = getControllerForState(state);
-              }),
-            ],
-            child: const EmailForm(action: AuthAction.signIn),
-          ),
-        );
+      await render(
+        tester,
+        FirebaseUIActions(
+          actions: [
+            AuthStateChangeAction<SignedIn>((context, state) {
+              completer.complete(getControllerForState(state));
+            }),
+            AuthStateChangeAction<AuthFailed>((context, state) {
+              completer.completeError(state.exception);
+            }),
+          ],
+          child: const EmailForm(action: AuthAction.signIn),
+        ),
+      );
 
-        await authenticate(tester);
+      await authenticate(tester);
 
-        expect(controller, isA<EmailAuthController>());
-      },
-      skip: isCI && defaultTargetPlatform == TargetPlatform.macOS,
-    );
+      final controller = await completer.future.timeout(
+        const Duration(seconds: 15),
+      );
+      expect(controller, isA<EmailAuthController>());
+    }, skip: skipMacOSAuthKeychain);
 
-    testWidgets(
-      'throws a StateError if used outside of the FirebaseUIAction',
-      (tester) async {
-        late AuthState state;
+    testWidgets('throws a StateError if used outside of the FirebaseUIAction', (
+      tester,
+    ) async {
+      late AuthState state;
+      final completer = Completer<void>();
 
-        await render(
-          tester,
-          AuthStateListener(
-            listener: (oldState, newState, _) {
-              state = newState;
-              return null;
-            },
-            child: const EmailForm(action: AuthAction.signIn),
-          ),
-        );
+      await render(
+        tester,
+        AuthStateListener<EmailAuthController>(
+          listener: (oldState, newState, _) {
+            state = newState;
+            if (newState is SignedIn || newState is AuthFailed) {
+              completer.complete();
+            }
+            return null;
+          },
+          child: const EmailForm(action: AuthAction.signIn),
+        ),
+      );
 
-        await authenticate(tester);
+      await authenticate(tester);
+      await completer.future.timeout(const Duration(seconds: 15));
 
-        expect(() => getControllerForState(state), throwsStateError);
-      },
-      skip: isCI && defaultTargetPlatform == TargetPlatform.macOS,
-    );
+      expect(() => getControllerForState(state), throwsStateError);
+    }, skip: skipMacOSAuthKeychain);
   });
 }

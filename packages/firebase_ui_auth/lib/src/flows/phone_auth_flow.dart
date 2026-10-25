@@ -4,7 +4,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 /// An [AuthState] that indicates that [PhoneAuthFlow] is not yet initialized
 /// wuth the phone number. UI should provide a way to submit a phone number.
@@ -139,6 +139,14 @@ class PhoneAuthFlow extends AuthFlow<PhoneAuthProvider>
 
   @override
   void onCodeSent(String verificationId, [int? forceResendToken]) {
+    // Android (and the Auth emulator) can emit phoneCodeSent twice for one
+    // send. A second identical state re-fires actions, which double-completes
+    // listeners and can push the SMS screen twice.
+    final current = value;
+    if (current is SMSCodeSent && current.verificationId == verificationId) {
+      return;
+    }
+
     value = SMSCodeSent(
       verificationId: verificationId,
       resendToken: forceResendToken,

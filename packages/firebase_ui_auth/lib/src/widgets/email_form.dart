@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
 
 import '../validators.dart';
 
@@ -58,24 +58,18 @@ class EmailFormStyle extends FirebaseUIStyle {
   /// A [ButtonVariant] that should be used for the sign in button.
   final ButtonVariant signInButtonVariant;
 
-  /// An override of the global [ThemeData.inputDecorationTheme].
-  final InputDecorationTheme? inputDecorationTheme;
+  /// Previously an override of Material [InputDecorationTheme].
+  /// Ignored under Forui; kept for API compatibility.
+  @Deprecated(
+    'Email form fields use Forui theming via FTheme. This property is ignored.',
+  )
+  final Object? inputDecorationTheme;
 
   /// {@macro ui.auth.widgets.email_form.email_form_style}
   const EmailFormStyle({
     this.signInButtonVariant = ButtonVariant.outlined,
     this.inputDecorationTheme,
   });
-
-  @override
-  Widget applyToMaterialTheme(BuildContext context, Widget child) {
-    return Theme(
-      data: Theme.of(
-        context,
-      ).copyWith(inputDecorationTheme: inputDecorationTheme),
-      child: child,
-    );
-  }
 }
 
 /// {@template ui.auth.widgets.email_form}
@@ -120,11 +114,9 @@ class EmailForm extends StatelessWidget {
   /// class MyScreen extends StatelessWidget {
   ///   @override
   ///   Widget build(BuildContext context) {
-  ///     return Scaffold(
-  ///       appBar: AppBar(
-  ///         title: Text('Email sign in'),
-  ///       ),
-  ///       body: Center(child: EmailForm()),
+  ///     return FScaffold(
+  ///       header: FHeader(title: Text('Email sign in')),
+  ///       child: Center(child: EmailForm()),
   ///     );
   ///   }
   /// }

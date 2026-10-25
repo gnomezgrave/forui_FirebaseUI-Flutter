@@ -3,20 +3,19 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/widgets.dart' hide Title;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 import '../widgets/internal/title.dart';
 
-typedef SMSCodeRequestedCallback =
-    void Function(
-      BuildContext context,
-      AuthAction? action,
-      Object flowKey,
-      String phoneNumber,
-    );
+typedef SMSCodeRequestedCallback = void Function(
+  BuildContext context,
+  AuthAction? action,
+  Object flowKey,
+  String phoneNumber,
+);
 
 typedef PhoneNumberSubmitCallback = void Function(String phoneNumber);
 
@@ -104,9 +103,8 @@ class _PhoneInputViewState extends State<PhoneInputView> {
         if (newState is SMSCodeRequested) {
           final cb =
               widget.onSMSCodeRequested ??
-              FirebaseUIAction.ofType<SMSCodeRequestedAction>(
-                context,
-              )?.callback;
+              FirebaseUIAction.ofType<SMSCodeRequestedAction>(context)
+                  ?.callback;
 
           cb?.call(
             context,

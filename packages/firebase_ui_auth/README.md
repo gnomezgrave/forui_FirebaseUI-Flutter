@@ -1,41 +1,47 @@
 # Firebase UI Auth
 
-[![pub package](https://img.shields.io/pub/v/firebase_ui_auth.svg)](https://pub.dev/packages/firebase_ui_auth)
+[![pub package](https://img.shields.io/pub/v/forui_firebase_ui_auth.svg)](https://pub.dev/packages/forui_firebase_ui_auth)
 
-Firebase UI Auth is a set of Flutter widgets and utilities designed to help you build and integrate your user interface with Firebase Authentication.
+Firebase UI Auth widgets for Flutter, ported to [Forui](https://forui.dev). Drop in sign-in, registration, profile, and related auth screens.
 
-> Please contribute to the [discussion](https://github.com/firebase/FirebaseUI-Flutter/discussions/6978) with feedback.
+Requires Dart `^3.13.0`, Flutter **3.47+**, and an `FTheme` ancestor.
+
+
+## Migrating from `firebase_ui_auth`
+
+See [Migrating from upstream Firebase UI](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter#migrating-from-upstream-firebase-ui) in the repository README (`firebase_ui_*` → `forui_firebase_ui_*`).
 
 ## Platform support
 
-| Feature/platform   | Android | iOS | Web              | macOS            | Windows          | Linux            |
-| ------------------ | ------- | --- | ---------------- | ---------------- | ---------------- | ---------------- |
-| Email              | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Phone              | ✓       | ✓   | ✓                | ╳                | ╳                | ╳                |
-| Email link         | ✓       | ✓   | ╳                | ╳                | ╳                | ╳                |
-| Email verification | ✓       | ✓   | ✓ <sup>(2)</sup> | ✓ <sup>(2)</sup> | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Sign in with Apple | ✓       | ✓   | ✓                | ✓                | ╳                | ╳                |
-| Google Sign in     | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Twitter Login      | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
-| Facebook Sign in   | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> | ✓ <sup>(1)</sup> |
+Auth UI support follows [FlutterFire Authentication](https://github.com/firebase/flutterfire#stable-plugins) (macOS beta; Windows development-only). Linux is not supported by FlutterFire.
 
-1. Available with [flutterfire_desktop](https://github.com/invertase/flutterfire_desktop)
+| Feature/platform   | Android | iOS | Web              | macOS            | Windows          |
+| ------------------ | ------- | --- | ---------------- | ---------------- | ---------------- |
+| Email              | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Phone              | ✓       | ✓   | ✓                | ╳                | ╳                |
+| Email link         | ✓       | ✓   | ╳                | ╳                | ╳                |
+| Email verification | ✓       | ✓   | ✓ <sup>(2)</sup> | ✓ <sup>(2)</sup> | ✓ <sup>(1)</sup> |
+| Sign in with Apple | ✓       | ✓   | ✓                | ✓                | ╳                |
+| Google Sign in     | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Twitter Login      | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+| Facebook Sign in   | ✓       | ✓   | ✓                | ✓                | ✓ <sup>(1)</sup> |
+
+1. Windows via FlutterFire is **development-only**; production is not supported
 2. No deep-linking into app, so email verification link opens a web page
 
 ## Installation
 
 ```sh
-flutter pub add firebase_ui_auth
+flutter pub add forui_firebase_ui_auth forui
 ```
 
 ## Example
 
-Here's a quick example that shows how to build a `SignInScreen` and `ProfileScreen` in your app
-
 ```dart
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -44,23 +50,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final providers = [EmailAuthProvider()];
 
-    void onSignedIn() {
-      Navigator.pushReplacementNamed(context, '/profile');
-    }
-
     return MaterialApp(
-      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
+      initialRoute:
+          FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
             providers: providers,
             actions: [
               AuthStateChangeAction<UserCreated>((context, state) {
-                // Put any new user logic here
-                onSignedIn();
+                Navigator.pushReplacementNamed(context, '/profile');
               }),
               AuthStateChangeAction<SignedIn>((context, state) {
-                onSignedIn();
+                Navigator.pushReplacementNamed(context, '/profile');
               }),
             ],
           );
@@ -83,30 +89,18 @@ class MyApp extends StatelessWidget {
 
 ## Profile screen icons
 
-If you're using `ProfileScreen`, make sure to add the following to your `pubspec.yaml`:
+If you're using `ProfileScreen`, add:
 
 ```yaml
 fonts:
   - family: SocialIcons
     fonts:
-      - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf
+      - asset: packages/forui_firebase_ui_auth/fonts/SocialIcons.ttf
 ```
 
 ## Docs
 
-Find relevant documentation [here](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-auth)
-
-- [Getting started](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/README.md)
-- Auth providers.
-  - [Email auth provider](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/email.md) – sign in using email and password.
-  - [Email verification](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/email-verification.md) - verify email.
-  - [Email link sign in](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/email-link.md) - sign in using a link sent to email.
-  - [Phone auth provider](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/phone.md) - sign in using phone number.
-  - [Universal email sign in](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/universal-email-sign-in.md) - resolve connected providers based on email and sign in using one of those.
-  - [OAuth](https://github.com/firebase/FirebaseUI-Flutter/blob/main/docs/firebase-ui-auth/providers/oauth.md) - sign in using Apple, Google, Facebook or Twitter.
-
-## Issues and feedback
-
-- For issues, please create a new [issue on the repository](https://github.com/firebase/FirebaseUI-Flutter/issues).
-- For feature requests, & questions, please use [discussion](https://github.com/firebase/FirebaseUI-Flutter/discussions).
-- To contribute a change to this plugin, please review our [contribution guide](https://github.com/firebase/FirebaseUI-Flutter/blob/master/CONTRIBUTING.md) and open a [pull request](https://github.com/firebase/FirebaseUI-Flutter/pulls).
+- [Getting started](../../docs/firebase-ui-auth/README.md)
+- [Theming](../../docs/firebase-ui-auth/theming.md)
+- [Migration](../../docs/firebase-ui-auth/migration.md)
+- [Email](../../docs/firebase-ui-auth/providers/email.md) · [Email link](../../docs/firebase-ui-auth/providers/email-link.md) · [Phone](../../docs/firebase-ui-auth/providers/phone.md) · [OAuth](../../docs/firebase-ui-auth/providers/oauth.md)

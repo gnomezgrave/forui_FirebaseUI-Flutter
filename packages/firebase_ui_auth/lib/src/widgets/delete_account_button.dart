@@ -3,11 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 typedef DeleteFailedCallback = void Function(Exception exception);
 typedef SignInRequiredCallback = Future<bool> Function();
@@ -17,31 +17,6 @@ typedef SignInRequiredCallback = Future<bool> Function();
 ///
 /// If you want to perform an action after the account is deleted, you can
 /// use [AccountDeletedAction].
-///
-/// Example usage:
-/// ```dart
-/// ProfileScreen(
-///   actions: [
-///     AccountDeletedAction((context, user) {
-///       // Do something after the account is deleted.
-///     }),
-///   ],
-/// );
-/// ```
-///
-/// or
-///
-/// ```dart
-/// FirebaseUIActions(
-///   actions: [
-///     AccountDeletedAction((context, user) {
-///       // Do something after the account is deleted.
-///     }),
-///   ],
-///   // MyCustomScreen should use DeleteAccountButton internally.
-///   child: MyCustomScreen(),
-/// )
-/// ```
 /// {@endtemplate}
 class DeleteAccountButton extends StatefulWidget {
   /// {@macro ui.auth.auth_controller.auth}
@@ -100,9 +75,9 @@ class _DeleteAccountButtonState extends State<DeleteAccountButton> {
       if (widget.deleteConfirmation != null) {
         confirmed = await widget.deleteConfirmation!(context);
       } else {
-        confirmed = await showCupertinoDialog<bool?>(
+        confirmed = await showFDialog<bool?>(
           context: context,
-          builder: (context) {
+          builder: (context, style, animation) {
             return UniversalAlert(
               onConfirm: pop(context, true),
               onCancel: pop(context, false),
@@ -128,9 +103,8 @@ class _DeleteAccountButtonState extends State<DeleteAccountButton> {
 
       if (!mounted) return;
 
-      FirebaseUIAction.ofType<AccountDeletedAction>(
-        context,
-      )?.callback(context, user);
+      FirebaseUIAction.ofType<AccountDeletedAction>(context)
+          ?.callback(context, user);
       await FirebaseUIAuth.signOut(context: context, auth: auth);
     } on fba.FirebaseAuthException catch (err) {
       if (err.code == 'requires-recent-login') {
@@ -153,18 +127,14 @@ class _DeleteAccountButtonState extends State<DeleteAccountButton> {
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-
-    final themeData = Theme.of(context);
-    final colorScheme = themeData.colorScheme;
+    final theme = context.theme;
 
     return LoadingButton(
       isLoading: _isLoading,
-      cupertinoColor: CupertinoColors.destructiveRed,
-      materialColor: colorScheme.error,
-      cupertinoIcon: CupertinoIcons.delete,
-      materialIcon: Icons.delete,
+      color: theme.colors.destructive,
+      icon: FLucideIcons.trash2,
       label: l.deleteAccount,
-      labelColor: colorScheme.onError,
+      labelColor: theme.colors.destructiveForeground,
       onTap: _deleteAccount,
       variant: widget.variant,
     );

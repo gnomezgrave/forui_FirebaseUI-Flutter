@@ -3,9 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter/widgets.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 import '../widgets/internal/universal_page_route.dart';
 import 'internal/responsive_page.dart';
@@ -93,7 +93,11 @@ class PhoneInputScreen extends StatelessWidget {
         context: context,
         builder: (_) => FirebaseUIActions.inherit(
           from: context,
-          child: SMSCodeInputScreen(action: action, flowKey: flowKey),
+          child: SMSCodeInputScreen(
+            action: action,
+            flowKey: flowKey,
+            actions: actions,
+          ),
         ),
       ),
     );
@@ -102,11 +106,15 @@ class PhoneInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flowKey = Object();
+    final resolvedActions = <FirebaseUIAction>[...?actions];
+    if (!resolvedActions.any((a) => a is SMSCodeRequestedAction)) {
+      resolvedActions.add(SMSCodeRequestedAction(_next));
+    }
 
     return FirebaseUIActions(
-      actions: actions ?? [SMSCodeRequestedAction(_next)],
-      child: UniversalScaffold(
-        body: ResponsivePage(
+      actions: resolvedActions,
+      child: FScaffold(
+        child: ResponsivePage(
           desktopLayoutDirection: desktopLayoutDirection,
           sideBuilder: sideBuilder,
           headerBuilder: headerBuilder,

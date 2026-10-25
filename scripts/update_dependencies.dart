@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
@@ -57,10 +58,10 @@ Future<void> updatePubspecFile(
     dependencies.forEach((key, value) {
       if (latestVersions.containsKey(key)) {
         final version = latestVersions[key];
-        yamlEditor.update(
-          ['dependencies', key],
-          pinExact ? '$version' : '^$version',
-        );
+        yamlEditor.update([
+          'dependencies',
+          key,
+        ], pinExact ? '$version' : '^$version');
       }
     });
   }

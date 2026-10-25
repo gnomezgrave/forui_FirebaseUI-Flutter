@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:flutter/widgets.dart';
 
 import '../widgets/internal/universal_page_route.dart';
 
@@ -38,6 +38,7 @@ Future<void> startPhoneVerification({
           action: action,
           multiFactorSession: multiFactorSession,
           mfaHint: hint,
+          actions: actions,
         ),
       ),
     ),

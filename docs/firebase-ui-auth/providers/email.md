@@ -11,14 +11,14 @@ Configure email provider:
 
 ```dart
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 // If you need to use FirebaseAuth directly, make sure to hide EmailAuthProvider:
 // import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 
 import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -50,16 +50,18 @@ SignInScreen(
 > Notes:
 >
 > - see [navigation guide](../navigation.md) to learn how navigation works with Firebase UI.
-> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/firebase_ui_auth/latest/firebase_ui_auth/FirebaseUIAction-class.html).
+> - explore [FirebaseUIActions API docs](https://pub.dev/documentation/forui_firebase_ui_auth/latest/forui_firebase_ui_auth/FirebaseUIAction-class.html).
 
 ## Using view
 
 If the pre-built screens don't suit the app's needs, you could use a `LoginView` to build your custom screen:
 
+Apps must wrap Firebase UI in [`FTheme`](../theming.md) (typically via `MaterialApp.builder`).
+
 ```dart
 class MyLoginScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
@@ -83,7 +85,7 @@ class MyLoginScreen extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -104,8 +106,8 @@ class MyCustomWidget extends StatelessWidget {
         // perform necessary actions based on previous
         // and current auth state.
       },
-      child: EmailForm(),
-    )
+      child: const EmailForm(),
+    );
   }
 }
 ```
@@ -123,7 +125,7 @@ class MyCustomWidget extends StatelessWidget {
         if (state is AwaitingEmailAndPassword) {
           return MyCustomEmailForm();
         } else if (state is SigningIn) {
-          return CircularProgressIndicator();
+          return const LoadingIndicator(size: 32, borderWidth: 2);
         } else if (state is AuthFailed) {
           return ErrorText(exception: state.exception);
         } else {
@@ -137,7 +139,7 @@ class MyCustomWidget extends StatelessWidget {
 
 ## Building a custom stateful widget
 
-For full control over every phase of the authentication lifecycle, you could build a stateful widget which implements `EmailAuthListener`:
+For full control over every phase of the authentication lifecycle, you could build a stateful widget which implements `EmailAuthListener`. Ensure an [`FTheme`](../theming.md) ancestor.
 
 ```dart
 class CustomEmailSignIn extends StatefulWidget {
@@ -149,12 +151,18 @@ class CustomEmailSignIn extends StatefulWidget {
 
 class _CustomEmailSignInState extends State<CustomEmailSignIn>
     implements EmailAuthListener {
+  @override
   final auth = FirebaseAuth.instance;
-  late final EmailAuthProvider provider = EmailAuthProvider()
+
+  late final EmailAuthProvider _provider = EmailAuthProvider()
+    ..auth = auth
     ..authListener = this;
 
-  Widget child = MyCustomEmailForm(onSubmit: (email, password) {
-    provider.authenticate(email, password, AuthAction.signIn);
+  @override
+  AuthProvider get provider => _provider;
+
+  late Widget child = MyCustomEmailForm(onSubmit: (email, password) {
+    _provider.authenticate(email, password, AuthAction.signIn);
   });
 
   @override
@@ -163,23 +171,16 @@ class _CustomEmailSignInState extends State<CustomEmailSignIn>
   }
 
   @override
-  void onBeforeCredentialLinked(AuthCredential credential) {
+  void onCredentialReceived(AuthCredential credential) {
     setState(() {
-      child = CircularProgressIndicator();
-    });
-  }
-
-  @override
-  void onBeforeProvidersForEmailFetch() {
-    setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
   @override
   void onBeforeSignIn() {
     setState(() {
-      child = CircularProgressIndicator();
+      child = const LoadingIndicator(size: 32, borderWidth: 2);
     });
   }
 
@@ -187,7 +188,7 @@ class _CustomEmailSignInState extends State<CustomEmailSignIn>
   void onCanceled() {
     setState(() {
       child = MyCustomEmailForm(onSubmit: (email, password) {
-        auth.signInWithEmailAndPassword(email: email, password: password);
+        _provider.authenticate(email, password, AuthAction.signIn);
       });
     });
   }
@@ -198,23 +199,12 @@ class _CustomEmailSignInState extends State<CustomEmailSignIn>
   }
 
   @override
-  void onDifferentProvidersFound(
-      String email, List<String> providers, AuthCredential? credential) {
-    showDifferentMethodSignInDialog(
-      context: context,
-      availableProviders: providers,
-      providers: FirebaseUIAuth.providersFor(FirebaseAuth.instance.app),
-    );
-  }
-
-  @override
   void onError(Object error) {
     try {
-      // tries default recovery strategy
-      defaultOnAuthError(provider, error);
-    } catch (err) {
+      defaultOnAuthError(_provider, error);
+    } on Exception catch (err) {
       setState(() {
-        defaultOnAuthError(provider, error);
+        child = ErrorText(exception: err);
       });
     }
   }
@@ -222,6 +212,11 @@ class _CustomEmailSignInState extends State<CustomEmailSignIn>
   @override
   void onSignedIn(UserCredential credential) {
     Navigator.of(context).pushReplacementNamed('/profile');
+  }
+
+  @override
+  void onMFARequired(MultiFactorResolver resolver) {
+    startMFAVerification(context: context, resolver: resolver, auth: auth);
   }
 }
 ```

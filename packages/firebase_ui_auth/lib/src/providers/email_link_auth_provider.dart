@@ -4,9 +4,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/foundation.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:app_links/app_links.dart';
 import 'package:clock/clock.dart';
+
 import 'dart:async';
 
 import 'email_link_session.dart';

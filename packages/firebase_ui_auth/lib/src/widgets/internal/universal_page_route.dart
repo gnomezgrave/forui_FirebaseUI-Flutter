@@ -2,9 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
+/// Creates a platform-appropriate [PageRoute] for Firebase UI navigation.
 Route<T> createPageRoute<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -13,7 +14,7 @@ Route<T> createPageRoute<T>({
 
   if (isCupertino) {
     return CupertinoPageRoute<T>(builder: builder);
-  } else {
-    return MaterialPageRoute<T>(builder: builder);
   }
+
+  return MaterialPageRoute<T>(builder: builder);
 }

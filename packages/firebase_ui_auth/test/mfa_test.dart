@@ -4,8 +4,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -193,5 +193,61 @@ void main() {
         expect(result, equals(expectedCredential));
       },
     );
+
+    testWidgets('completes with error when SMS screen is dismissed', (
+      tester,
+    ) async {
+      Future<fba.UserCredential>? verificationFuture;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () {
+                  verificationFuture = startMFAVerification(
+                    context: context,
+                    resolver: resolver,
+                    auth: auth,
+                    smsCodeInputScreenBuilder:
+                        (context, actions, flowKey, action) {
+                          return const Scaffold(
+                            body: Text('Custom SMS Code Input Screen'),
+                          );
+                        },
+                  );
+                },
+                child: const Text('Start MFA'),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Start MFA'));
+      await tester.pumpAndSettle();
+      expect(find.text('Custom SMS Code Input Screen'), findsOneWidget);
+      expect(verificationFuture, isNotNull);
+
+      // Attach before dismissing so the cancellation error is not unhandled.
+      final cancelled = expectLater(
+        verificationFuture!,
+        throwsA(
+          isA<fba.FirebaseAuthException>().having(
+            (e) => e.code,
+            'code',
+            'firebase-ui/mfa-cancelled',
+          ),
+        ),
+      );
+
+      // Simulate the user backing out of the MFA SMS screen.
+      Navigator.of(tester.element(find.text('Custom SMS Code Input Screen')))
+          .pop();
+      await tester.pumpAndSettle();
+      await cancelled;
+
+      expect(find.text('Custom SMS Code Input Screen'), findsNothing);
+    });
   });
 }

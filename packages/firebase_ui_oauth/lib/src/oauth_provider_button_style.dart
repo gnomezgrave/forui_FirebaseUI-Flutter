@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// {@template ui.oauth.themed_oauth_provider_button_style}

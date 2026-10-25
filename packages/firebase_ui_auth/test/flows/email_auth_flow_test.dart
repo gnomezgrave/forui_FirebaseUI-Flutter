@@ -3,9 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:mockito/mockito.dart';
 
 import '../test_utils.dart';
@@ -159,6 +160,8 @@ void main() {
     testWidgets('emits correct states during sign in', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: (context, child) =>
+              FTheme(data: FTheme.neutral.light.touch, child: child!),
           home: Scaffold(
             body: AuthFlowBuilder<EmailAuthController>(
               auth: auth,
@@ -194,6 +197,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          builder: (context, child) =>
+              FTheme(data: FTheme.neutral.light.touch, child: child!),
           home: Scaffold(
             body: AuthFlowBuilder<EmailAuthController>(
               auth: auth,

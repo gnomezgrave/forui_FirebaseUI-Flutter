@@ -1,42 +1,49 @@
 # Firebase UI for authentication
 
-Firebase UI for authentication provides a simple and easy way to implement authentication in your Flutter app.
-The library provides fully featured UI screens to drop into new or existing applications, along with
-lower level abstractions for developers looking for tighter control.
+Firebase UI for authentication provides screens and lower-level widgets for Firebase Auth, built with [Forui](https://forui.dev).
 
 ## Installation
 
-Activate FlutterFire CLI
-
 ```sh
 dart pub global activate flutterfire_cli
+flutter pub add firebase_core firebase_auth forui_firebase_ui_auth forui
 ```
 
-Install dependencies
-
-```sh
-flutter pub add firebase_core
-flutter pub add firebase_auth
-flutter pub add firebase_ui_auth
-```
-
-## Configuration
-
-Configure firebase using cli:
+Configure Firebase:
 
 ```sh
 flutterfire configure
 ```
 
-Initialize firebase app:
+Initialize Firebase and wrap your app in `FTheme`:
 
 ```dart
+import 'package:forui/forui.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      builder: (context, child) => FTheme(
+        data: FTheme.neutral.light.touch,
+        child: child!,
+      ),
+      home: SignInScreen(providers: [EmailAuthProvider()]),
+    );
+  }
 }
 ```
+
+Requires Dart `^3.13.0` and Flutter **3.47+**.
 
 ## macOS entitlements
 
@@ -44,44 +51,22 @@ If you're building for macOS, make sure to add necessary entitlements. Learn mor
 
 ## Writing widget unit tests
 
-If you're writing widget unit tests, you'll need to add the following to your `setUpAll` method:
-
 ```dart
 setUpAll(() {
   setFirebaseUiIsTestMode(true);
 });
 ```
 
-Also, you will likely want to mock the `FirebaseAuth` instance:
-
-```dart
-class MockFirebaseAuth extends Mock implements FirebaseAuth {
-  /// mock necessary methods
-}
-```
-
-An instance of `MockFirebaseAuth` can then be passed to Firebase UI widgets:
-
-```dart
-SignInScreen(
-  auth: MockFirebaseAuth(),
-  /// ... other props
-)
-```
+Mock `FirebaseAuth` and pass it to Firebase UI widgets as needed. Test helpers should also wrap widgets in `FTheme`.
 
 ## Next steps
 
-To understand what Firebase UI for authentication offers, the following documentation pages walk you through the various topics on
-how to use the package within your Flutter app.
-
-- Available auth providers:
-
-  - [EmailAuthProvider](./providers/email.md) - allows registering and signing in using email and password.
-  - [EmailLinkAuthProvider](./providers/email-link.md) - allows registering and signing in using a link sent to email.
-  - [PhoneAuthProvider](./providers/phone.md) - allows registering and signing in using a phone number
-  - [UniversalEmailSignInProvider](./providers/universal-email-sign-in.md) - gets all connected auth providers for a given email.
+- Auth providers:
+  - [EmailAuthProvider](./providers/email.md)
+  - [EmailLinkAuthProvider](./providers/email-link.md)
+  - [PhoneAuthProvider](./providers/phone.md)
   - [OAuth](./providers/oauth.md)
-
 - [Localization](../firebase-ui-localizations.md)
 - [Theming](./theming.md)
 - [Navigation](./navigation.md)
+- [Migration from Material Firebase UI](./migration.md)

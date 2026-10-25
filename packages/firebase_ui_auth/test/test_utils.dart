@@ -5,8 +5,10 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_links/app_links.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:forui/forui.dart';
 import 'package:mockito/mockito.dart';
+
 import 'dart:async';
 
 class TestMaterialApp extends StatelessWidget {
@@ -16,7 +18,11 @@ class TestMaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: child));
+    return MaterialApp(
+      builder: (context, child) =>
+          FTheme(data: FTheme.neutral.light.touch, child: child!),
+      home: FScaffold(child: child),
+    );
   }
 }
 

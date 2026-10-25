@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_storage/firebase_ui_storage.dart';
+import 'package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart';
 import 'package:flutter/widgets.dart';
 
 import 'default_loading_indicator.dart';
@@ -38,7 +38,7 @@ Widget _defaultLoadingBuilder(BuildContext context) {
 ///                  return Text(utf8.decode(snapshot.data!));
 ///                }
 ///
-///                return const CircularProgressIndicator();
+///                return const FCircularProgress();
 ///              },
 ///            ),
 ///          ),

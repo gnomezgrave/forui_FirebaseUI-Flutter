@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:forui/forui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
 
 import '../screens/internal/responsive_page.dart';
 
@@ -101,40 +102,50 @@ class SMSCodeInputScreen extends StatelessWidget {
       },
       child: FirebaseUIActions(
         actions: actions ?? const [],
-        child: UniversalScaffold(
-          body: Center(
-            child: ResponsivePage(
-              breakpoint: breakpoint,
-              maxWidth: maxWidth,
-              desktopLayoutDirection: desktopLayoutDirection,
-              sideBuilder: sideBuilder,
-              headerBuilder: headerBuilder,
-              headerMaxExtent: headerMaxExtent,
-              contentFlex: contentFlex,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SMSCodeInputView(
-                    auth: auth,
-                    action: action,
-                    flowKey: flowKey,
-                    onCodeVerified: () {
-                      if (actions != null) return;
+        child: FScaffold(
+          child: ResponsivePage(
+            breakpoint: breakpoint,
+            maxWidth: maxWidth,
+            desktopLayoutDirection: desktopLayoutDirection,
+            sideBuilder: sideBuilder,
+            headerBuilder: headerBuilder,
+            headerMaxExtent: headerMaxExtent,
+            contentFlex: contentFlex,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: ConstrainedBox(
+                  // Cap width so long AuthFailed messages wrap instead of
+                  // stretching the column; keep the block centered.
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SMSCodeInputView(
+                        auth: auth,
+                        action: action,
+                        flowKey: flowKey,
+                        onCodeVerified: () {
+                          // Custom actions (e.g. MFA enroll) handle navigation.
+                          if (actions != null && actions!.isNotEmpty) return;
 
-                      Navigator.of(context).popUntil((route) {
-                        return route.isFirst;
-                      });
-                    },
+                          Navigator.of(context).popUntil((route) {
+                            return route.isFirst;
+                          });
+                        },
+                      ),
+                      UniversalButton(
+                        variant: ButtonVariant.text,
+                        text: l.goBackButtonLabel,
+                        onPressed: () {
+                          _reset();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   ),
-                  UniversalButton(
-                    variant: ButtonVariant.text,
-                    text: l.goBackButtonLabel,
-                    onPressed: () {
-                      _reset();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
           ),

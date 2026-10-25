@@ -1,6 +1,6 @@
 # TaskProgressIndicator
 
-`TaskProgressIndicator` shows `LinearProgressIndicator` under `MaterialApp`, and a custom iOS-styled alternative under `CupertinoApp` while the file is being uploaded/downloaded, reflecting the amount of bytes transferred.
+`TaskProgressIndicator` shows Forui’s [`FDeterminateProgress`](https://forui.dev) while the file is being uploaded/downloaded, reflecting the amount of bytes transferred.
 
 ## Usage
 
@@ -13,7 +13,7 @@ UploadTask task = ref.putFile(myFile);
 TaskProgressIndicator(task: task);
 ```
 
-> You can see how to use `TaskProgressIndicator` together with `UploadButton` [here](https://github.com/firebase/FirebaseUI-Flutter/tree/main/docs/firebase-ui-storage/upload-button.md#showing-upload-progress).
+> You can see how to use `TaskProgressIndicator` together with `UploadButton` [here](./upload-button.md#showing-upload-progress).
 
 `TaskProgressIndicator` also works for download tasks:
 
@@ -32,9 +32,13 @@ Firebase UI storage provides an abstract class that simplifies building custom p
 
 ```dart
 class MyProgressIndicator extends TaskProgressWidget {
+  @override
   final Task task;
 
   const MyProgressIndicator({super.key, required this.task});
+
+  @override
+  ErrorBuilder? get errorBuilder => null;
 
   @override
   Widget buildProgressIndicator(BuildContext context, double progress) {
@@ -45,4 +49,4 @@ class MyProgressIndicator extends TaskProgressWidget {
 
 ---
 
-See [API reference](https://pub.dev/documentation/firebase_ui_storage/latest/firebase_ui_storage/TaskProgressIndicator-class.html) for more details.
+See [API reference](https://pub.dev/documentation/forui_firebase_ui_storage/latest/forui_firebase_ui_storage/TaskProgressIndicator-class.html) for more details.

@@ -3,11 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart' as ffui_oauth;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart'
+    as ffui_oauth;
+import 'package:forui/forui.dart';
 
 typedef ErrorCallback = void Function(Exception e);
 
@@ -95,7 +97,7 @@ class OAuthProviderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labels = FirebaseUILocalizations.labelsOf(context);
-    final brightness = Theme.of(context).brightness;
+    final brightness = context.theme.colors.brightness;
 
     return AuthFlowBuilder<OAuthController>(
       provider: provider,
@@ -106,7 +108,7 @@ class OAuthProviderButton extends StatelessWidget {
           provider: provider,
           action: action,
           isLoading: state is SigningIn || state is CredentialReceived,
-          onTap: () => ctrl.signIn(Theme.of(context).platform),
+          onTap: () => ctrl.signIn(defaultTargetPlatform),
           overrideDefaultTapAction: true,
           loadingIndicator: LoadingIndicator(
             size: 19,

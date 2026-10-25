@@ -2,12 +2,15 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui/forui.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 
 import '../utils.dart';
 
@@ -18,59 +21,81 @@ void main() {
     testWidgets(
       'registers new user',
       (tester) async {
-        await render(tester, const EmailForm(action: AuthAction.signUp));
+        final states = <AuthState>[];
+        // Unique email avoids email-already-in-use if prior cleanup failed.
+        final email =
+            'register_${DateTime.now().microsecondsSinceEpoch}@test.com';
 
-        final inputs = find.byType(TextFormField);
+        await render(
+          tester,
+          AuthStateListener<EmailAuthController>(
+            listener: (oldState, state, controller) {
+              states.add(state);
+              return null;
+            },
+            child: const EmailForm(action: AuthAction.signUp),
+          ),
+        );
 
-        await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-        await tester.pumpAndSettle();
+        final inputs = find.byType(FTextFormField);
 
+        await tester.enterText(inputs.at(0), email);
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-        await tester.pumpAndSettle();
-
         await tester.enterText(inputs.at(2), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pump(const Duration(milliseconds: 400));
+        final register = find.widgetWithText(
+          UniversalButton,
+          labels.registerActionText,
+        );
+        await tester.ensureVisible(register);
+        await tester.tap(register);
         await tester.pump();
 
         expect(find.byType(LoadingIndicator), findsOneWidget);
-        await tester.pumpAndSettle();
-
-        expect(auth.currentUser, isNotNull);
-      },
-      skip:
-          isCI &&
-          (defaultTargetPlatform == TargetPlatform.macOS ||
-              defaultTargetPlatform == TargetPlatform.android),
-    );
-
-    testWidgets(
-      'shows wrong password error',
-      (tester) async {
-        await auth.createUserWithEmailAndPassword(
-          email: 'test@test.com',
-          password: 'password',
+        // New accounts emit [UserCreated]; failures emit [AuthFailed].
+        await pumpUntil(
+          tester,
+          () => states.any(
+            (s) => s is UserCreated || s is SignedIn || s is AuthFailed,
+          ),
+          timeout: const Duration(seconds: 30),
         );
 
-        await auth.signOut();
-
-        await render(tester, const EmailForm(action: AuthAction.signIn));
-
-        final inputs = find.byType(TextFormField);
-
-        await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
-        await tester.enterText(inputs.at(1), 'wrongpassword');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
-        await tester.pumpAndSettle();
-
-        expect(find.text(labels.wrongOrNoPasswordErrorText), findsOneWidget);
+        expect(
+          states.whereType<AuthFailed>(),
+          isEmpty,
+          reason: states.whereType<AuthFailed>().map((e) => e.exception).join(),
+        );
+        expect(auth.currentUser, isNotNull);
+        expect(auth.currentUser!.email, email);
       },
-      skip: isCI && defaultTargetPlatform == TargetPlatform.macOS,
+      skip:
+          skipMacOSAuthKeychain ||
+          (isCI && defaultTargetPlatform == TargetPlatform.android),
     );
+
+    testWidgets('shows wrong password error', (tester) async {
+      await auth.createUserWithEmailAndPassword(
+        email: 'test@test.com',
+        password: 'password',
+      );
+
+      await auth.signOut();
+
+      await render(tester, const EmailForm(action: AuthAction.signIn));
+
+      final inputs = find.byType(FTextFormField);
+
+      await tester.enterText(inputs.at(0), 'test@test.com');
+      await tester.enterText(inputs.at(1), 'wrongpassword');
+      await tester.tap(find.text(labels.signInActionText));
+
+      final error = find.text(labels.wrongOrNoPasswordErrorText);
+      await pumpUntil(tester, () => error.evaluate().isNotEmpty);
+
+      expect(error, findsOneWidget);
+    }, skip: skipMacOSAuthKeychain);
 
     testWidgets(
       'signs in the user',
@@ -82,6 +107,8 @@ void main() {
 
         await auth.signOut();
 
+        final signedIn = Completer<void>();
+
         await render(
           tester,
           FirebaseUIActions(
@@ -90,53 +117,49 @@ void main() {
                 expect(state, isA<SignedIn>());
                 expect(state.user, isNotNull);
                 expect(state.user!.email, equals('test@test.com'));
+                signedIn.complete();
+              }),
+              AuthStateChangeAction<AuthFailed>((context, state) {
+                signedIn.completeError(state.exception);
               }),
             ],
             child: const EmailForm(action: AuthAction.signIn),
           ),
         );
 
-        final inputs = find.byType(TextFormField);
+        final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
+        await tester.tap(find.text(labels.signInActionText));
         await tester.pumpAndSettle();
+        await signedIn.future.timeout(const Duration(seconds: 15));
       },
       skip:
-          isCI &&
-          (defaultTargetPlatform == TargetPlatform.macOS ||
-              defaultTargetPlatform == TargetPlatform.android),
+          skipMacOSAuthKeychain ||
+          (isCI && defaultTargetPlatform == TargetPlatform.android),
     );
 
     testWidgets(
       'links email and password when auth action is link',
       (tester) async {
-        await render(tester, const EmailForm(action: AuthAction.link));
-
         await auth.signInAnonymously();
         final anonymousUid = auth.currentUser!.uid;
 
-        final inputs = find.byType(TextFormField);
+        await render(tester, const EmailForm(action: AuthAction.link));
+
+        final inputs = find.byType(FTextFormField);
 
         await tester.enterText(inputs.at(0), 'test@test.com');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(1), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
         await tester.enterText(inputs.at(2), 'password');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
-
+        await tester.tap(find.text(labels.linkEmailButtonText));
         await tester.pumpAndSettle();
 
         expect(auth.currentUser!.email, 'test@test.com');
         expect(auth.currentUser!.uid, anonymousUid);
       },
-      // see https://github.com/firebase/FirebaseUI-Flutter/issues/150
+      // see https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/150
       skip: true,
     );
   });

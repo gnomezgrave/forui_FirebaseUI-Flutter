@@ -3,18 +3,21 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart'
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart'
     hide OAuthProviderButtonBase;
-import 'package:flutter/cupertino.dart' hide Title;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart' hide Title;
+import 'package:flutter/widgets.dart' hide Title;
+import 'package:forui/forui.dart';
 
 import '../widgets/internal/title.dart';
 
-typedef AuthViewContentBuilder =
-    Widget Function(BuildContext context, AuthAction action);
+typedef AuthViewContentBuilder = Widget Function(
+  BuildContext context,
+  AuthAction action,
+);
 
 /// {@template ui.auth.views.login_view}
 /// A view that could be used to build a custom [SignInScreen] or
@@ -32,6 +35,11 @@ class LoginView extends StatefulWidget {
   final OAuthButtonVariant? oauthButtonVariant;
   final bool? showTitle;
   final String? email;
+
+  /// {@template ui.auth.views.login_view.title_style}
+  /// Style for the "Sign in" / "Register" title.
+  /// {@endtemplate}
+  final TextStyle? titleStyle;
 
   /// Whether the "Login/Register" link should be displayed. The link changes
   /// the type of the [AuthAction] from [AuthAction.signIn]
@@ -65,6 +73,7 @@ class LoginView extends StatefulWidget {
     this.auth,
     this.showTitle = true,
     this.email,
+    this.titleStyle,
     this.showAuthActionSwitch,
     this.footerBuilder,
     this.subtitleBuilder,
@@ -103,16 +112,19 @@ class _LoginViewState extends State<LoginView> {
         variant: widget.oauthButtonVariant,
       );
     }).toList();
-
+    Widget? button;
     if (widget.oauthButtonVariant == OAuthButtonVariant.icon_and_text) {
-      return Column(mainAxisSize: MainAxisSize.min, children: oauthButtonsList);
+      button = Column(mainAxisSize: .min, children: oauthButtonsList);
     } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
+      // Align so a stretched parent Column doesn't force the row full-width
+      // (which made spaceBetween pin icons to the edges).
+      button = Row(
+        mainAxisAlignment: .center,
+        mainAxisSize: .min,
         children: oauthButtonsList,
       );
     }
+    return Padding(padding: const EdgeInsets.only(top: 2), child: button);
   }
 
   void _handleDifferentAuthAction(BuildContext context) {
@@ -129,6 +141,7 @@ class _LoginViewState extends State<LoginView> {
 
   List<Widget> _buildHeader(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
+    final theme = context.theme;
 
     late String title;
     late String hint;
@@ -144,22 +157,16 @@ class _LoginViewState extends State<LoginView> {
       actionText = l.signInText;
     }
 
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
-    TextStyle? hintStyle;
-    late Color registerTextColor;
-
-    if (isCupertino) {
-      final theme = CupertinoTheme.of(context);
-      registerTextColor = theme.primaryColor;
-      hintStyle = theme.textTheme.textStyle.copyWith(fontSize: 12);
-    } else {
-      final theme = Theme.of(context);
-      hintStyle = Theme.of(context).textTheme.bodySmall;
-      registerTextColor = theme.colorScheme.primary;
-    }
+    final hintStyle = theme.typography.body.sm.copyWith(
+      color: theme.colors.mutedForeground,
+    );
+    final actionStyle = theme.typography.body.sm.copyWith(
+      color: theme.colors.primary,
+      fontWeight: .w600,
+    );
 
     return [
-      Title(text: title),
+      Title(text: title, style: widget.titleStyle),
       const SizedBox(height: 16),
       if (widget.subtitleBuilder != null)
         widget.subtitleBuilder!(context, _action),
@@ -170,9 +177,7 @@ class _LoginViewState extends State<LoginView> {
               TextSpan(text: '$hint ', style: hintStyle),
               TextSpan(
                 text: actionText,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge?.copyWith(color: registerTextColor),
+                style: actionStyle,
                 mouseCursor: SystemMouseCursors.click,
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => _handleDifferentAuthAction(context),
@@ -196,45 +201,44 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-    final platform = Theme.of(context).platform;
+    final platform = defaultTargetPlatform;
     _buttonsBuilt = false;
 
-    return IntrinsicHeight(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (_showTitle) ..._buildHeader(context),
-          for (var provider in widget.providers)
-            if (provider.supportsPlatform(platform))
-              if (provider is EmailAuthProvider) ...[
-                const SizedBox(height: 8),
-                EmailForm(
-                  key: ValueKey(_action),
-                  auth: widget.auth,
-                  action: _action,
-                  provider: provider,
-                  email: widget.email,
-                  actionButtonLabelOverride: widget.actionButtonLabelOverride,
-                  showPasswordVisibilityToggle:
-                      widget.showPasswordVisibilityToggle,
-                ),
-              ] else if (provider is PhoneAuthProvider) ...[
-                const SizedBox(height: 8),
-                PhoneVerificationButton(
-                  label: l.signInWithPhoneButtonText,
-                  action: _action,
-                  auth: widget.auth,
-                ),
-                const SizedBox(height: 8),
-              ] else if (provider is EmailLinkAuthProvider) ...[
-                const SizedBox(height: 8),
-                EmailLinkSignInButton(auth: widget.auth, provider: provider),
-              ] else if (provider is OAuthProvider && !_buttonsBuilt)
-                _buildOAuthButtons(platform),
-          if (widget.footerBuilder != null)
-            widget.footerBuilder!(context, _action),
-        ],
-      ),
+    return Column(
+      mainAxisSize: .min,
+      crossAxisAlignment: .stretch,
+      children: [
+        if (_showTitle) ..._buildHeader(context),
+        for (var provider in widget.providers)
+          if (provider.supportsPlatform(platform))
+            if (provider is EmailAuthProvider) ...[
+              const SizedBox(height: 8),
+              EmailForm(
+                key: ValueKey(_action),
+                auth: widget.auth,
+                action: _action,
+                provider: provider,
+                email: widget.email,
+                actionButtonLabelOverride: widget.actionButtonLabelOverride,
+                showPasswordVisibilityToggle:
+                    widget.showPasswordVisibilityToggle,
+              ),
+            ] else if (provider is PhoneAuthProvider) ...[
+              const SizedBox(height: 8),
+              PhoneVerificationButton(
+                label: l.signInWithPhoneButtonText,
+                action: _action,
+                auth: widget.auth,
+              ),
+              const SizedBox(height: 8),
+            ] else if (provider is EmailLinkAuthProvider) ...[
+              const SizedBox(height: 8),
+              EmailLinkSignInButton(auth: widget.auth, provider: provider),
+            ] else if (provider is OAuthProvider && !_buttonsBuilt)
+              _buildOAuthButtons(platform),
+        if (widget.footerBuilder != null)
+          widget.footerBuilder!(context, _action),
+      ],
     );
   }
 }

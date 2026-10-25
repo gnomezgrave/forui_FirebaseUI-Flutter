@@ -15,7 +15,11 @@ flutter_export_environment.sh
 
 examples/all_plugins/pubspec.yaml
 
+# Ignore Podfile.lock in examples; keep the e2e app locks committed so CI
+# skips a full CocoaPods CDN resolve (~minutes for Firebase).
 Podfile.lock
+!tests/ios/Podfile.lock
+!tests/macos/Podfile.lock
 Pods/
 **/xcshareddata/swiftpm/Package.resolved
 .symlinks/
@@ -79,3 +83,6 @@ firebase-debug.log
 firestore-debug.log
 database-debug.log
 ui-debug.log
+
+# Repo tool cache
+.repo_tool_cache/

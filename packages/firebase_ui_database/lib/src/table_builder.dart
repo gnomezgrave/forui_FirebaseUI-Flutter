@@ -6,9 +6,10 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'query_builder.dart';
@@ -392,15 +393,16 @@ class _EditModalButtonBar extends StatelessWidget {
     return OverflowBar(
       alignment: MainAxisAlignment.end,
       children: [
-        TextButton(
+        UniversalButton(
+          variant: ButtonVariant.text,
+          text: localizations.cancelLabel,
           onPressed: () => Navigator.pop(context),
-          child: Text(localizations.cancelLabel),
         ),
-        ElevatedButton(
+        UniversalButton(
+          text: localizations.updateLabel,
           onPressed: () {
             Navigator.pop(context, formState.submit(ref));
           },
-          child: Text(localizations.updateLabel),
         ),
       ],
     );
@@ -547,11 +549,10 @@ class _Source extends DataTableSource {
   _Source({
     required this.getHeaders,
     required this.getOnError,
-    required bool selectionEnabled,
+    required this._selectionEnabled,
     required int rowsPerPage,
     required this.onEditItem,
-  }) : _selectionEnabled = selectionEnabled,
-       _rowsPerpage = rowsPerPage;
+  }) : _rowsPerpage = rowsPerPage;
 
   final void Function(DataSnapshot snapshot, Object? value, String propertyName)
   onEditItem;

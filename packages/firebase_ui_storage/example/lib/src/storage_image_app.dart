@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_storage/firebase_ui_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_storage/forui_firebase_ui_storage.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'apps.dart';
 

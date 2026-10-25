@@ -3,14 +3,15 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
-import 'package:firebase_ui_oauth/firebase_ui_oauth.dart'
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
+import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart'
     hide OAuthProviderButtonBase;
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart' hide Title;
-import 'package:flutter/material.dart' hide Title;
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' hide Title;
+import 'package:forui/forui.dart';
 
 import '../widgets/internal/rebuild_scope.dart';
 import '../widgets/internal/subtitle.dart';
@@ -73,7 +74,6 @@ class _AvailableProvidersRowState extends State<_AvailableProvidersRow> {
   @override
   Widget build(BuildContext context) {
     final l = FirebaseUILocalizations.labelsOf(context);
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
 
     final providers = widget.providers
         .where((provider) => provider is! EmailLinkAuthProvider)
@@ -83,22 +83,14 @@ class _AvailableProvidersRowState extends State<_AvailableProvidersRow> {
       children: [
         for (var provider in providers)
           if (provider is! OAuthProvider)
-            if (isCupertino)
-              CupertinoButton(
-                onPressed: () => connectProvider(
-                  context: context,
-                  provider: provider,
-                ).then((_) => widget.onProviderLinked()),
-                child: providerIcon(context, provider),
-              )
-            else
-              IconButton(
-                icon: providerIcon(context, provider),
-                onPressed: () => connectProvider(
-                  context: context,
-                  provider: provider,
-                ).then((_) => widget.onProviderLinked()),
-              )
+            FButton.icon(
+              variant: .ghost,
+              onPress: () => connectProvider(
+                context: context,
+                provider: provider,
+              ).then((_) => widget.onProviderLinked()),
+              child: providerIcon(context, provider),
+            )
           else
             AuthStateListener<OAuthController>(
               listener: (oldState, newState, controller) {
@@ -143,12 +135,9 @@ class _EditButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return UniversalIconButton(
-      materialIcon: isEditing ? Icons.check : Icons.edit,
-      cupertinoIcon: isEditing ? CupertinoIcons.check_mark : CupertinoIcons.pen,
-      color: theme.colorScheme.secondary,
+      icon: isEditing ? FLucideIcons.check : FLucideIcons.pencil,
+      color: context.theme.colors.primary,
       onPressed: () {
         onPressed?.call();
       },
@@ -202,9 +191,9 @@ class _LinkedProvidersRowState extends State<_LinkedProvidersRow> {
     if (!confirmed) {
       final l = FirebaseUILocalizations.labelsOf(context);
 
-      confirmed = await showAdaptiveDialog<bool?>(
+      confirmed = await showFDialog<bool?>(
         context: context,
-        builder: (context) {
+        builder: (context, style, animation) {
           return UniversalAlert(
             onConfirm: pop(context, true),
             onCancel: pop(context, false),
@@ -241,7 +230,6 @@ class _LinkedProvidersRowState extends State<_LinkedProvidersRow> {
 
   Widget buildProviderIcon(BuildContext context, AuthProvider provider) {
     final providerId = provider.providerId;
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
     const animationDuration = Duration(milliseconds: 150);
     const curve = Curves.easeOut;
 
@@ -276,11 +264,9 @@ class _LinkedProvidersRowState extends State<_LinkedProvidersRow> {
                   child: Transform.translate(
                     offset: const Offset(6, -4),
                     child: Icon(
-                      isCupertino
-                          ? CupertinoIcons.minus_circle_fill
-                          : Icons.remove_circle,
+                      FLucideIcons.circleMinus,
                       size: 20,
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.theme.colors.destructive,
                     ),
                   ),
                 ),
@@ -365,9 +351,7 @@ class _EmailVerificationBadgeState extends State<_EmailVerificationBadge> {
     return widget.auth.currentUser!;
   }
 
-  TargetPlatform get platform {
-    return Theme.of(context).platform;
-  }
+  TargetPlatform get platform => defaultTargetPlatform;
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +362,7 @@ class _EmailVerificationBadgeState extends State<_EmailVerificationBadge> {
     }
 
     final l = FirebaseUILocalizations.labelsOf(context);
+    final theme = context.theme;
 
     return Padding(
       padding: const EdgeInsets.only(top: 16),
@@ -386,7 +371,7 @@ class _EmailVerificationBadgeState extends State<_EmailVerificationBadge> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: theme.colors.secondary,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
@@ -428,8 +413,7 @@ class _EmailVerificationBadgeState extends State<_EmailVerificationBadge> {
                     state != EmailVerificationState.sending)
                   UniversalButton(
                     variant: ButtonVariant.text,
-                    materialColor: Theme.of(context).colorScheme.error,
-                    cupertinoColor: CupertinoColors.destructiveRed,
+                    color: theme.colors.destructive,
                     text: l.dismissButtonLabel,
                     onPressed: () {
                       setState(service.dismiss);
@@ -520,27 +504,19 @@ class _MFAToggleState extends State<_MFAToggle> {
   bool isLoading = false;
   Exception? exception;
 
-  IconData getCupertinoIcon() {
+  IconData getStatusIcon() {
     if (widget.enrolled) {
-      return CupertinoIcons.check_mark_circled;
+      return FLucideIcons.circleCheck;
     } else {
-      return CupertinoIcons.circle;
-    }
-  }
-
-  IconData getMaterialIcon() {
-    if (widget.enrolled) {
-      return Icons.check_circle;
-    } else {
-      return Icons.remove_circle_sharp;
+      return FLucideIcons.circle;
     }
   }
 
   Color getColor() {
     if (widget.enrolled) {
-      return Theme.of(context).colorScheme.primary;
+      return context.theme.colors.primary;
     } else {
-      return Theme.of(context).colorScheme.error;
+      return context.theme.colors.destructive;
     }
   }
 
@@ -651,11 +627,7 @@ class _MFAToggleState extends State<_MFAToggle> {
       children: [
         Row(
           children: [
-            UniversalIcon(
-              cupertinoIcon: getCupertinoIcon(),
-              materialIcon: getMaterialIcon(),
-              color: getColor(),
-            ),
+            UniversalIcon(icon: getStatusIcon(), color: getColor()),
             const SizedBox(width: 8),
             Expanded(child: Text(widget.enrolled ? l.on : l.off)),
             LoadingButton(
@@ -717,11 +689,8 @@ class ProfileScreen extends MultiProviderScreen {
   /// ```
   final List<FirebaseUIAction>? actions;
 
-  /// See [Scaffold.appBar].
-  final AppBar? appBar;
-
-  /// See [CupertinoPageScaffold.navigationBar].
-  final CupertinoNavigationBar? cupertinoNavigationBar;
+  /// Optional header widget shown above the profile content (e.g. [FHeader]).
+  final Widget? header;
 
   /// A configuration object used to construct a dynamic link for email
   /// verification.
@@ -755,8 +724,7 @@ class ProfileScreen extends MultiProviderScreen {
     this.avatarSize,
     this.children = const [],
     this.actions,
-    this.appBar,
-    this.cupertinoNavigationBar,
+    this.header,
     this.actionCodeSettings,
     this.showMFATile = false,
     this.showUnlinkConfirmationDialog = false,
@@ -786,13 +754,11 @@ class ProfileScreen extends MultiProviderScreen {
     BuildContext context,
     fba.User user,
   ) {
-    final platform = Theme.of(context).platform;
-
     return providers
         .where(
           (provider) =>
               !user.isProviderLinked(provider.providerId) &&
-              provider.supportsPlatform(platform),
+              provider.supportsPlatform(defaultTargetPlatform),
         )
         .toList();
   }
@@ -806,7 +772,6 @@ class ProfileScreen extends MultiProviderScreen {
   }
 
   Widget buildPage(BuildContext context) {
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
     final providersScopeKey = RebuildScopeKey();
     final mfaScopeKey = RebuildScopeKey();
     final emailVerificationScopeKey = RebuildScopeKey();
@@ -946,19 +911,10 @@ class ProfileScreen extends MultiProviderScreen {
       ),
     );
 
-    Widget child = SafeArea(child: SingleChildScrollView(child: body));
-
-    if (isCupertino) {
-      child = CupertinoPageScaffold(
-        navigationBar: cupertinoNavigationBar,
-        child: SafeArea(child: SingleChildScrollView(child: child)),
-      );
-    } else {
-      child = Scaffold(
-        appBar: appBar,
-        body: SafeArea(child: SingleChildScrollView(child: body)),
-      );
-    }
+    final child = FScaffold(
+      header: header,
+      child: SafeArea(child: SingleChildScrollView(child: body)),
+    );
 
     return FirebaseUIActions(actions: actions ?? const [], child: child);
   }

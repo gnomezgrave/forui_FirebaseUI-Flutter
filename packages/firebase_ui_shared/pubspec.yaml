@@ -1,20 +1,25 @@
-name: firebase_ui_shared
+name: forui_firebase_ui_shared
 description: Abstractions and widgets that are used across Firebase UI packages.
-version: 1.5.0
-homepage: https://github.com/firebase/FirebaseUI-Flutter/packages/firebase_ui_shared
+version: 0.1.0
+homepage: https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/tree/main/packages/firebase_ui_shared
 
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
+
+executables:
+  migrate_imports: migrate_imports
 
 dependencies:
   flutter:
     sdk: flutter
+  forui: ^0.27.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  material_ui: ^1.8.0
 flutter:

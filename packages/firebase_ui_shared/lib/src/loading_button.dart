@@ -2,14 +2,15 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:firebase_ui_shared/firebase_ui_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 class _LoadingButtonContent extends StatelessWidget {
   final String label;
   final bool isLoading;
   final Color? color;
+
   const _LoadingButtonContent({
     required this.label,
     required this.isLoading,
@@ -18,26 +19,17 @@ class _LoadingButtonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
-    Widget child;
-
-    if (color != null) {
-      final theme = Theme.of(context).textTheme.labelLarge;
-      child = Text(label, style: theme?.copyWith(color: color));
-    } else {
-      child = Text(label);
-    }
+    Widget child = Text(
+      label,
+      style: color == null ? null : TextStyle(color: color),
+    );
 
     if (isLoading) {
       child = Stack(
-        alignment: Alignment.center,
+        alignment: .center,
         children: [
           Opacity(opacity: 0, child: child),
-          LoadingIndicator(
-            size: isCupertino ? 20 : 16,
-            borderWidth: 1,
-            color: color,
-          ),
+          LoadingIndicator(size: 16, borderWidth: 1, color: color),
         ],
       );
     }
@@ -46,10 +38,9 @@ class _LoadingButtonContent extends StatelessWidget {
   }
 }
 
-/// Button widget that uses [CupertinoButton] under [CupertinoApp] and
-/// [TextButton], [ElevatedButton] or [OutlinedButton] under [MaterialApp]
-/// which is also capable of displaying a loading indicator when [isLoading] is
-/// set to true.
+/// Button capable of displaying a loading indicator when [isLoading] is true.
+///
+/// Backed by [UniversalButton] / Forui [FButton].
 class LoadingButton extends StatelessWidget {
   /// Indicates that a loading indicator should be displayed.
   final bool isLoading;
@@ -57,17 +48,11 @@ class LoadingButton extends StatelessWidget {
   /// The text to display in the button.
   final String label;
 
-  /// The icon to display in the button under [MaterialApp].
-  final IconData? materialIcon;
+  /// The icon to display in the button.
+  final IconData? icon;
 
-  /// The icon to display in the button under [CupertinoApp].
-  final IconData? cupertinoIcon;
-
-  /// The color of the button background under [MaterialApp].
-  final Color? materialColor;
-
-  /// The color of the button background under [CupertinoApp].
-  final Color? cupertinoColor;
+  /// The color of the button background.
+  final Color? color;
 
   /// The color of the button content.
   final Color? labelColor;
@@ -83,43 +68,25 @@ class LoadingButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.isLoading = false,
-    this.materialIcon,
-    this.cupertinoIcon,
-    this.materialColor,
-    this.cupertinoColor,
+    this.icon,
+    this.color,
     this.labelColor,
     this.variant = ButtonVariant.outlined,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isMaterial3 = theme.useMaterial3;
-    final isCupertino = CupertinoUserInterfaceLevel.maybeOf(context) != null;
-
-    final resolvedColor = variant == ButtonVariant.filled && !isMaterial3
-        ? theme.colorScheme.onPrimary
-        : null;
-
-    var contentColor = labelColor ?? resolvedColor;
-
-    if (isCupertino && variant == ButtonVariant.filled) {
-      contentColor = contentColor ?? CupertinoColors.white;
-    }
-
     final content = _LoadingButtonContent(
       label: label,
       isLoading: isLoading,
-      color: contentColor,
+      color: labelColor,
     );
 
     return UniversalButton(
-      materialColor: materialColor,
-      cupertinoColor: cupertinoColor,
-      materialIcon: materialIcon,
-      cupertinoIcon: cupertinoIcon,
-      contentColor: contentColor,
-      onPressed: onTap,
+      color: color,
+      icon: icon,
+      contentColor: labelColor,
+      onPressed: isLoading ? null : onTap,
       variant: variant,
       child: content,
     );
