@@ -1526,7 +1526,7 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
   cloud_firestore: bf84aabfce323e4b904b24436e41669a8815a1ee
   desktop_webview_window: 96a659f19029a9a60377e41be01ee09457d73d35
-  facebook_auth_desktop: 0ec755e3b01669ec14776af18b6945671a788916
+  facebook_auth_desktop: 1238d078187afdf1265f39b41555c71117745046
   Firebase: e3c5ab38229ae085490d02398d97b9f5374bbe6e
   firebase_auth: 00835b0eeb6d2570dca1548ca4e7b9b17cc67fa9
   firebase_core: 0502766688bf19ad439d5fe710d2defd337aad08

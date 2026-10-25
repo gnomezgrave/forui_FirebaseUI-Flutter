@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
@@ -23,35 +24,50 @@ final emailLinkProvider = EmailLinkAuthProvider(
 );
 
 void main() {
+  setUpTests();
   const labels = DefaultLocalizations();
 
   group('EmailLinkSignInView', () {
     testWidgets('validates email', (tester) async {
       await render(tester, EmailLinkSignInView(provider: emailLinkProvider));
+      await tester.pumpAndSettle();
 
       final input = find.byType(FTextFormField);
+      await tester.tap(input);
       await tester.enterText(input, 'notanemail');
+      // Let FTextFormField's FormField sync from the controller before validate.
+      await tester.pump();
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      // Button path as a second validate in case IME action is a no-op on desktop.
       await tester.tap(find.text(labels.sendLinkButtonLabel));
-      await tester.pumpAndSettle();
+      await pumpUntil(
+        tester,
+        () =>
+            find.text(labels.isNotAValidEmailErrorText).evaluate().isNotEmpty,
+      );
 
       expect(find.text(labels.isNotAValidEmailErrorText), findsOneWidget);
     });
 
     testWidgets('sends a link to an email', (tester) async {
       await render(tester, EmailLinkSignInView(provider: emailLinkProvider));
+      await tester.pumpAndSettle();
 
       final input = find.byType(FTextFormField);
       await tester.enterText(input, 'test@test.com');
+      await tester.pump();
       await tester.tap(find.text(labels.sendLinkButtonLabel));
 
-      // sendSignInLinkToEmail is async; wait until the "link sent" state paints.
-      await tester.pumpAndSettle();
-      final sent = find.text(labels.signInWithEmailLinkSentText);
-      for (var i = 0; i < 50 && sent.evaluate().isEmpty; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
+      await pumpUntil(
+        tester,
+        () => find
+            .text(labels.signInWithEmailLinkSentText)
+            .evaluate()
+            .isNotEmpty,
+      );
 
-      expect(sent, findsOneWidget);
+      expect(find.text(labels.signInWithEmailLinkSentText), findsOneWidget);
     });
   });
 }
