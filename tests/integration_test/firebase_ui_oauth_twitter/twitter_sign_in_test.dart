@@ -73,11 +73,15 @@ void main() async {
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
       // MockAuth.signInWithProvider delays 500ms without scheduling frames.
-      await pumpUntil(tester, () => states.any((s) => s is SignedIn));
+      // New accounts emit [UserCreated], not [SignedIn].
+      await pumpUntil(
+        tester,
+        () => states.any((s) => s is SignedIn || s is UserCreated),
+      );
 
-      final signedIn = states.whereType<SignedIn>().last;
-      expect(signedIn.user!.displayName, 'Test User');
-      expect(signedIn.user!.email, 'test@test.com');
+      expect(auth.currentUser, isNotNull);
+      expect(auth.currentUser!.displayName, 'Test User');
+      expect(auth.currentUser!.email, 'test@test.com');
     });
 
     testWidgets('links the credential when the user is anonymous', (

@@ -5,10 +5,12 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 
 import '../utils.dart';
 
@@ -19,20 +21,54 @@ void main() {
     testWidgets(
       'registers new user',
       (tester) async {
-        await render(tester, const EmailForm(action: AuthAction.signUp));
+        final states = <AuthState>[];
+        // Unique email avoids email-already-in-use if prior cleanup failed.
+        final email =
+            'register_${DateTime.now().microsecondsSinceEpoch}@test.com';
+
+        await render(
+          tester,
+          AuthStateListener<EmailAuthController>(
+            listener: (oldState, state, controller) {
+              states.add(state);
+              return null;
+            },
+            child: const EmailForm(action: AuthAction.signUp),
+          ),
+        );
 
         final inputs = find.byType(FTextFormField);
 
-        await tester.enterText(inputs.at(0), 'test@test.com');
+        await tester.enterText(inputs.at(0), email);
         await tester.enterText(inputs.at(1), 'password');
         await tester.enterText(inputs.at(2), 'password');
-        await tester.tap(find.text(labels.registerActionText));
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pump(const Duration(milliseconds: 400));
+        final register = find.widgetWithText(
+          UniversalButton,
+          labels.registerActionText,
+        );
+        await tester.ensureVisible(register);
+        await tester.tap(register);
         await tester.pump();
 
         expect(find.byType(LoadingIndicator), findsOneWidget);
-        await pumpUntil(tester, () => auth.currentUser != null);
+        // New accounts emit [UserCreated]; failures emit [AuthFailed].
+        await pumpUntil(
+          tester,
+          () => states.any(
+            (s) => s is UserCreated || s is SignedIn || s is AuthFailed,
+          ),
+          timeout: const Duration(seconds: 30),
+        );
 
+        expect(
+          states.whereType<AuthFailed>(),
+          isEmpty,
+          reason: states.whereType<AuthFailed>().map((e) => e.exception).join(),
+        );
         expect(auth.currentUser, isNotNull);
+        expect(auth.currentUser!.email, email);
       },
       skip:
           skipMacOSAuthKeychain ||

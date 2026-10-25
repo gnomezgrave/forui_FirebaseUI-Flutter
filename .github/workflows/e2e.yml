@@ -223,8 +223,12 @@ jobs:
       - uses: futureware-tech/simulator-action@c768f52966d5f70335ec77881f9806b24a52f80e # v6
         id: simulator
         with:
-          # List of available simulators: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
+          # macos-26 ships iPhone 17 on iOS 26.2/26.4/26.5 — pin OS or the action
+          # warns "More than one (3) device matching" and picks arbitrarily.
+          # List: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
           model: "iPhone 17"
+          os: iOS
+          os_version: "26.5"
       - name: "E2E Tests"
         working-directory: tests
         env:

@@ -51,17 +51,11 @@ void main() async {
     testWidgets('shows loading indicator when sign in is in progress', (
       tester,
     ) async {
-      // Create a new provider with a mock that delays
       final delayedProvider = FacebookProvider(clientId: 'clientId');
-      final delayedMock = MockFacebookAuth();
-      delayedProvider.provider = delayedMock;
+      delayedProvider.provider = MockFacebookAuth(
+        delay: const Duration(milliseconds: 50),
+      );
       setMockFacebookProvider(delayedProvider);
-
-      // Override noSuchMethod to add delay
-      when(delayedMock.login()).thenAnswer((realInvocation) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        return MockLoginResult();
-      });
 
       await render(tester, OAuthProviderButton(provider: delayedProvider));
 
@@ -89,9 +83,12 @@ void main() async {
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
       // Auth emulator sign-in is async and may not schedule frames.
+      // New accounts emit [UserCreated], not [SignedIn].
       await pumpUntil(
         tester,
-        () => states.any((s) => s is SignedIn || s is AuthFailed),
+        () => states.any(
+          (s) => s is SignedIn || s is UserCreated || s is AuthFailed,
+        ),
       );
 
       expect(
@@ -132,6 +129,10 @@ class MockLoginResult extends Mock implements LoginResult {
 }
 
 class MockFacebookAuth extends Mock implements FacebookAuth {
+  MockFacebookAuth({this.delay});
+
+  final Duration? delay;
+
   @override
   Future<LoginResult> login({
     List<String>? permissions,
@@ -139,15 +140,10 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
     LoginTracking? loginTracking,
     String? nonce,
   }) async {
-    return super.noSuchMethod(
-      Invocation.method(#login, null, {
-        #permissions: permissions ?? ['email', 'public_profile'],
-        #loginBehavior: loginBehavior ?? LoginBehavior.dialogOnly,
-        #loginTracking: loginTracking ?? LoginTracking.enabled,
-        #nonce: nonce,
-      }),
-      returnValue: Future<LoginResult>.value(MockLoginResult()),
-      returnValueForMissingStub: Future<LoginResult>.value(MockLoginResult()),
-    );
+    // Return directly — Mockito noSuchMethod stubs can miss named-arg variants
+    // and leave mobileSignIn hanging (no SignedIn/AuthFailed) on iOS CI.
+    final wait = delay;
+    if (wait != null) await Future<void>.delayed(wait);
+    return MockLoginResult();
   }
 }

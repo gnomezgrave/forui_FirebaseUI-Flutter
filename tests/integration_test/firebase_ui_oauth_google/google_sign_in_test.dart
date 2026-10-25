@@ -83,9 +83,12 @@ void main() async {
       final button = find.byType(OAuthProviderButtonBase);
       await tester.tap(button);
       // Auth emulator sign-in is async and may not schedule frames.
+      // New accounts emit [UserCreated], not [SignedIn].
       await pumpUntil(
         tester,
-        () => states.any((s) => s is SignedIn || s is AuthFailed),
+        () => states.any(
+          (s) => s is SignedIn || s is UserCreated || s is AuthFailed,
+        ),
       );
 
       expect(
