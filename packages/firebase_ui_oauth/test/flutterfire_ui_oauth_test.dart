@@ -195,8 +195,10 @@ void main() {
                       provider: provider,
                       auth: FakeAuth(),
                       label: 'Sign in with Fake provider',
-                      loadingIndicator:
-                          const LoadingIndicator(size: 20, borderWidth: 2),
+                      loadingIndicator: const LoadingIndicator(
+                        size: 20,
+                        borderWidth: 2,
+                      ),
                     ),
                   ),
                 ],

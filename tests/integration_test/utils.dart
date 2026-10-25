@@ -108,10 +108,7 @@ Future<void> render(WidgetTester tester, Widget widget) async {
           resizeToAvoidBottomInset: false,
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: widget,
-            ),
+            child: Align(alignment: Alignment.topCenter, child: widget),
           ),
         ),
       ),

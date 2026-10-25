@@ -20,9 +20,7 @@ void main() {
           home: Builder(
             builder: (context) {
               expected = context.theme.typography.display.md;
-              return const FScaffold(
-                child: ui_title.Title(text: 'Hello'),
-              );
+              return const FScaffold(child: ui_title.Title(text: 'Hello'));
             },
           ),
         ),

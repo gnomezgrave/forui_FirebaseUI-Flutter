@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
@@ -43,8 +42,7 @@ void main() {
       await tester.tap(find.text(labels.sendLinkButtonLabel));
       await pumpUntil(
         tester,
-        () =>
-            find.text(labels.isNotAValidEmailErrorText).evaluate().isNotEmpty,
+        () => find.text(labels.isNotAValidEmailErrorText).evaluate().isNotEmpty,
       );
 
       expect(find.text(labels.isNotAValidEmailErrorText), findsOneWidget);
@@ -61,10 +59,8 @@ void main() {
 
       await pumpUntil(
         tester,
-        () => find
-            .text(labels.signInWithEmailLinkSentText)
-            .evaluate()
-            .isNotEmpty,
+        () =>
+            find.text(labels.signInWithEmailLinkSentText).evaluate().isNotEmpty,
       );
 
       expect(find.text(labels.signInWithEmailLinkSentText), findsOneWidget);
