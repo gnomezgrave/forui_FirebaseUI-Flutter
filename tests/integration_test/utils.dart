@@ -98,15 +98,20 @@ Widget foruiApp({required Widget home}) {
 }
 
 Future<void> render(WidgetTester tester, Widget widget) async {
-  // Match SignInScreen / ResponsivePage: scrollable body so Forui touch
-  // fields + keyboard insets (enterText) do not overflow a tight Column.
+  // Align loosens FScaffold's tight height (avoids Column overflow).
+  // resizeToAvoidBottomInset: false keeps height stable when enterText
+  // opens the IME — production screens scroll via ResponsivePage instead.
   await tester.pumpWidget(
     foruiApp(
       home: SafeArea(
         child: FScaffold(
-          child: ListView(
+          resizeToAvoidBottomInset: false,
+          child: Padding(
             padding: const EdgeInsets.all(8),
-            children: [widget],
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: widget,
+            ),
           ),
         ),
       ),
