@@ -12,7 +12,6 @@ import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 import 'oauth/auth_result.dart';
 import 'oauth/provider_args.dart';
-import 'oauth_provider.dart';
 
 /// flutter_web_auth_2 can only match an `https` callback URL by host/path
 /// (rather than completing on the first `https` navigation it sees) from
@@ -32,21 +31,18 @@ bool _macOSSupportsHttpsCallbackMatching() {
 /// {@template ui.oauth.platform_sign_in_mixin}
 /// A helper mixin that implements the platform-specific sign-in logic.
 /// {@endtemplate}
-mixin PlatformSignInMixin {
-  OAuthListener get authListener;
+mixin PlatformSignInMixin on OAuthProvider {
   ProviderArgs get desktopSignInArgs;
   dynamic get firebaseAuthProvider;
 
   /// Creates [OAuthCredential] based on [AuthResult].
   fba.OAuthCredential fromDesktopAuthResult(AuthResult result);
 
-  /// {@macro ui.auth.auth_provider.on_credential_received}
-  void onCredentialReceived(fba.OAuthCredential credential, AuthAction action);
-
   /// {@template ui.oauth.platform_sign_in_mixin.platform_sign_in}
   /// Redirects the flow to the [mobileSignIn] or [desktopSignIn] based
   /// on current platform.
   /// {@endtemplate}
+  @override
   void platformSignIn(TargetPlatform platform, AuthAction action) {
     if (platform == TargetPlatform.android || platform == TargetPlatform.iOS) {
       mobileSignIn(action);

@@ -8,7 +8,7 @@ import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleProvider extends OAuthProvider {
+class GoogleProvider extends OAuthProvider with PlatformSignInMixin {
   @override
   final providerId = 'google.com';
 

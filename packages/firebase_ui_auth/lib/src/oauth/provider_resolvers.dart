@@ -4,10 +4,9 @@
 
 // ignore_for_file: constant_identifier_names
 
-import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
-import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 
 const GOOGLE_PROVIDER_ID = 'google.com';
 const APPLE_PROVIDER_ID = 'apple.com';

@@ -118,12 +118,15 @@ melos:
         Override device with FLUTTER_TEST_DEVICE. Match CI skips with E2E_CI=1.
         If macOS pod install fails on a missing Firebase version, refresh once:
           (cd tests/macos && pod install --repo-update)
+        Xcode 16.3+/beta: Podfile post_install patches FirebaseDataEncoder; run_e2e.sh
+        re-runs pod install if Pods still have unpatched `_type(from:)`.
       run: bash scripts/run_e2e.sh macos
 
     test:e2e:macos:
       description: |
         e2e on macOS (same as test:e2e). Auto-starts Firebase emulators if needed.
         Auth persistence tests are skipped without a signed macOS Runner.
+        Same FirebaseDataEncoder / pod-install note as test:e2e.
       run: bash scripts/run_e2e.sh macos
 
     test:e2e:ios:
@@ -131,6 +134,7 @@ melos:
         e2e on a connected iOS Simulator/device (auto-picks first simulator).
         Auto-starts Firebase emulators if needed. Boot a simulator first (`open -a Simulator`).
         Override: FLUTTER_TEST_DEVICE=<id>. CI parity: E2E_CI=1 dart run melos run test:e2e:ios
+        Same FirebaseDataEncoder / pod-install note as test:e2e.
       run: bash scripts/run_e2e.sh ios
 
     test:e2e:android:

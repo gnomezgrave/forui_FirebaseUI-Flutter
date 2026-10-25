@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_localizations/forui_firebase_ui_localizations.dart';
-import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:forui_firebase_ui_oauth_twitter/forui_firebase_ui_oauth_twitter.dart';
 import 'package:mockito/mockito.dart';
 

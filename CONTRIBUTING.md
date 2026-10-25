@@ -225,6 +225,18 @@ Some things to keep in mind before publishing the release:
   from people that immediately adopt it, and uncovering and resolving those
   support issues will take more time if you're unavailable.
 
+### Publish dependency order
+
+The OAuth stack is one-way (`auth` does **not** depend on `oauth`). Melos / pub will refuse a cycle. Publish leaves first when doing a staged first release:
+
+1. `forui_firebase_ui_shared`, `forui_firebase_ui_localizations` (and other packages that do not depend on auth/oauth)
+2. `forui_firebase_ui_auth`
+3. `forui_firebase_ui_oauth`
+4. `forui_firebase_ui_oauth_*` (apple / google / facebook / twitter)
+5. Remaining packages (`firestore`, `database`, `storage`, …)
+
+For routine Melos releases of already-published packages, `dart run melos publish` is usually enough once the graph is acyclic.
+
 ### Run a release
 
 1. Switch to `main` branch locally.

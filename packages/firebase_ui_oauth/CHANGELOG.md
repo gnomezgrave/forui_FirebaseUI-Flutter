@@ -2,6 +2,7 @@
 
 > Note: This release has breaking changes.
 
+ - **BREAKING** **REFACTOR**: depend on auth for `OAuthProvider` / button types; providers use `PlatformSignInMixin` (auth no longer depends on oauth).
  - **REFACTOR**: upgrade project to remove warnings from Flutter 3.7 ([#10344](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/10344)). ([c9364bb6](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/c9364bb65dd479f00d646a4061673167dd26aa67))
  - **FIX**: bump FF dependencies to latest ([#526](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/526)). ([9f355bfc](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/9f355bfcda8319c9ed4786e1e3da91babb4f5229))
  - **FIX**(ui_oauth): use dart.library.js_interop for Wasm-compatible imports ([#675](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/675)). ([84da53c3](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/commit/84da53c391d3f79926ae701c59c67b6037308e0b))

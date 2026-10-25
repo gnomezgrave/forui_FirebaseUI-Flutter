@@ -1,5 +1,9 @@
 # Firebase UI OAuth
 
+Install a concrete provider package (`forui_firebase_ui_oauth_google`, `_apple`, `_facebook`, or `_twitter`). Those depend on `forui_firebase_ui_oauth`, which depends on `forui_firebase_ui_auth`.
+
+Abstract types (`OAuthProvider`, `OAuthProviderButton`, styles) are defined in **auth** and re-exported from **oauth**. See [Migration → OAuth package layout](../migration.md#oauth-package-layout).
+
 ## Google Sign In
 
 To support Google as a provider, first install the official [`google_sign_in`](https://pub.dev/packages/google_sign_in) plugin to your project as described in the README.
@@ -317,6 +321,7 @@ See [Custom screens section](#custom-screens) to learn how to use a button on yo
 If you want to use a button on your custom screen, use `OAuthProviderButton`. Ensure an [`FTheme`](../theming.md) ancestor.
 
 ```dart
+import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_oauth_google/forui_firebase_ui_oauth_google.dart';
 
 class MyCustomScreen extends StatelessWidget {

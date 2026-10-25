@@ -9,6 +9,8 @@ Base package for Firebase UI OAuth providers (Forui-backed buttons):
 - [Facebook Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_facebook)
 - [Twitter Sign In](https://pub.dev/packages/forui_firebase_ui_oauth_twitter)
 
+Depends on [`forui_firebase_ui_auth`](https://pub.dev/packages/forui_firebase_ui_auth). Abstract `OAuthProvider` / button widgets live there; this package provides `PlatformSignInMixin` and re-exports those types. See [OAuth package layout](../../docs/firebase-ui-auth/migration.md#oauth-package-layout).
+
 See the [OAuth docs](../../docs/firebase-ui-auth/providers/oauth.md). Apps must wrap Firebase UI in an [`FTheme`](https://forui.dev/docs) ancestor.
 
 ## Migrating from `firebase_ui_oauth`

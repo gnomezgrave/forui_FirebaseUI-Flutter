@@ -4,7 +4,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
 import 'package:flutter/widgets.dart';
 
 export 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'
@@ -13,6 +12,7 @@ export 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart'
 import 'src/actions.dart';
 import 'src/oauth_providers.dart';
 import 'src/providers/auth_provider.dart';
+import 'src/providers/oauth_provider.dart';
 
 export 'src/actions.dart';
 export 'src/auth_controller.dart' show AuthAction, AuthController;
@@ -40,12 +40,15 @@ export 'src/mfa.dart' show startMFAVerification;
 export 'src/navigation/authentication.dart';
 export 'src/navigation/forgot_password.dart';
 export 'src/navigation/phone_verification.dart';
+export 'src/oauth/oauth_provider_button_style.dart'
+    show ThemedOAuthProviderButtonStyle, OAuthProviderButtonStyle;
 export 'src/oauth/provider_resolvers.dart' show providerIcon;
 export 'src/oauth/social_icons.dart' show SocialIcons;
 export 'src/oauth_providers.dart' show OAuthHelpers;
 export 'src/providers/auth_provider.dart';
 export 'src/providers/email_auth_provider.dart';
 export 'src/providers/email_link_auth_provider.dart';
+export 'src/providers/oauth_provider.dart' show OAuthProvider, OAuthListener;
 export 'src/providers/phone_auth_provider.dart';
 export 'src/screens/email_link_sign_in_screen.dart';
 export 'src/screens/email_verification_screen.dart';
@@ -77,6 +80,12 @@ export 'src/widgets/error_text.dart' show ErrorText, localizedErrorText;
 export 'src/widgets/forgot_password_button.dart';
 export 'src/widgets/internal/oauth_provider_button.dart'
     show OAuthProviderButton, OAuthButtonVariant;
+export 'src/widgets/internal/oauth_provider_button_base.dart'
+    show
+        OAuthProviderButtonBase,
+        DifferentProvidersFoundCallback,
+        SignedInCallback,
+        ErrorBuilder;
 export 'src/widgets/layout_flow_aware_padding.dart';
 export 'src/widgets/password_input.dart';
 export 'src/widgets/phone_input.dart' show PhoneInputState, PhoneInput;
