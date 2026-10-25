@@ -92,7 +92,7 @@ typedef StateTransitionListener<T extends AuthController> = void Function(
 ///         ]
 ///       );
 ///     } else if (state is SigningIn) {
-///       return Center(child: CircularProgressIndicator());
+///       return Center(child: LoadingIndicator(size: 32, borderWidth: 2));
 ///     } else if (state is AuthFailed) {
 ///       return ErrorText(exception: state.exception);
 ///     }

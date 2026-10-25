@@ -5,6 +5,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_oauth/forui_firebase_ui_oauth.dart';
+import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -104,7 +105,7 @@ void main() {
     button = OAuthProviderButtonBase(
       provider: provider,
       label: 'Sign in with Google',
-      loadingIndicator: const CircularProgressIndicator(),
+      loadingIndicator: const LoadingIndicator(size: 20, borderWidth: 2),
       auth: FakeAuth(),
     );
 
@@ -194,7 +195,8 @@ void main() {
                       provider: provider,
                       auth: FakeAuth(),
                       label: 'Sign in with Fake provider',
-                      loadingIndicator: const CircularProgressIndicator(),
+                      loadingIndicator:
+                          const LoadingIndicator(size: 20, borderWidth: 2),
                     ),
                   ),
                 ],

@@ -10,7 +10,7 @@ class Title extends StatelessWidget {
 
   /// Overrides the default title [TextStyle].
   ///
-  /// When null, uses Forui [FTypography.display] `xl2` with semibold weight.
+  /// When null, uses Forui [FTypography.display] `md` with semibold weight.
   final TextStyle? style;
 
   const Title({super.key, required this.text, this.style});
@@ -18,7 +18,7 @@ class Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final defaultStyle = theme.typography.display.xl2.copyWith(
+    final defaultStyle = theme.typography.display.md.copyWith(
       fontWeight: .w600,
       color: theme.colors.foreground,
       height: 1,
