@@ -134,10 +134,7 @@ Future<fba.UserCredential> startPhoneMFAVerification({
   final pushFuture = navigator.push<fba.UserCredential>(pageRoute);
 
   // Prefer the completer when resolve succeeds even if pop was skipped.
-  final outcome = await Future.any<Object?>([
-    pushFuture,
-    completer.future,
-  ]);
+  final outcome = await Future.any<Object?>([pushFuture, completer.future]);
 
   if (completer.isCompleted) {
     return completer.future;

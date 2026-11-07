@@ -97,7 +97,7 @@ void main() {
       );
 
       expect(provider.authListener, isNotNull);
-      provider.authListener!.onMFARequired(_MockMultiFactorResolver());
+      provider.authListener.onMFARequired(_MockMultiFactorResolver());
       await tester.pumpAndSettle();
 
       final screen = tester.widget<SMSCodeInputScreen>(
