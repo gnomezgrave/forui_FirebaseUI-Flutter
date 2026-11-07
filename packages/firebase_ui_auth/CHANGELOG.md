@@ -1,3 +1,7 @@
+## Unreleased
+
+ - **FIX**(ui_auth): pass `FirebaseAuth` into OAuth `startMFAVerification` ([#2](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/2)).
+
 ## 0.1.0
 
 > Note: This release has breaking changes.
