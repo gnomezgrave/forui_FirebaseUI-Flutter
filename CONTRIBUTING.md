@@ -127,7 +127,9 @@ your code contributions, various tests will be run against your updated code aut
 E2e tests are those which directly communicate with Firebase, whose results cannot be mocked. 
 They need the Firebase Emulator Suite. Local `test:e2e:*` scripts reuse it if already up;
 otherwise they build `functions` and start the suite in the background with
-`CI=1 scripts/start-firebase-emulator.sh` (the same script CI uses). To run emulators
+`CI=1 scripts/start-firebase-emulator.sh` (the same script CI uses), then **stop that
+suite on exit** (so the shell does not hang on orphaned emulator processes). A suite you
+started yourself (e.g. `emulator:start`) is left running. To run emulators
 yourself in the foreground (with import/export):
 
 ```bash

@@ -323,6 +323,7 @@ class _OAuthProviderButtonBaseState extends State<OAuthProviderButtonBase>
         final credential = await startMFAVerification(
           context: context,
           resolver: resolver,
+          auth: widget.auth,
         );
         onSignedIn(credential);
       } catch (e) {
