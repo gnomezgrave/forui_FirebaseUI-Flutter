@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -273,6 +274,44 @@ void main() {
     await tester.pump();
     expect(snapshot.hasData, isTrue);
     expect(snapshot.isFetching, isFalse);
+  });
+
+  testWidgets('scrolled away in the frame that its builder calls fetchMore', (
+    tester,
+  ) async {
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: ListView(
+          controller: controller,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+          itemExtent: 1000,
+          children: [
+            FirestoreQueryBuilder<Json>(
+              query: query,
+              pageSize: 2,
+              builder: (context, s, _) {
+                if (s.hasMore) s.fetchMore();
+                return const SizedBox();
+              },
+            ),
+            const SizedBox(),
+            const SizedBox(),
+          ],
+        ),
+      ),
+    );
+
+    // The snapshot rebuilds the query builder, whose builder fetches the
+    // next page, and the list drops it while laying out that same frame. The
+    // setState that fetchMore delays runs after it is disposed.
+    query.emit(3, size: 3, fromCache: false);
+    controller.jumpTo(2000);
+    await tester.pump();
+    expect(tester.takeException(), isNull);
   });
 }
 

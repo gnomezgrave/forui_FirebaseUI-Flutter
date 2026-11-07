@@ -1,3 +1,7 @@
+## 0.1.1
+
+ - **FIX**(ui_storage): don't call `setState` after dispose in `UploadButton` ([firebase/FirebaseUI-Flutter#721](https://github.com/firebase/FirebaseUI-Flutter/pull/721)).
+
 ## 0.1.0
 
 > Note: This release has breaking changes.

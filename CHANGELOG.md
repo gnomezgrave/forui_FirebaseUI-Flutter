@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## Unreleased
+
+### Changes
+
+---
+
+Packages with other changes:
+
+ - [`forui_firebase_ui_auth` - `v0.1.2`](#forui_firebase_ui_auth---v012)
+ - [`forui_firebase_ui_database` - `v0.1.1`](#forui_firebase_ui_database---v011)
+ - [`forui_firebase_ui_firestore` - `v0.1.1`](#forui_firebase_ui_firestore---v011)
+ - [`forui_firebase_ui_storage` - `v0.1.1`](#forui_firebase_ui_storage---v011)
+
+---
+
+#### `forui_firebase_ui_auth` - `v0.1.2`
+
+ - **FIX**(ui_auth): don't call `setState` after dispose in `ForgotPasswordView` ([firebase/FirebaseUI-Flutter#720](https://github.com/firebase/FirebaseUI-Flutter/pull/720)).
+ - **FIX**(ui_auth): don't call `setState` after dispose in `ProfileScreen` and `DeleteAccountButton` ([firebase/FirebaseUI-Flutter#721](https://github.com/firebase/FirebaseUI-Flutter/pull/721)).
+
+#### `forui_firebase_ui_database` - `v0.1.1`
+
+ - **FIX**(ui_database): don't call `setState` after dispose when `fetchMore` runs in a disposed frame (parity with [firebase/FirebaseUI-Flutter#717](https://github.com/firebase/FirebaseUI-Flutter/pull/717)).
+
+#### `forui_firebase_ui_firestore` - `v0.1.1`
+
+ - **FIX**(ui_firestore): don't call `setState` after dispose when `fetchMore` runs in a disposed frame ([firebase/FirebaseUI-Flutter#717](https://github.com/firebase/FirebaseUI-Flutter/pull/717)).
+
+#### `forui_firebase_ui_storage` - `v0.1.1`
+
+ - **FIX**(ui_storage): don't call `setState` after dispose in `UploadButton` ([firebase/FirebaseUI-Flutter#721](https://github.com/firebase/FirebaseUI-Flutter/pull/721)).
+
 ## 2026-11-07
 
 ### Changes
