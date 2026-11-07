@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
@@ -61,6 +63,10 @@ Future<fba.UserCredential> startPhoneMFAVerification({
   provider.authListener = flow;
 
   final flowKey = Object();
+  // Completer so success does not depend solely on [Navigator.pop] returning
+  // a value from [push] (action context may resolve a nested navigator that
+  // cannot pop — see #3).
+  final completer = Completer<fba.UserCredential>();
 
   final actions = [
     AuthStateChangeAction<CredentialReceived>((context, inner) async {
@@ -68,9 +74,13 @@ Future<fba.UserCredential> startPhoneMFAVerification({
       final assertion = fba.PhoneMultiFactorGenerator.getAssertion(phoneCred);
       try {
         final cred = await resolver.resolveSignIn(assertion);
-        // Pop with the credential so await navigator.push completes successfully.
-        if (context.mounted && Navigator.of(context).canPop()) {
-          Navigator.of(context).pop(cred);
+        if (!completer.isCompleted) {
+          completer.complete(cred);
+        }
+        // Use the navigator that pushed the SMS route, not the action
+        // context's (possibly nested) navigator.
+        if (navigator.canPop()) {
+          navigator.pop(cred);
         }
       } catch (e) {
         if (e is FirebaseException) {
@@ -121,9 +131,20 @@ Future<fba.UserCredential> startPhoneMFAVerification({
     builder: builder,
   );
 
-  final result = await navigator.push<fba.UserCredential>(pageRoute);
+  final pushFuture = navigator.push<fba.UserCredential>(pageRoute);
+
+  // Prefer the completer when resolve succeeds even if pop was skipped.
+  final outcome = await Future.any<Object?>([
+    pushFuture,
+    completer.future,
+  ]);
+
+  if (completer.isCompleted) {
+    return completer.future;
+  }
 
   // User dismissed the SMS screen without completing MFA.
+  final result = outcome as fba.UserCredential?;
   if (result == null) {
     throw fba.FirebaseAuthException(
       code: 'firebase-ui/mfa-cancelled',

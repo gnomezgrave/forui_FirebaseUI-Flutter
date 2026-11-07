@@ -36,6 +36,45 @@ emulator_online() {
     curl --output /dev/null --silent --fail --max-time 2 http://localhost:9099
 }
 
+# Ports used by auth/firestore/functions/storage/database (+ Emulator UI).
+EMU_PORTS=(4000 5001 8080 9000 9099 9199)
+# 1 if this script background-started the suite (must not kill a pre-existing one).
+STARTED_FIREBASE_EMU=0
+
+kill_firebase_emulator_listeners() {
+  for port in "${EMU_PORTS[@]}"; do
+    local pids
+    pids="$(lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
+    if [[ -n "$pids" ]]; then
+      echo "Stopping emulator listener(s) on port $port: $pids"
+      # shellcheck disable=SC2086
+      kill $pids 2>/dev/null || true
+    fi
+  done
+  sleep 1
+  for port in "${EMU_PORTS[@]}"; do
+    local pids
+    pids="$(lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
+    if [[ -n "$pids" ]]; then
+      # shellcheck disable=SC2086
+      kill -9 $pids 2>/dev/null || true
+    fi
+  done
+}
+
+cleanup_firebase_emulator() {
+  if [[ "$STARTED_FIREBASE_EMU" != "1" ]]; then
+    return 0
+  fi
+  STARTED_FIREBASE_EMU=0
+  echo "Stopping Firebase Emulator Suite started by this e2e run..."
+  kill_firebase_emulator_listeners
+}
+
+# CI background start leaves java/node children alive after flutter test exits;
+# without this trap the shell looks "stuck" and ports stay occupied.
+trap cleanup_firebase_emulator EXIT INT TERM
+
 # Reuse a running suite; otherwise start via the CI background path of
 # start-firebase-emulator.sh (that script itself does not know about e2e).
 ensure_firebase_emulator() {
@@ -57,6 +96,7 @@ ensure_firebase_emulator() {
     npm run build
   )
   CI=1 bash "$ROOT/scripts/start-firebase-emulator.sh"
+  STARTED_FIREBASE_EMU=1
 }
 
 ensure_firebase_emulator

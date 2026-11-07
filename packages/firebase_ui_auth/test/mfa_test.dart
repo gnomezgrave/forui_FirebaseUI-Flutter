@@ -249,5 +249,73 @@ void main() {
 
       expect(find.text('Custom SMS Code Input Screen'), findsNothing);
     });
+
+    testWidgets(
+      'returns credential when action context navigator cannot pop',
+      (tester) async {
+        final expectedCredential = MockCredential();
+        when(
+          resolver.resolveSignIn(any),
+        ).thenAnswer((_) async => expectedCredential);
+
+        late List<FirebaseUIAction> capturedActions;
+        Future<fba.UserCredential>? verificationFuture;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return ElevatedButton(
+                  onPressed: () {
+                    verificationFuture = startMFAVerification(
+                      context: context,
+                      resolver: resolver,
+                      auth: auth,
+                      smsCodeInputScreenBuilder:
+                          (context, actions, flowKey, action) {
+                            capturedActions = actions;
+                            // Nested navigator with a single route: the action
+                            // context's Navigator.canPop() is false (issue #3).
+                            return Navigator(
+                              onGenerateRoute: (_) {
+                                return MaterialPageRoute<void>(
+                                  builder: (_) => const Scaffold(
+                                    body: Text('Nested SMS Screen'),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                    );
+                  },
+                  child: const Text('Start MFA'),
+                );
+              },
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Start MFA'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Nested SMS Screen'), findsOneWidget);
+        final nestedContext = tester.element(find.text('Nested SMS Screen'));
+        expect(Navigator.of(nestedContext).canPop(), isFalse);
+
+        final credentialAction = capturedActions
+            .whereType<AuthStateChangeAction<CredentialReceived>>()
+            .first;
+        credentialAction.callback(
+          nestedContext,
+          CredentialReceived(MockPhoneAuthCredential()),
+        );
+        await tester.pumpAndSettle();
+
+        expect(verificationFuture, isNotNull);
+        final result = await verificationFuture!;
+        expect(result, same(expectedCredential));
+        expect(find.text('Nested SMS Screen'), findsNothing);
+      },
+    );
   });
 }

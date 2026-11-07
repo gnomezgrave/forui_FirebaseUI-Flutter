@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-11-07
+
+### Changes
+
+---
+
+Packages with other changes:
+
+ - [`forui_firebase_ui_auth` - `v0.1.1`](#forui_firebase_ui_auth---v011)
+
+---
+
+#### `forui_firebase_ui_auth` - `v0.1.1`
+
+ - **FIX**(ui_auth): pass `FirebaseAuth` into OAuth `startMFAVerification` ([#2](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/2)).
+ - **FIX**(ui_auth): return MFA credential when the SMS route cannot be popped ([#3](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/3)).
+
 ## 2026-10-25
 
 ### Changes

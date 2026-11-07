@@ -1,6 +1,7 @@
-## Unreleased
+## 0.1.1
 
  - **FIX**(ui_auth): pass `FirebaseAuth` into OAuth `startMFAVerification` ([#2](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/2)).
+ - **FIX**(ui_auth): return MFA credential when the SMS route cannot be popped ([#3](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/3)).
 
 ## 0.1.0
 
