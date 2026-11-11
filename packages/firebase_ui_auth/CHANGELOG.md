@@ -1,3 +1,8 @@
+## 0.1.2
+
+ - **FIX**(ui_auth): don't call `setState` after dispose in `ForgotPasswordView` ([firebase/FirebaseUI-Flutter#720](https://github.com/firebase/FirebaseUI-Flutter/pull/720)).
+ - **FIX**(ui_auth): don't call `setState` after dispose in `ProfileScreen` and `DeleteAccountButton` ([firebase/FirebaseUI-Flutter#721](https://github.com/firebase/FirebaseUI-Flutter/pull/721)).
+
 ## 0.1.1
 
  - **FIX**(ui_auth): pass `FirebaseAuth` into OAuth `startMFAVerification` ([#2](https://github.com/gnomezgrave/forui_FirebaseUI-Flutter/issues/2)).

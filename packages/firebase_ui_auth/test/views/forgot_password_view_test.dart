@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:forui_firebase_ui_auth/forui_firebase_ui_auth.dart';
 import 'package:forui_firebase_ui_shared/forui_firebase_ui_shared.dart';
@@ -93,5 +95,44 @@ void main() {
       expect(find.byType(ErrorText), findsNothing);
       verify(auth.sendPasswordResetEmail(email: 'delay@email.com')).called(1);
     });
+
+    testWidgets(
+      "doesn't call setState if popped while sendPasswordResetEmail is pending",
+      (tester) async {
+        final completer = Completer<void>();
+        when(auth.sendPasswordResetEmail(email: 'pending@email.com'))
+            .thenAnswer((_) => completer.future);
+
+        await tester.pumpWidget(
+          TestMaterialApp(
+            child: Builder(
+              builder: (context) => FilledButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ForgotPasswordView(auth: auth),
+                  ),
+                ),
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('open'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(EditableText), 'pending@email.com');
+        await tester.tap(find.byType(LoadingButton));
+        await tester.pump();
+
+        await tester.tap(find.text('Go back'));
+        await tester.pumpAndSettle();
+        expect(find.byType(ForgotPasswordView), findsNothing);
+
+        completer.complete();
+        await tester.pump();
+
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

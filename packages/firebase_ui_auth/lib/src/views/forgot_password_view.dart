@@ -74,7 +74,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     } on fba.FirebaseAuthException catch (e) {
       exception = e;
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 

@@ -87,21 +87,18 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginContent = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 500),
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: LoginView(
-          key: loginViewKey,
-          action: action,
-          auth: auth,
-          providers: providers,
-          oauthButtonVariant: oauthButtonVariant,
-          email: email,
-          titleStyle: titleStyle,
-          showAuthActionSwitch: showAuthActionSwitch,
-          subtitleBuilder: subtitleBuilder,
-          footerBuilder: footerBuilder,
-          showPasswordVisibilityToggle: showPasswordVisibilityToggle,
-        ),
+      child: LoginView(
+        key: loginViewKey,
+        action: action,
+        auth: auth,
+        providers: providers,
+        oauthButtonVariant: oauthButtonVariant,
+        email: email,
+        titleStyle: titleStyle,
+        showAuthActionSwitch: showAuthActionSwitch,
+        subtitleBuilder: subtitleBuilder,
+        footerBuilder: footerBuilder,
+        showPasswordVisibilityToggle: showPasswordVisibilityToggle,
       ),
     );
 

@@ -1296,7 +1296,7 @@ PODS:
   - google_sign_in_ios (0.0.1):
     - Flutter
     - FlutterMacOS
-    - GoogleSignIn (~> 9.0)
+    - GoogleSignIn (< 11.0, >= 9.0)
     - GTMSessionFetcher (>= 3.4.0)
   - GoogleSignIn (9.2.0):
     - AppAuth (~> 2.1)
@@ -1544,7 +1544,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage_darwin: 557817588b80e60213cbecb573c45c76b788018d
   flutter_web_auth_2: 3fe7e46bdb854095fec46ef73e376ddf4f2ccb73
   FlutterMacOS: c232990155153907050900a2e175c7773903ba4e
-  google_sign_in_ios: 50537d3f32cf95a660ec27ab92140dda3c3d7c47
+  google_sign_in_ios: 761b9030dc21bc8e89e8340c3ac56e7ecc358a5e
   GoogleSignIn: e449a40a92e9f2eea56e98b5214d13725dc5a00a
   GoogleUtilities: 7dc09b3fa9ecb5c2298b952313d14628b61b9da3
   "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8
