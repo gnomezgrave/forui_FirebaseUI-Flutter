@@ -7,7 +7,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/rendering.dart';
 import 'package:forui_firebase_ui_firestore/forui_firebase_ui_firestore.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -287,7 +286,7 @@ void main() {
         textDirection: TextDirection.ltr,
         child: ListView(
           controller: controller,
-          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+          cacheExtent: 0,
           itemExtent: 1000,
           children: [
             FirestoreQueryBuilder<Json>(
