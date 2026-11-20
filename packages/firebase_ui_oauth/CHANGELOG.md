@@ -1,3 +1,7 @@
+## 0.1.1
+
+ - **FIX**: sync example apps with upstream FlutterFire tooling (SPM, AGP 9 / minSdk 24) ([firebase/FirebaseUI-Flutter#731](https://github.com/firebase/FirebaseUI-Flutter/pull/731), [firebase/FirebaseUI-Flutter#744](https://github.com/firebase/FirebaseUI-Flutter/pull/744)).
+
 ## 0.1.0
 
 > Note: This release has breaking changes.
