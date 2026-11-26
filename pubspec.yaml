@@ -257,3 +257,19 @@ melos:
       description: Start Firebase emulators (kills any existing listeners on emulator ports first).
     update-dependencies:
       run: dart scripts/update_dependencies.dart
+
+    # Publishes every package whose current local version is not yet on pub.dev.
+    # Dry-run first: dart run melos run release:dry-run
+    # After merge to main (versions already bumped): dart run melos run release
+    # Then: git push --tags
+    release:dry-run:
+      description: |
+        Dry-run publish for all unpublished package versions (no upload, no tags).
+      run: dart run melos publish --dry-run --no-published
+
+    release:
+      description: |
+        Publish all unpublished package versions to pub.dev and create missing
+        git tags. Skips confirmation. Push tags afterward with `git push --tags`.
+        Prefer release:dry-run first. See CONTRIBUTING.md "The release process".
+      run: dart run melos publish --no-dry-run --git-tag-version --no-published --yes
