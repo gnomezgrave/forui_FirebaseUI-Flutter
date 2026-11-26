@@ -265,7 +265,9 @@ melos:
     release:dry-run:
       description: |
         Dry-run publish for all unpublished package versions (no upload, no tags).
-      run: dart run melos publish --dry-run --no-published
+        Uses --yes so Melos skips the Continue? prompt (non-TTY / piped stdin
+        otherwise defaults to false and throws CancelledException).
+      run: dart run melos publish --dry-run --no-published --yes
 
     release:
       description: |
