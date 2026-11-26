@@ -246,12 +246,20 @@ For routine Melos releases of already-published packages, `dart run melos publis
 3. Run `git pull --tags` to make sure all tags are fetched.
 4. Create new branch with the signature "release/[year]-[month]-[day]".
 5. Run `dart run melos version --no-git-tag-version` to automatically version packages and update Changelogs.
-6. Run `dart run melos publish` to dry run and confirm all packages are publishable.
+6. Run `dart run melos run release:dry-run` (or `dart run melos publish`) to dry run and confirm all packages are publishable.
 7. After successful dry run, commit all changes with the signature `chore(release): prepare for release`.
 8. Run `git push origin [RELEASE BRANCH NAME]` & open pull request for review on GitHub.
 9. After successful review and merge of the pull request, switch to `main` branch locally, & run `git pull origin main`.
-10. Run `dart run melos publish --no-dry-run --git-tag-version` to now publish to Pub.dev.
+10. Run `dart run melos run release` to publish every unpublished package version to pub.dev and create missing git tags.
 11. Run `git push --tags` to push tags to repository.
+
+When versions are already bumped and you only need to ship unpublished packages:
+
+```sh
+dart run melos run release:dry-run   # optional sanity check
+dart run melos run release           # publish + tag
+git push --tags
+```
 
 ### Graduate packages
 
