@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - **FIX**: sync example apps with upstream FlutterFire tooling (SPM, AGP 9 / minSdk 24) ([firebase/FirebaseUI-Flutter#731](https://github.com/firebase/FirebaseUI-Flutter/pull/731), [firebase/FirebaseUI-Flutter#744](https://github.com/firebase/FirebaseUI-Flutter/pull/744)).
+
 ## 0.1.2
 
  - **FIX**(ui_auth): don't call `setState` after dispose in `ForgotPasswordView` ([firebase/FirebaseUI-Flutter#720](https://github.com/firebase/FirebaseUI-Flutter/pull/720)).

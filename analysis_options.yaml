@@ -8,6 +8,10 @@ analyzer:
     - macos/**
     - linux/**
     - build/**
+  errors:
+    # Flutter 3.50 deprecates material.dart and cupertino.dart in favour of
+    # material_ui and cupertino_ui. Ignoring until we migrate.
+    deprecated_member_use: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
